@@ -1,108 +1,113 @@
-// IP и порт сервера
+// Настройки сервера (замени на свои)
 const SERVER_IP = 'play.growagarden.ru';
 const SERVER_PORT = 25565;
 
-// Элементы
+// Элементы статуса
 const statusDiv = document.getElementById('server-status');
 const playersDiv = document.getElementById('players-online');
 const copyBtn = document.getElementById('copy-ip');
 const ipText = document.getElementById('server-ip');
 
-// Профиль
-const profileIcon = document.getElementById('profile-icon');
+// Элементы профиля
+const profileArea = document.getElementById('profile-area');
 const profileDropdown = document.getElementById('profile-dropdown');
 const nicknameDisplay = document.getElementById('nickname-display');
 const dropdownNickname = document.getElementById('dropdown-nickname');
-const dropdownBalance = document.getElementById('dropdown-balance');
+const dropdownBalance = document.getElementById('dropdown-balance-value');
 const topUpBtn = document.getElementById('top-up-btn');
 const historyList = document.getElementById('history-list');
 const logoutBtn = document.getElementById('logout-btn');
+const avatar = document.getElementById('avatar');
+const dropdownAvatar = document.getElementById('dropdown-avatar');
 
-// === Управление профилем (демо) ===
-let nickname = localStorage.getItem('mc_nickname') || null;
-let balance = parseInt(localStorage.getItem('mc_balance') || '0');
-let purchaseHistory = JSON.parse(localStorage.getItem('mc_history') || '[]');
+// Демо-данные пользователя (localStorage)
+let nickname = localStorage.getItem('mc_garden_nickname') || null;
+let balance = parseInt(localStorage.getItem('mc_garden_balance') || '0');
+let history = JSON.parse(localStorage.getItem('mc_garden_history') || '[]');
 
-// Если нет ника, запросим при загрузке
+// Если нет ника — запрашиваем
 if (!nickname) {
-  nickname = prompt('Введите ваш игровой никнейм:');
-  if (!nickname) nickname = 'Гость';
-  localStorage.setItem('mc_nickname', nickname);
+  nickname = prompt('Введи свой игровой никнейм:');
+  if (!nickname) nickname = 'Садовод';
+  localStorage.setItem('mc_garden_nickname', nickname);
 }
 
-// Отображаем ник в шапке
-nicknameDisplay.textContent = nickname;
-dropdownNickname.textContent = nickname;
-
-// Функция обновления интерфейса профиля
+// Инициализация интерфейса
 function updateProfileUI() {
-  dropdownBalance.textContent = `${balance} монет`;
-  // История
+  nicknameDisplay.textContent = nickname;
+  dropdownNickname.textContent = nickname;
+  dropdownBalance.textContent = balance;
+
+  // Случайная аватарка (можно заменить на фиксированную)
+  const icons = ['🌱', '🌿', '🍃', '🌳', '🌸', '🌻', '🍄'];
+  const icon = icons[nickname.length % icons.length];
+  avatar.textContent = icon;
+  dropdownAvatar.textContent = icon;
+
+  // История покупок
   historyList.innerHTML = '';
-  if (purchaseHistory.length === 0) {
-    historyList.innerHTML = '<li class="empty-history">Пока пусто</li>';
+  if (history.length === 0) {
+    historyList.innerHTML = '<li class="dimmed">Пока пусто</li>';
   } else {
-    purchaseHistory.forEach(item => {
+    history.forEach(entry => {
       const li = document.createElement('li');
-      li.textContent = item;
-      li.style.fontSize = '0.5rem';
+      li.textContent = entry;
+      li.style.fontSize = '0.45rem';
       li.style.marginBottom = '4px';
       historyList.appendChild(li);
     });
   }
 }
 
-// Пополнение баланса
+// Пополнение баланса (демо)
 topUpBtn.addEventListener('click', () => {
   balance += 100;
-  localStorage.setItem('mc_balance', balance);
+  localStorage.setItem('mc_garden_balance', balance);
   updateProfileUI();
 });
 
-// Выход (сброс данных)
+// Выход
 logoutBtn.addEventListener('click', () => {
-  if (confirm('Вы уверены, что хотите выйти? Все локальные данные будут сброшены.')) {
-    localStorage.removeItem('mc_nickname');
-    localStorage.removeItem('mc_balance');
-    localStorage.removeItem('mc_history');
-    balance = 0;
-    purchaseHistory = [];
+  if (confirm('Выйти из аккаунта? Все локальные данные будут сброшены.')) {
+    localStorage.removeItem('mc_garden_nickname');
+    localStorage.removeItem('mc_garden_balance');
+    localStorage.removeItem('mc_garden_history');
     nickname = 'Гость';
-    nicknameDisplay.textContent = 'Гость';
-    dropdownNickname.textContent = 'Гость';
+    balance = 0;
+    history = [];
     updateProfileUI();
     profileDropdown.classList.add('hidden');
   }
 });
 
-// Открытие/закрытие выпадающего меню
-profileIcon.addEventListener('click', (e) => {
+// Открытие/закрытие меню профиля
+profileArea.addEventListener('click', (e) => {
   e.stopPropagation();
   profileDropdown.classList.toggle('hidden');
-  updateProfileUI(); // обновляем при открытии
+  updateProfileUI(); // актуализация при открытии
 });
 
-// Закрытие при клике вне меню
+// Закрытие при клике вне
 document.addEventListener('click', (e) => {
-  if (!profileIcon.contains(e.target) && !profileDropdown.contains(e.target)) {
+  if (!profileArea.contains(e.target) && !profileDropdown.contains(e.target)) {
     profileDropdown.classList.add('hidden');
   }
 });
 
-// Инициализация отображения
+// Первичное отображение
 updateProfileUI();
 
 // === Статус сервера ===
 async function fetchServerStatus() {
   const url = `https://api.mcsrvstat.us/2/${SERVER_IP}:${SERVER_PORT}`;
   try {
-    const response = await fetch(url);
-    const data = await response.json();
+    const res = await fetch(url);
+    const data = await res.json();
     if (data.online) {
       statusDiv.className = 'status online';
       statusDiv.textContent = '🟢 Сервер онлайн';
       if (data.players) {
-        playersDiv.textContent = `Игроков онлайн: ${data.players.online} / ${data.players.max}`;
+        playersDiv.textContent = `Игроков: ${data.players.online} / ${data.players.max}`;
       } else {
         playersDiv.textContent = '';
       }
@@ -111,9 +116,9 @@ async function fetchServerStatus() {
       statusDiv.textContent = '🔴 Сервер оффлайн';
       playersDiv.textContent = '';
     }
-  } catch (error) {
+  } catch {
     statusDiv.className = 'status offline';
-    statusDiv.textContent = '⚠️ Не удалось проверить статус';
+    statusDiv.textContent = '⚠️ Ошибка проверки';
     playersDiv.textContent = '';
   }
 }
@@ -124,11 +129,9 @@ copyBtn.addEventListener('click', () => {
   navigator.clipboard.writeText(ip).then(() => {
     copyBtn.textContent = '✅';
     setTimeout(() => { copyBtn.textContent = '📋'; }, 1500);
-  }).catch(() => {
-    alert('Не удалось скопировать IP');
-  });
+  }).catch(() => alert('Не удалось скопировать'));
 });
 
-// Запуск проверки статуса
+// Запуск
 fetchServerStatus();
 setInterval(fetchServerStatus, 60000);
