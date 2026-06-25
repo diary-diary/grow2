@@ -8,6 +8,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-functions-compat.js"></script>
 </head>
 <body>
   <div class="container">
@@ -16,20 +22,22 @@
       <h1 class="logo">🌱 Grow-a-Garden</h1>
       <div class="profile-area" id="profile-area">
         <div class="avatar" id="avatar">🌿</div>
-        <span class="nickname-header" id="nickname-display">Гость</span>
+        <span class="nickname-header" id="nickname-display">Загрузка...</span>
         <!-- Выпадающий профиль -->
         <div class="profile-dropdown hidden" id="profile-dropdown">
           <div class="dropdown-top">
             <div class="avatar-large" id="dropdown-avatar">🌿</div>
             <div class="dropdown-info">
-              <span id="dropdown-nickname">Гость</span>
+              <span id="dropdown-nickname">Загрузка...</span>
               <span class="dropdown-balance">💰 <span id="dropdown-balance-value">0</span> монет</span>
             </div>
           </div>
           <button id="top-up-btn" class="btn-green">Пополнить +100</button>
           <div class="dropdown-section">
-            <p class="section-title">📜 История покупок</p>
-            <ul id="history-list" class="history-list"></ul>
+            <p class="section-title">📜 История пополнений</p>
+            <ul id="history-list" class="history-list">
+              <li class="dimmed">Загрузка...</li>
+            </ul>
           </div>
           <div class="dropdown-section">
             <p class="section-title">🎟️ Промокоды</p>
