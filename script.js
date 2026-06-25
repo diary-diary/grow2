@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ====== ЭЛЕМЕНТЫ ======
   const $ = id => document.getElementById(id);
   
   const serverIp = $('server-ip');
@@ -12,58 +11,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const profileBody = $('profile-body');
   const avatarEl = $('avatar');
   const nicknameEl = $('nickname');
-  const balanceEl = $('balance');
-  const arrowEl = $('arrow');
 
   const nickInput = $('nick-input');
   const saveNickBtn = $('save-nick');
-  const depositAmount = $('deposit-amount');
-  const depositBtn = $('deposit-btn');
-  const quickBtns = document.querySelectorAll('.quick-amounts button');
-  const historyList = $('history-list');
-  const promoInput = $('promo-input');
-  const promoBtn = $('promo-btn');
-  const promoMsg = $('promo-msg');
   const logoutBtn = $('logout-btn');
+
+  // Модальное окно
+  const modal = $('modal');
+  const modalOverlay = $('modal-overlay');
+  const modalTitle = $('modal-title');
+  const modalBody = $('modal-body');
+  const modalClose = $('modal-close');
+  const infoBtn = $('info-btn');
+  const rulesBtn = $('rules-btn');
 
   // ====== ДАННЫЕ ======
   let nickname = localStorage.getItem('mc_nick') || '';
-  let balance = parseInt(localStorage.getItem('mc_bal') || '0');
-  let history = JSON.parse(localStorage.getItem('mc_hist') || '[]');
 
-  // ====== АВАТАРКИ ======
-  const avatars = ['🌱','🌿','🍃','🌳','🌸','🌻','🍄','🌾','🌷','🪴'];
-  function getAvatar(name) {
-    return avatars[name.length % avatars.length];
+  const leafColors = [
+    { bg: '#3a6020', border: '#5a8030', inner: '#4a8a20' },
+    { bg: '#2a5018', border: '#4a7028', inner: '#3a7820' },
+    { bg: '#305820', border: '#508030', inner: '#408020' },
+    { bg: '#284818', border: '#487028', inner: '#387820' },
+    { bg: '#3a5828', border: '#5a7838', inner: '#4a8830' },
+  ];
+
+  function getLeafColor(name) {
+    return leafColors[name.length % leafColors.length];
   }
 
   // ====== ОТРИСОВКА ======
   function renderAll() {
-    nicknameEl.textContent = nickname || 'Гость';
-    balanceEl.textContent = balance.toLocaleString();
-    avatarEl.textContent = getAvatar(nickname || 'Гость');
+    const displayName = nickname || 'Гость';
+    nicknameEl.textContent = displayName;
+    
+    const colors = getLeafColor(displayName);
+    avatarEl.style.background = 'linear-gradient(135deg, ' + colors.bg + ', ' + colors.inner + ')';
+    avatarEl.style.borderColor = colors.border;
+    
     nickInput.value = nickname;
-    renderHistory();
-  }
-
-  function renderHistory() {
-    historyList.innerHTML = '';
-    if (history.length === 0) {
-      historyList.innerHTML = '<span class="empty">Пока пусто</span>';
-      return;
-    }
-    history.slice(-8).reverse().forEach(h => {
-      const div = document.createElement('div');
-      div.className = 'history-item';
-      div.textContent = `${h.date}: +${h.amount} монет`;
-      historyList.appendChild(div);
-    });
-  }
-
-  function saveData() {
-    localStorage.setItem('mc_nick', nickname);
-    localStorage.setItem('mc_bal', balance);
-    localStorage.setItem('mc_hist', JSON.stringify(history));
   }
 
   // ====== СОХРАНЕНИЕ НИКА ======
@@ -75,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     nickname = val;
-    saveData();
+    localStorage.setItem('mc_nick', nickname);
     renderAll();
   });
 
@@ -83,81 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') saveNickBtn.click();
   });
 
-  // ====== ПОПОЛНЕНИЕ ======
-  function addBalance(amount) {
-    balance += amount;
-    history.push({
-      date: new Date().toLocaleDateString('ru-RU'),
-      amount: amount
-    });
-    saveData();
-    renderAll();
-    depositAmount.value = '';
-    // Подсветка баланса
-    balanceEl.style.color = '#d0ff80';
-    setTimeout(() => balanceEl.style.color = '#80c060', 800);
-  }
-
-  depositBtn.addEventListener('click', () => {
-    const amount = parseInt(depositAmount.value);
-    if (!amount || amount <= 0) {
-      depositAmount.style.borderColor = '#803030';
-      setTimeout(() => depositAmount.style.borderColor = '#3a5020', 1500);
-      return;
-    }
-    addBalance(amount);
-  });
-
-  depositAmount.addEventListener('keydown', e => {
-    if (e.key === 'Enter') depositBtn.click();
-  });
-
-  // Быстрые суммы
-  quickBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      addBalance(parseInt(btn.dataset.amount));
-    });
-  });
-
-  // ====== ПРОМОКОД ======
-  const promoCodes = {
-    'GARDEN': 500,
-    'BLOOM': 300,
-    'GROW': 200,
-    'SEED': 100
-  };
-
-  promoBtn.addEventListener('click', () => {
-    const code = promoInput.value.trim().toUpperCase();
-    if (!code) {
-      showPromoMsg('Введи код', 'error');
-      return;
-    }
-    if (promoCodes[code]) {
-      addBalance(promoCodes[code]);
-      showPromoMsg(`+${promoCodes[code]} монет!`, 'success');
-    } else {
-      showPromoMsg('Неверный код', 'error');
-    }
-    promoInput.value = '';
-  });
-
-  promoInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') promoBtn.click();
-  });
-
-  function showPromoMsg(text, type) {
-    promoMsg.textContent = text;
-    promoMsg.className = 'promo-msg ' + type;
-    setTimeout(() => { promoMsg.textContent = ''; promoMsg.className = 'promo-msg'; }, 2500);
-  }
-
   // ====== ВЫХОД ======
   logoutBtn.addEventListener('click', () => {
-    localStorage.clear();
+    localStorage.removeItem('mc_nick');
     nickname = '';
-    balance = 0;
-    history = [];
     profileBody.classList.add('hidden');
     profileBar.classList.remove('open');
     renderAll();
@@ -167,9 +82,93 @@ document.addEventListener('DOMContentLoaded', () => {
   profileBar.addEventListener('click', () => {
     profileBody.classList.toggle('hidden');
     profileBar.classList.toggle('open');
-    if (!profileBody.classList.contains('hidden')) {
-      renderAll();
-    }
+    if (!profileBody.classList.contains('hidden')) renderAll();
+  });
+
+  // ====== МОДАЛЬНОЕ ОКНО ======
+  function openModal(title, content) {
+    modalTitle.textContent = title;
+    modalBody.innerHTML = content;
+    modal.classList.remove('hidden');
+  }
+
+  function closeModal() {
+    modal.classList.add('hidden');
+  }
+
+  modalClose.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', closeModal);
+
+  // ====== ИНФОРМАЦИЯ ======
+  infoBtn.addEventListener('click', () => {
+    const content = `
+      <div class="info-step">
+        <div class="info-step-num">Шаг 1. IP сервера</div>
+        <p>Скопируй IP: <code>play.growagarden.ru</code> и вставь в Minecraft.<br>
+        Зайди в «Сетевая игра» → «Добавить сервер».</p>
+      </div>
+      <div class="info-step">
+        <div class="info-step-num">Шаг 2. Регистрация</div>
+        <p>Зайдя на сервер, тебе нужно зарегистрироваться.<br>
+        Введи команду: <code>/register твой_пароль</code><br>
+        Запомни пароль — он понадобится для входа!</p>
+      </div>
+      <div class="info-step">
+        <div class="info-step-num">Шаг 3. Выбери режим</div>
+        <p>На сервере есть несколько режимов:<br>
+        • Выживание — основной режим<br>
+        • Фермерство — ухаживай за садом<br>
+        • Строительство — создавай свой мир</p>
+      </div>
+      <div class="info-step">
+        <div class="info-step-num">Шаг 4. Подойди к пчеле</div>
+        <p>На спавне ты найдёшь большую пчелу. Подойди к ней и нажми ПКМ.<br>
+        Она расскажет, как начать играть на сервере Grow-a-Garden,<br>
+        какие команды использовать и что делать в первую очередь!</p>
+      </div>
+    `;
+    openModal('Обучение', content);
+  });
+
+  // ====== ПРАВИЛА ======
+  rulesBtn.addEventListener('click', () => {
+    const content = `
+      <div class="rule-item">
+        <div class="rule-title">1. Взаимное уважение</div>
+        <div class="rule-text">Запрещается оскорблять, унижать, провоцировать или каким-либо образом унижать других игроков, включая публичные высказывания в чатах и голосовых каналах. Агрессивное поведение, троллинг и флуд, мешающий игре других, также не допускаются.</div>
+        <div class="rule-punish">Наказание: Бан на 1 день</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-title">2. Запрет на использование читов и стороннего ПО</div>
+        <div class="rule-text">Строго запрещено использование читов, модификаций, макросов, багов игрового клиента и любых сторонних программ, дающих преимущества в игре. Любые подозрения на нечестную игру будут рассматриваться администрацией и могут привести к блокировке без предупреждения.</div>
+        <div class="rule-punish">Наказание: Бан на 30 дней</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-title">3. Запрет на взлом и мошенничество</div>
+        <div class="rule-text">Взлом чужих аккаунтов, сбор и распространение личных данных игроков, а также мошеннические действия запрещены. Никакая ответственность за утрату аккаунта по причине передачи данных третьим лицам не возлагается на администрацию.</div>
+        <div class="rule-punish">Наказание: Бан навсегда</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-title">4. Запрет на продажу и обмен аккаунтами</div>
+        <div class="rule-text">Запрещается продажа, покупка или обмен учетных записей сервера. Нарушение данного правила ведет к блокировке всех связанных аккаунтов без возможности восстановления.</div>
+        <div class="rule-punish">Наказание: Бан навсегда</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-title">5. Правила поведения на сервере и в игре</div>
+        <div class="rule-text">Запрещено создавать запрещённый контент (оскорбительные символы, надписи, неприемлемые постройки и т.д.).</div>
+        <div class="rule-punish">Наказание: Бан на 7 дней</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-title">6. Запрет на спам и рекламу</div>
+        <div class="rule-text">Запрещена рассылка спама, рекламы других серверов, сайтов, продуктов или услуг. Запрещено навязчивое приглашение других игроков в сторонние сообщества и проекты.</div>
+        <div class="rule-punish">Наказание: Мут на 7 дней</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-title">7. Ответственность за собственные действия</div>
+        <div class="rule-text">Каждый игрок несет личную ответственность за свои действия в игре и на сервере. Администрация не несет ответственности за технические сбои, потерю данных, проблемы с интернет-соединением или клиентом игры.</div>
+      </div>
+    `;
+    openModal('Правила сервера', content);
   });
 
   // ====== СТАТУС СЕРВЕРА ======
@@ -179,84 +178,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
       if (data.online) {
         statusEl.className = 'status online';
-        statusEl.textContent = '● онлайн';
-        playersEl.textContent = data.players ? `игроков ${data.players.online}/${data.players.max}` : '';
+        statusEl.innerHTML = '<span class="status-dot"></span> онлайн';
+        playersEl.textContent = data.players ? 'игроков ' + data.players.online + '/' + data.players.max : '';
       } else {
         statusEl.className = 'status offline';
-        statusEl.textContent = '● оффлайн';
+        statusEl.innerHTML = '<span class="status-dot"></span> оффлайн';
         playersEl.textContent = '';
       }
     } catch {
       statusEl.className = 'status offline';
-      statusEl.textContent = '● нет связи';
+      statusEl.innerHTML = '<span class="status-dot"></span> нет связи';
     }
   }
 
   checkStatus();
   setInterval(checkStatus, 60000);
-
-  // ====== КОПИРОВАНИЕ IP ======
-  copyBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(serverIp.textContent.trim()).then(() => {
-      copyBtn.textContent = '✓';
-      setTimeout(() => copyBtn.textContent = '📋', 1200);
-    });
-  });
-
-  // ====== СВЕТЛЯЧКИ ======
-  (function fireflies() {
-    const canvas = $('fireflies');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight * 0.7;
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    const flies = [];
-    for (let i = 0; i < 30; i++) {
-      flies.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 2 + 1,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        phase: Math.random() * Math.PI * 2
-      });
-    }
-
-    function animate(t) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      flies.forEach(f => {
-        f.x += f.vx + Math.sin(t/3000 + f.phase) * 0.3;
-        f.y += f.vy + Math.cos(t/2500 + f.phase) * 0.3;
-        
-        if (f.x < 0) f.x = canvas.width;
-        if (f.x > canvas.width) f.x = 0;
-        if (f.y < 0) f.y = canvas.height;
-        if (f.y > canvas.height) f.y = 0;
-        
-        const alpha = 0.3 + Math.sin(t/800 + f.phase) * 0.3;
-        ctx.beginPath();
-        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(180, 255, 100, ${alpha})`;
-        ctx.fill();
-        ctx.shadowColor = 'rgba(150, 255, 80, 0.8)';
-        ctx.shadowBlur = 6;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      });
-      
-      requestAnimationFrame(animate);
-    }
-    
-    requestAnimationFrame(animate);
-  })();
-
-  // ====== ПЕРВИЧНАЯ ОТРИСОВКА ======
-  renderAll();
-});
