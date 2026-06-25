@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalClose = $('modal-close');
   const infoBtn = $('info-btn');
   const rulesBtn = $('rules-btn');
+  const supportBtn = $('support-btn');
 
   // ====== ДАННЫЕ ======
   let nickname = localStorage.getItem('mc_nick') || '';
@@ -182,6 +183,211 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     openModal('Правила сервера', content);
   });
+
+  // ====== ПОДДЕРЖКА ======
+  supportBtn.addEventListener('click', () => {
+    const content = `
+      <form class="support-form" id="support-form">
+        
+        <div class="form-group">
+          <label class="form-label">
+            <span class="form-label-icon">1</span> Тема обращения
+          </label>
+          <select class="form-select" id="topic" required>
+            <option value="">Выбери тему...</option>
+            <option value="bug">Ошибка / Баг</option>
+            <option value="player">Жалоба на игрока</option>
+            <option value="payment">Проблема с оплатой</option>
+            <option value="account">Проблема с аккаунтом</option>
+            <option value="suggestion">Предложение</option>
+            <option value="other">Другое</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <span class="form-label-icon">2</span> Опиши ситуацию
+          </label>
+          <textarea class="form-textarea" id="description" rows="6" placeholder="Опиши что произошло, когда, при каких обстоятельствах..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <span class="form-label-icon">3</span> Контакты
+          </label>
+          <input type="text" class="form-input" id="contact" placeholder="Discord: User#1234 или Ник в Minecraft" required>
+          <p class="form-hint">Укажи свой Discord ID или никнейм в игре, чтобы мы могли с тобой связаться</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <span class="form-label-icon">4</span> Доказательства (скриншоты)
+          </label>
+          
+          <div class="file-upload-area" id="file-upload-area">
+            <div class="file-upload-icon">
+              <span class="upload-icon-img"></span>
+            </div>
+            <p class="file-upload-text">Нажми сюда или перетащи файлы</p>
+            <p class="file-upload-hint">PNG, JPG, GIF до 5 МБ</p>
+            <input type="file" class="file-input" id="file-input" accept="image/png,image/jpeg,image/gif" multiple>
+          </div>
+
+          <div class="file-preview-list" id="file-preview-list"></div>
+        </div>
+
+        <div class="form-buttons">
+          <button type="submit" class="form-submit-btn" id="submit-ticket">
+            <span class="send-icon"></span> Отправить обращение
+          </button>
+        </div>
+
+        <div class="form-success hidden" id="form-success">
+          <div class="success-icon"></div>
+          <p class="success-title">Обращение отправлено!</p>
+          <p class="success-text">Мы рассмотрим его в ближайшее время и свяжемся с тобой.</p>
+        </div>
+
+      </form>
+    `;
+    openModal('Поддержка', content);
+    
+    // Инициализация загрузки файлов после вставки в DOM
+    setTimeout(() => initSupportForm(), 100);
+  });
+
+  function initSupportForm() {
+    const supportForm = $('support-form');
+    const fileInput = $('file-input');
+    const fileUploadArea = $('file-upload-area');
+    const filePreviewList = $('file-preview-list');
+    const formSuccess = $('form-success');
+    const submitBtn = $('submit-ticket');
+    
+    let selectedFiles = [];
+
+    // Клик по области загрузки
+    fileUploadArea.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    // Drag and drop
+    fileUploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileUploadArea.classList.add('dragover');
+    });
+
+    fileUploadArea.addEventListener('dragleave', () => {
+      fileUploadArea.classList.remove('dragover');
+    });
+
+    fileUploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileUploadArea.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    // Выбор файлов через input
+    fileInput.addEventListener('change', () => {
+      handleFiles(fileInput.files);
+    });
+
+    function handleFiles(files) {
+      for (let file of files) {
+        if (!file.type.match(/^image\/(png|jpeg|gif)$/)) {
+          alert('Только PNG, JPG, GIF! Файл ' + file.name + ' пропущен.');
+          continue;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          alert('Файл ' + file.name + ' слишком большой (макс. 5 МБ).');
+          continue;
+        }
+        if (selectedFiles.length >= 5) {
+          alert('Максимум 5 файлов.');
+          break;
+        }
+        selectedFiles.push(file);
+      }
+      renderFilePreviews();
+    }
+
+    function renderFilePreviews() {
+      filePreviewList.innerHTML = '';
+      
+      selectedFiles.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const preview = document.createElement('div');
+          preview.className = 'file-preview-item';
+          preview.innerHTML = `
+            <img src="${e.target.result}" alt="preview" class="file-preview-img">
+            <span class="file-preview-name">${file.name}</span>
+            <button type="button" class="file-preview-remove" data-index="${index}">
+              <span class="remove-icon"></span>
+            </button>
+          `;
+          filePreviewList.appendChild(preview);
+          
+          // Кнопка удаления
+          preview.querySelector('.file-preview-remove').addEventListener('click', () => {
+            selectedFiles.splice(index, 1);
+            renderFilePreviews();
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Отправка формы
+    supportForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const topic = $('topic').value;
+      const description = $('description').value.trim();
+      const contact = $('contact').value.trim();
+
+      if (!topic) {
+        alert('Выбери тему обращения!');
+        return;
+      }
+      if (!description) {
+        alert('Опиши ситуацию!');
+        return;
+      }
+      if (!contact) {
+        alert('Укажи контакты!');
+        return;
+      }
+
+      // Собираем данные
+      const formData = {
+        topic: topic,
+        topicText: $('topic').selectedOptions[0].text,
+        description: description,
+        contact: contact,
+        files: selectedFiles.map(f => f.name),
+        date: new Date().toISOString()
+      };
+
+      console.log('Обращение отправлено:', formData);
+      
+      // Сохраняем в localStorage для демонстрации
+      const tickets = JSON.parse(localStorage.getItem('mc_tickets') || '[]');
+      tickets.push(formData);
+      localStorage.setItem('mc_tickets', JSON.stringify(tickets));
+
+      // Показываем успех
+      supportForm.querySelector('.form-group').style.display = 'none';
+      supportForm.querySelector('.form-group:nth-child(2)').style.display = 'none';
+      supportForm.querySelector('.form-group:nth-child(3)').style.display = 'none';
+      supportForm.querySelector('.form-group:nth-child(4)').style.display = 'none';
+      supportForm.querySelector('.form-buttons').style.display = 'none';
+      formSuccess.classList.remove('hidden');
+      
+      submitBtn.textContent = 'Отправлено!';
+      submitBtn.disabled = true;
+    });
+  }
 
   // ====== СТАТУС СЕРВЕРА ======
   async function checkStatus() {
