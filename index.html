@@ -20,19 +20,35 @@
   <!-- Контент -->
   <div class="content">
     
+    <!-- Кнопки сверху -->
+    <div class="top-buttons">
+      <button class="top-btn" id="info-btn">
+        <span class="info-icon"></span> Информация
+      </button>
+      <button class="top-btn" id="rules-btn">
+        <span class="rules-icon"></span> Правила
+      </button>
+    </div>
+
     <!-- Карточка сервера -->
     <div class="server-card">
-      <div class="server-icon">🌸</div>
+      <div class="server-icon">
+        <div class="pixel-flower"></div>
+      </div>
       <h1>Grow-a-Garden</h1>
       <p>Уютный сервер Minecraft</p>
       
       <div class="ip-box">
         <code id="server-ip">play.growagarden.ru</code>
-        <button id="copy-ip">📋</button>
+        <button id="copy-ip">
+          <span class="copy-icon"></span>
+        </button>
       </div>
 
       <div class="status-line">
-        <span id="server-status" class="status checking">● проверка</span>
+        <span id="server-status" class="status checking">
+          <span class="status-dot"></span> проверка
+        </span>
         <span id="players-count"></span>
       </div>
     </div>
@@ -40,55 +56,54 @@
     <!-- Карточка профиля -->
     <div class="profile-card" id="profile-card">
       <div class="profile-bar" id="profile-bar">
-        <div class="avatar" id="avatar">🌿</div>
-        <div class="name-balance">
-          <span id="nickname">Гость</span>
-          <span class="bal">💰 <span id="balance">0</span></span>
+        <div class="avatar" id="avatar">
+          <div class="pixel-leaf"></div>
         </div>
-        <span class="arrow" id="arrow">▾</span>
+        <span id="nickname">Гость</span>
+        <span class="arrow" id="arrow"></span>
       </div>
 
       <div class="profile-body hidden" id="profile-body">
         
-        <!-- Ввод ника -->
         <div class="nick-input-row">
-          <input type="text" id="nick-input" placeholder="Твой ник..." maxlength="16">
-          <button id="save-nick">✓</button>
+          <input type="text" id="nick-input" placeholder="Твой никнейм..." maxlength="16">
+          <button id="save-nick">OK</button>
         </div>
 
-        <!-- Пополнение -->
-        <div class="deposit-row">
-          <input type="number" id="deposit-amount" placeholder="Сумма" min="1" max="10000">
-          <button id="deposit-btn">💎 Пополнить</button>
+        <div class="server-details">
+          <div class="detail-item">
+            <span class="detail-label">Версия</span>
+            <span class="detail-value">1.20.1+</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Режим</span>
+            <span class="detail-value">Выживание</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Сложность</span>
+            <span class="detail-value">Средняя</span>
+          </div>
         </div>
 
-        <!-- Баланс и быстрые суммы -->
-        <div class="quick-amounts">
-          <button data-amount="100">+100</button>
-          <button data-amount="500">+500</button>
-          <button data-amount="1000">+1k</button>
-        </div>
-
-        <!-- История -->
-        <div class="section-title">📜 История</div>
-        <div class="history-list" id="history-list">
-          <span class="empty">Пока пусто</span>
-        </div>
-
-        <!-- Промокод -->
-        <div class="section-title">🎟️ Промокод</div>
-        <div class="promo-row">
-          <input type="text" id="promo-input" placeholder="Код...">
-          <button id="promo-btn">→</button>
-        </div>
-        <span id="promo-msg" class="promo-msg"></span>
-
-        <!-- Выход -->
-        <button id="logout-btn" class="logout-btn">🚪 Выйти</button>
+        <button id="logout-btn" class="logout-btn">
+          <span class="exit-icon"></span> Выйти
+        </button>
       </div>
     </div>
 
-    <footer>🌱 Выращивай • Строй • Дружи 🌱</footer>
+    <footer>Выращивай • Строй • Дружи</footer>
+  </div>
+
+  <!-- Модальное окно -->
+  <div class="modal hidden" id="modal">
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-window">
+      <div class="modal-header">
+        <h2 id="modal-title"></h2>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
   </div>
 
   <script src="script.js"></script>
