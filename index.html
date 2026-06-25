@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grow-a-Garden — Minecraft Server</title>
   
-  <!-- Фавиконки -->
   <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
@@ -21,14 +20,20 @@
   <div class="sky-bg">
     <div class="stars"></div>
     <div class="moon"></div>
+    <div class="clouds-layer">
+      <div class="cloud cloud-1"></div>
+      <div class="cloud cloud-2"></div>
+      <div class="cloud cloud-3"></div>
+    </div>
     <canvas id="fireflies"></canvas>
   </div>
-  <div class="ground"></div>
+  <div class="ground">
+    <div class="dirt-layers"></div>
+  </div>
 
   <!-- Контент -->
   <div class="content">
     
-    <!-- Кнопки сверху -->
     <div class="top-buttons">
       <button class="top-btn" id="info-btn">
         <span class="info-icon"></span> Информация
@@ -38,7 +43,6 @@
       </button>
     </div>
 
-    <!-- Карточка сервера -->
     <div class="server-card">
       <div class="server-icon">
         <div class="pixel-flower">
@@ -73,7 +77,6 @@
       </div>
     </div>
 
-    <!-- Карточка профиля -->
     <div class="profile-card" id="profile-card">
       <div class="profile-bar" id="profile-bar">
         <div class="avatar" id="avatar">
