@@ -1617,3 +1617,40 @@ footer {
   border-color: #70a040;
   color: #c0e080;
 }
+/* Кнопка создать новое (сверху) */
+.btn-new-ticket-top {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.42rem;
+  padding: 12px;
+  background: linear-gradient(180deg, #5a8a3a, #4a7a2e);
+  border: 2px solid #6aaa40;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.btn-new-ticket-top:hover {
+  background: linear-gradient(180deg, #6a9a4a, #5a8a3a);
+  border-color: #80c050;
+}
+
+/* Кнопка назад в форме */
+.btn-back-form {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.42rem;
+  padding: 14px;
+  background: rgba(0,0,0,0.4);
+  border: 2px solid #3a5020;
+  color: #80a060;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-back-form:hover {
+  border-color: #70a040;
+  color: #c0e080;
+}
