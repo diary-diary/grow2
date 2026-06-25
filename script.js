@@ -188,4 +188,101 @@ topUpBtn.addEventListener('click', async () => {
     loadTransactionHistory();
     alert(`✅ +${amount} монет!`);
   } catch(e) {
-    alert('❌ Ошибка:
+    alert('❌ Ошибка: ' + e.message);
+  } finally {
+    topUpBtn.textContent = '💎 Пополнить баланс';
+    topUpBtn.disabled = false;
+  }
+});
+
+// =====================
+// ИСТОРИЯ
+// =====================
+async function loadTransactionHistory() {
+  if (!currentUser) return;
+  
+  try {
+    const snap = await db.collection('transactions')
+      .where('userId', '==', currentUser.uid)
+      .orderBy('timestamp', 'desc')
+      .limit(10)
+      .get();
+    
+    historyList.innerHTML = '';
+    if (snap.empty) {
+      historyList.innerHTML = '<li class="dimmed">Пока пусто</li>';
+      return;
+    }
+    
+    snap.forEach(d => {
+      const data = d.data();
+      const li = document.createElement('li');
+      li.style.cssText = 'font-size:0.42rem;margin-bottom:4px;color:#CCC;';
+      const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleDateString('ru-RU') : '—';
+      li.textContent = `${date}: 💎 Пополнение — +${data.amount} монет`;
+      historyList.appendChild(li);
+    });
+  } catch(e) {
+    historyList.innerHTML = '<li class="dimmed">Ошибка</li>';
+  }
+}
+
+// =====================
+// ВЫХОД
+// =====================
+logoutBtn.addEventListener('click', async () => {
+  if (confirm('🚪 Выйти?')) {
+    await auth.signOut();
+    profileDropdown.classList.add('hidden');
+  }
+});
+
+// =====================
+// UI ПРОФИЛЯ
+// =====================
+profileArea.addEventListener('click', e => {
+  e.stopPropagation();
+  profileDropdown.classList.toggle('hidden');
+  if (!profileDropdown.classList.contains('hidden')) loadTransactionHistory();
+});
+
+document.addEventListener('click', e => {
+  if (!profileArea.contains(e.target) && !profileDropdown.contains(e.target))
+    profileDropdown.classList.add('hidden');
+});
+
+// =====================
+// СТАТУС СЕРВЕРА
+// =====================
+async function fetchServerStatus() {
+  try {
+    const res = await fetch(`https://api.mcsrvstat.us/2/${SERVER_IP}:${SERVER_PORT}`);
+    const data = await res.json();
+    
+    if (data.online) {
+      statusDiv.className = 'status online';
+      statusDiv.innerHTML = '<span class="status-dot"></span> 🟢 Сервер онлайн';
+      playersDiv.textContent = data.players ? `👥 ${data.players.online}/${data.players.max}` : '';
+    } else {
+      statusDiv.className = 'status offline';
+      statusDiv.innerHTML = '<span class="status-dot"></span> 🔴 Сервер оффлайн';
+      playersDiv.textContent = '';
+    }
+  } catch {
+    statusDiv.className = 'status offline';
+    statusDiv.innerHTML = '<span class="status-dot"></span> ⚠️ Ошибка';
+  }
+}
+
+fetchServerStatus();
+setInterval(fetchServerStatus, 60000);
+
+// =====================
+// КОПИРОВАНИЕ IP
+// =====================
+copyBtn.addEventListener('click', () => {
+  navigator.clipboard.writeText(ipText.textContent.trim()).then(() => {
+    copyBtn.innerHTML = '✅ <span>Скопировано!</span>';
+    setTimeout(() => copyBtn.innerHTML = '📋 <span>Копировать</span>', 1500);
+  }).catch(() => alert('Не удалось скопировать'));
+});
