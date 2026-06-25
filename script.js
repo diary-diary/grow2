@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ====== ДАННЫЕ ======
   let nickname = localStorage.getItem('mc_nick') || '';
+  let tickets = JSON.parse(localStorage.getItem('mc_tickets') || '[]');
+  let currentTicketId = null;
 
   const leafColors = [
     { bg: '#3a6020', border: '#5a8030', inner: '#4a8a20' },
@@ -100,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeModal() {
     modal.classList.add('hidden');
     document.body.style.overflow = '';
+    currentTicketId = null;
   }
 
   modalClose.addEventListener('click', closeModal);
@@ -186,6 +189,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ====== ПОДДЕРЖКА ======
   supportBtn.addEventListener('click', () => {
+    // Проверяем, есть ли уже тикеты
+    const myTickets = tickets.filter(t => t.contact === (nickname || 'Гость'));
+    
+    if (myTickets.length > 0) {
+      // Показываем список тикетов
+      showTicketList(myTickets);
+    } else {
+      // Показываем форму создания
+      showNewTicketForm();
+    }
+  });
+
+  function showTicketList(myTickets) {
+    let ticketsHtml = myTickets.map((ticket, i) => {
+      const status = ticket.status || 'open';
+      const statusText = status === 'open' ? 'Открыт' : status === 'closed' ? 'Закрыт' : 'В обработке';
+      const statusClass = status === 'open' ? 'ticket-open' : status === 'closed' ? 'ticket-closed' : 'ticket-progress';
+      const msgCount = ticket.messages ? ticket.messages.length : 0;
+      
+      return `
+        <div class="ticket-card" data-ticket-id="${i}">
+          <div class="ticket-card-header">
+            <span class="ticket-topic">${ticket.topicText}</span>
+            <span class="ticket-status ${statusClass}">${statusText}</span>
+          </div>
+          <div class="ticket-card-info">
+            <span>${ticket.date.split('T')[0]}</span>
+            <span>${msgCount} сообщ.</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const content = `
+      <div class="ticket-list-container">
+        <div class="ticket-list-header">
+          <h3>Мои обращения</h3>
+          <button class="btn-new-ticket" id="btn-new-ticket">+ Новое</button>
+        </div>
+        <div class="ticket-list">
+          ${ticketsHtml}
+        </div>
+      </div>
+    `;
+    
+    openModal('Поддержка', content);
+    
+    // Обработчики
+    document.querySelectorAll('.ticket-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const ticketIndex = parseInt(card.dataset.ticketId);
+        openTicketChat(ticketIndex);
+      });
+    });
+    
+    const btnNewTicket = $('btn-new-ticket');
+    if (btnNewTicket) {
+      btnNewTicket.addEventListener('click', () => {
+        showNewTicketForm();
+      });
+    }
+  }
+
+  function showNewTicketForm() {
     const content = `
       <form class="support-form" id="support-form">
         
@@ -215,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <label class="form-label">
             <span class="form-label-icon">3</span> Контакты
           </label>
-          <input type="text" class="form-input" id="contact" placeholder="Discord: User#1234 или Ник в Minecraft" required>
+          <input type="text" class="form-input" id="contact" placeholder="Discord: User#1234 или Ник в Minecraft" value="${nickname || ''}" required>
           <p class="form-hint">Укажи свой Discord ID или никнейм в игре, чтобы мы могли с тобой связаться</p>
         </div>
 
@@ -241,33 +308,22 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="send-icon"></span> Отправить обращение
           </button>
         </div>
-
-        <div class="form-success hidden" id="form-success">
-          <div class="success-icon"></div>
-          <p class="success-title">Обращение отправлено!</p>
-          <p class="success-text">Мы рассмотрим его в ближайшее время и свяжемся с тобой.</p>
-        </div>
-
       </form>
     `;
-    openModal('Поддержка', content);
     
-    setTimeout(() => initSupportForm(), 100);
-  });
+    openModal('Новое обращение', content);
+    setTimeout(() => initNewTicketForm(), 100);
+  }
 
-  function initSupportForm() {
+  function initNewTicketForm() {
     const supportForm = $('support-form');
     const fileInput = $('file-input');
     const fileUploadArea = $('file-upload-area');
     const filePreviewList = $('file-preview-list');
-    const formSuccess = $('form-success');
-    const submitBtn = $('submit-ticket');
     
     let selectedFiles = [];
 
-    fileUploadArea.addEventListener('click', () => {
-      fileInput.click();
-    });
+    fileUploadArea.addEventListener('click', () => fileInput.click());
 
     fileUploadArea.addEventListener('dragover', (e) => {
       e.preventDefault();
@@ -284,9 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
       handleFiles(e.dataTransfer.files);
     });
 
-    fileInput.addEventListener('change', () => {
-      handleFiles(fileInput.files);
-    });
+    fileInput.addEventListener('change', () => handleFiles(fileInput.files));
 
     function handleFiles(files) {
       for (let file of files) {
@@ -304,12 +358,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         selectedFiles.push(file);
       }
-      renderFilePreviews();
+      renderPreviews();
     }
 
-    function renderFilePreviews() {
+    function renderPreviews() {
       filePreviewList.innerHTML = '';
-      
       selectedFiles.forEach((file, index) => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -323,10 +376,9 @@ document.addEventListener('DOMContentLoaded', () => {
             </button>
           `;
           filePreviewList.appendChild(preview);
-          
           preview.querySelector('.file-preview-remove').addEventListener('click', () => {
             selectedFiles.splice(index, 1);
-            renderFilePreviews();
+            renderPreviews();
           });
         };
         reader.readAsDataURL(file);
@@ -340,42 +392,145 @@ document.addEventListener('DOMContentLoaded', () => {
       const description = $('description').value.trim();
       const contact = $('contact').value.trim();
 
-      if (!topic) {
-        alert('Выбери тему обращения!');
-        return;
-      }
-      if (!description) {
-        alert('Опиши ситуацию!');
-        return;
-      }
-      if (!contact) {
-        alert('Укажи контакты!');
+      if (!topic || !description || !contact) {
+        alert('Заполни все поля!');
         return;
       }
 
-      const formData = {
+      const newTicket = {
+        id: Date.now(),
         topic: topic,
         topicText: $('topic').selectedOptions[0].text,
         description: description,
         contact: contact,
         files: selectedFiles.map(f => f.name),
+        date: new Date().toISOString(),
+        status: 'open',
+        messages: [
+          {
+            from: 'user',
+            text: description,
+            date: new Date().toISOString(),
+            files: selectedFiles.map(f => f.name)
+          },
+          {
+            from: 'support',
+            text: 'Здравствуйте! Ваше обращение получено. Мы рассмотрим его в ближайшее время. Если у вас есть дополнительные вопросы, пишите сюда.',
+            date: new Date().toISOString()
+          }
+        ]
+      };
+
+      tickets.push(newTicket);
+      localStorage.setItem('mc_tickets', JSON.stringify(tickets));
+      
+      openTicketChat(tickets.length - 1);
+    });
+  }
+
+  function openTicketChat(ticketIndex) {
+    currentTicketId = ticketIndex;
+    const ticket = tickets[ticketIndex];
+    
+    let messagesHtml = ticket.messages.map(msg => {
+      const isUser = msg.from === 'user';
+      const avatarIcon = isUser ? (nickname || 'Гость')[0].toUpperCase() : 'S';
+      const senderName = isUser ? (nickname || 'Гость') : 'Поддержка';
+      const time = new Date(msg.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+      
+      let filesHtml = '';
+      if (msg.files && msg.files.length > 0) {
+        filesHtml = msg.files.map(f => `<span class="chat-file">[${f}]</span>`).join('');
+      }
+
+      return `
+        <div class="chat-message ${isUser ? 'chat-user' : 'chat-support'}">
+          <div class="chat-avatar">${avatarIcon}</div>
+          <div class="chat-bubble">
+            <div class="chat-sender">${senderName}</div>
+            <div class="chat-text">${msg.text}</div>
+            ${filesHtml ? '<div class="chat-files">' + filesHtml + '</div>' : ''}
+            <div class="chat-time">${time}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const content = `
+      <div class="chat-container">
+        <div class="chat-header-info">
+          <span class="chat-ticket-id">Тикет #${ticket.id}</span>
+          <span class="ticket-status ${ticket.status === 'open' ? 'ticket-open' : 'ticket-closed'}">${ticket.status === 'open' ? 'Открыт' : 'Закрыт'}</span>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          ${messagesHtml}
+        </div>
+        <div class="chat-input-area">
+          <input type="text" class="chat-input" id="chat-input" placeholder="Введи сообщение..." maxlength="500">
+          <button class="chat-send-btn" id="chat-send-btn">
+            <span class="send-icon"></span>
+          </button>
+        </div>
+        <button class="btn-back-tickets" id="btn-back-tickets">← Назад к обращениям</button>
+      </div>
+    `;
+
+    openModal('Чат поддержки', content);
+
+    // Прокрутка вниз
+    setTimeout(() => {
+      const chatMessages = $('chat-messages');
+      if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    }, 200);
+
+    // Отправка сообщений
+    const chatInput = $('chat-input');
+    const chatSendBtn = $('chat-send-btn');
+
+    function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      const newMsg = {
+        from: 'user',
+        text: text,
         date: new Date().toISOString()
       };
 
-      console.log('Обращение отправлено:', formData);
-      
-      const tickets = JSON.parse(localStorage.getItem('mc_tickets') || '[]');
-      tickets.push(formData);
+      ticket.messages.push(newMsg);
       localStorage.setItem('mc_tickets', JSON.stringify(tickets));
 
-      const formGroups = supportForm.querySelectorAll('.form-group');
-      formGroups.forEach(g => g.style.display = 'none');
-      supportForm.querySelector('.form-buttons').style.display = 'none';
-      formSuccess.classList.remove('hidden');
-      
-      submitBtn.textContent = 'Отправлено!';
-      submitBtn.disabled = true;
+      // Автоответ поддержки
+      setTimeout(() => {
+        const autoReply = {
+          from: 'support',
+          text: 'Спасибо за сообщение! Мы получили вашу информацию и ответим в ближайшее время.',
+          date: new Date().toISOString()
+        };
+        ticket.messages.push(autoReply);
+        localStorage.setItem('mc_tickets', JSON.stringify(tickets));
+        openTicketChat(ticketIndex);
+      }, 1500);
+
+      chatInput.value = '';
+      openTicketChat(ticketIndex);
+    }
+
+    chatSendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendMessage();
     });
+
+    // Кнопка назад
+    const btnBack = $('btn-back-tickets');
+    if (btnBack) {
+      btnBack.addEventListener('click', () => {
+        const myTickets = tickets.filter(t => t.contact === (nickname || 'Гость'));
+        showTicketList(myTickets);
+      });
+    }
   }
 
   // ====== СТАТУС СЕРВЕРА ======
