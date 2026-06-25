@@ -1,5 +1,5 @@
 // =====================
-// КОНФИГУРАЦИЯ FIREBASE (ТВОЯ)
+// FIREBASE
 // =====================
 const firebaseConfig = {
   apiKey: "AIzaSyCrSDxKoRPtLkmIVgXhVLVp_vAdlggKOU0",
@@ -7,8 +7,7 @@ const firebaseConfig = {
   projectId: "grow-f9770",
   storageBucket: "grow-f9770.firebasestorage.app",
   messagingSenderId: "953892412762",
-  appId: "1:953892412762:web:6effb58aa6a21fff6d2763",
-  measurementId: "G-DSKCLM3PCT"
+  appId: "1:953892412762:web:6effb58aa6a21fff6d2763"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -16,16 +15,16 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 // =====================
-// НАСТРОЙКИ СЕРВЕРА
+// СЕРВЕР
 // =====================
 const SERVER_IP = 'play.growagarden.ru';
 const SERVER_PORT = 25565;
 
 // =====================
-// ФОНОВЫЙ CANVAS С ЧАСТИЦАМИ
+// ЧАСТИЦЫ НА CANVAS
 // =====================
-(function initBackground() {
-  const canvas = document.getElementById('bg-canvas');
+(function initParticles() {
+  const canvas = document.getElementById('particles-canvas');
   const ctx = canvas.getContext('2d');
   
   function resize() {
@@ -35,51 +34,35 @@ const SERVER_PORT = 25565;
   resize();
   window.addEventListener('resize', resize);
   
-  // Частицы: листочки, семена, искры
   const particles = [];
-  const particleCount = 50;
+  const emojis = ['🍃', '🌸', '✨', '🌱', '🦋', '💚', '🍀', '🌾', '🟢', '⭐'];
   
-  const emojis = ['🌱', '🍃', '✨', '🌸', '💚', '🟢', '⭐', '🌿'];
-  
-  for (let i = 0; i < particleCount; i++) {
+  for (let i = 0; i < 45; i++) {
     particles.push({
       x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      size: Math.random() * 16 + 8,
-      speedX: (Math.random() - 0.5) * 0.5,
-      speedY: (Math.random() - 0.5) * 0.5,
+      y: Math.random() * canvas.height * 0.7,
+      size: Math.random() * 14 + 6,
+      speedX: (Math.random() - 0.5) * 0.6,
+      speedY: (Math.random() - 0.2) * 0.4,
       emoji: emojis[Math.floor(Math.random() * emojis.length)],
-      opacity: Math.random() * 0.3 + 0.05,
-      rotation: Math.random() * 360
+      opacity: Math.random() * 0.35 + 0.08,
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 0.3
     });
   }
   
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Рисуем тёмные пиксельные блоки (как земля)
-    ctx.fillStyle = 'rgba(20, 15, 10, 0.3)';
-    const blockSize = 32;
-    for (let x = 0; x < canvas.width; x += blockSize) {
-      for (let y = 0; y < canvas.height; y += blockSize) {
-        if (Math.random() < 0.03) {
-          ctx.fillStyle = `rgba(${30 + Math.random()*20}, ${15 + Math.random()*10}, ${5 + Math.random()*10}, 0.2)`;
-          ctx.fillRect(x, y, blockSize - 1, blockSize - 1);
-        }
-      }
-    }
-    
-    // Обновляем и рисуем частицы
     particles.forEach(p => {
       p.x += p.speedX;
       p.y += p.speedY;
-      p.rotation += 0.2;
+      p.rotation += p.rotSpeed;
       
-      // Зацикливание
-      if (p.x < -50) p.x = canvas.width + 50;
-      if (p.x > canvas.width + 50) p.x = -50;
-      if (p.y < -50) p.y = canvas.height + 50;
-      if (p.y > canvas.height + 50) p.y = -50;
+      if (p.x < -60) p.x = canvas.width + 60;
+      if (p.x > canvas.width + 60) p.x = -60;
+      if (p.y < -60) p.y = canvas.height + 60;
+      if (p.y > canvas.height * 0.75) p.y = -60;
       
       ctx.save();
       ctx.globalAlpha = p.opacity;
@@ -97,7 +80,7 @@ const SERVER_PORT = 25565;
 })();
 
 // =====================
-// DOM-ЭЛЕМЕНТЫ
+// DOM
 // =====================
 const statusDiv = document.getElementById('server-status');
 const playersDiv = document.getElementById('players-online');
@@ -137,7 +120,7 @@ auth.onAuthStateChanged(async (user) => {
     updateProfileUI(profile);
     loadTransactionHistory();
   } else {
-    auth.signInAnonymically().catch(err => console.error('Auth error:', err));
+    auth.signInAnonymically().catch(err => console.error('Auth:', err));
   }
 });
 
@@ -146,40 +129,32 @@ auth.onAuthStateChanged(async (user) => {
 // =====================
 async function getProfile() {
   try {
-    const userDoc = await db.collection('users').doc(currentUser.uid).get();
-    if (userDoc.exists) return userDoc.data();
+    const doc = await db.collection('users').doc(currentUser.uid).get();
+    if (doc.exists) return doc.data();
     
-    const defaultProfile = {
-      nickname: '',
-      balance: 0,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
-    await db.collection('users').doc(currentUser.uid).set(defaultProfile);
-    return defaultProfile;
-  } catch (err) {
-    console.error('❌ Ошибка профиля:', err);
+    const def = { nickname: '', balance: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+    await db.collection('users').doc(currentUser.uid).set(def);
+    return def;
+  } catch (e) {
+    console.error(e);
     return { nickname: 'Ошибка', balance: 0 };
   }
 }
 
-async function saveNickname(nickname) {
-  try {
-    await db.collection('users').doc(currentUser.uid).update({ nickname });
-  } catch (err) {
-    console.error('❌ Ошибка сохранения ника:', err);
-  }
+async function saveNickname(nick) {
+  try { await db.collection('users').doc(currentUser.uid).update({ nickname: nick }); } catch(e) {}
 }
 
-function updateProfileUI(profile) {
-  const nickname = profile.nickname || userNickname || 'Садовод';
-  const balance = profile.balance || 0;
+function updateProfileUI(p) {
+  const nick = p.nickname || userNickname || 'Садовод';
+  const bal = p.balance || 0;
   
-  nicknameDisplay.textContent = nickname;
-  dropdownNickname.textContent = nickname;
-  dropdownBalance.textContent = balance;
+  nicknameDisplay.textContent = nick;
+  dropdownNickname.textContent = nick;
+  dropdownBalance.textContent = bal;
   
-  const icons = ['🌱', '🌿', '🍃', '🌳', '🌸', '🌻', '🍄', '🌾', '🌷', '🪴'];
-  const icon = icons[nickname.length % icons.length];
+  const icons = ['🌱','🌿','🍃','🌳','🌸','🌻','🍄','🌾','🌷','🪴'];
+  const icon = icons[nick.length % icons.length];
   avatar.textContent = icon;
   dropdownAvatar.textContent = icon;
 }
@@ -190,21 +165,18 @@ function updateProfileUI(profile) {
 topUpBtn.addEventListener('click', async () => {
   if (!currentUser) return alert('❌ Вы не авторизованы!');
   
-  const amount = parseInt(prompt('💰 Введите сумму пополнения (монет):', '100'));
-  if (!amount || amount <= 0) return alert('❌ Введите корректную сумму!');
+  const amount = parseInt(prompt('💰 Сумма пополнения (монет):', '100'));
+  if (!amount || amount <= 0) return alert('❌ Неверная сумма!');
   
   try {
     topUpBtn.textContent = '⏳...';
     topUpBtn.disabled = true;
     
-    const userRef = db.collection('users').doc(currentUser.uid);
-    const userDoc = await userRef.get();
-    const currentBalance = userDoc.data()?.balance || 0;
+    const ref = db.collection('users').doc(currentUser.uid);
+    const doc = await ref.get();
+    const cur = doc.data()?.balance || 0;
     
-    await userRef.update({
-      balance: firebase.firestore.FieldValue.increment(amount)
-    });
-    
+    await ref.update({ balance: firebase.firestore.FieldValue.increment(amount) });
     await db.collection('transactions').add({
       userId: currentUser.uid,
       amount,
@@ -212,121 +184,8 @@ topUpBtn.addEventListener('click', async () => {
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
     
-    dropdownBalance.textContent = currentBalance + amount;
+    dropdownBalance.textContent = cur + amount;
     loadTransactionHistory();
-    alert(`✅ Баланс пополнен на ${amount} монет!`);
-  } catch (err) {
-    console.error('❌ Ошибка пополнения:', err);
-    alert('❌ Ошибка пополнения: ' + err.message);
-  } finally {
-    topUpBtn.textContent = 'Пополнить +100';
-    topUpBtn.disabled = false;
-  }
-});
-
-// =====================
-// ИСТОРИЯ
-// =====================
-async function loadTransactionHistory() {
-  if (!currentUser) return;
-  
-  try {
-    const snapshot = await db.collection('transactions')
-      .where('userId', '==', currentUser.uid)
-      .orderBy('timestamp', 'desc')
-      .limit(10)
-      .get();
-    
-    historyList.innerHTML = '';
-    
-    if (snapshot.empty) {
-      historyList.innerHTML = '<li class="dimmed">Пока пусто</li>';
-      return;
-    }
-    
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const li = document.createElement('li');
-      li.style.cssText = 'font-size:0.45rem;margin-bottom:4px;color:#ddd;';
-      
-      const date = data.timestamp 
-        ? new Date(data.timestamp.toDate()).toLocaleDateString('ru-RU') 
-        : '—';
-      const type = data.type === 'deposit' ? '💎 Пополнение' : '🛒 Покупка';
-      
-      li.textContent = `${date}: ${type} — +${data.amount} монет`;
-      historyList.appendChild(li);
-    });
-  } catch (err) {
-    console.error('❌ Ошибка истории:', err);
-    historyList.innerHTML = '<li class="dimmed">Ошибка загрузки</li>';
-  }
-}
-
-// =====================
-// ВЫХОД
-// =====================
-logoutBtn.addEventListener('click', async () => {
-  if (confirm('🚪 Вы уверены, что хотите выйти?')) {
-    await auth.signOut();
-    profileDropdown.classList.add('hidden');
-  }
-});
-
-// =====================
-// ИНТЕРФЕЙС ПРОФИЛЯ
-// =====================
-profileArea.addEventListener('click', (e) => {
-  e.stopPropagation();
-  profileDropdown.classList.toggle('hidden');
-  if (!profileDropdown.classList.contains('hidden')) {
-    loadTransactionHistory();
-  }
-});
-
-document.addEventListener('click', (e) => {
-  if (!profileArea.contains(e.target) && !profileDropdown.contains(e.target)) {
-    profileDropdown.classList.add('hidden');
-  }
-});
-
-// =====================
-// СТАТУС СЕРВЕРА
-// =====================
-async function fetchServerStatus() {
-  try {
-    const url = `https://api.mcsrvstat.us/2/${SERVER_IP}:${SERVER_PORT}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    
-    if (data.online) {
-      statusDiv.className = 'status online';
-      statusDiv.textContent = '🟢 Сервер онлайн';
-      playersDiv.textContent = data.players 
-        ? `Игроков: ${data.players.online} / ${data.players.max}` 
-        : '';
-    } else {
-      statusDiv.className = 'status offline';
-      statusDiv.textContent = '🔴 Сервер оффлайн';
-      playersDiv.textContent = '';
-    }
-  } catch {
-    statusDiv.className = 'status offline';
-    statusDiv.textContent = '⚠️ Ошибка проверки';
-    playersDiv.textContent = '';
-  }
-}
-
-fetchServerStatus();
-setInterval(fetchServerStatus, 60000);
-
-// =====================
-// КОПИРОВАНИЕ IP
-// =====================
-copyBtn.addEventListener('click', () => {
-  const ip = ipText.textContent.trim();
-  navigator.clipboard.writeText(ip).then(() => {
-    copyBtn.textContent = '✅';
-    setTimeout(() => (copyBtn.textContent = '📋'), 1500);
-  }).catch(() => alert('Не удалось скопировать IP'));
-});
+    alert(`✅ +${amount} монет!`);
+  } catch(e) {
+    alert('❌ Ошибка:
