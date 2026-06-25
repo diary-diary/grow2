@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveNickBtn = $('save-nick');
   const logoutBtn = $('logout-btn');
 
-  // Модальное окно
   const modal = $('modal');
   const modalOverlay = $('modal-overlay');
   const modalTitle = $('modal-title');
@@ -34,6 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { bg: '#305820', border: '#508030', inner: '#408020' },
     { bg: '#284818', border: '#487028', inner: '#387820' },
     { bg: '#3a5828', border: '#5a7838', inner: '#4a8830' },
+    { bg: '#265020', border: '#467828', inner: '#368018' },
+    { bg: '#345828', border: '#547838', inner: '#448028' },
   ];
 
   function getLeafColor(name) {
@@ -63,6 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
     nickname = val;
     localStorage.setItem('mc_nick', nickname);
     renderAll();
+    nickInput.style.borderColor = '#70a040';
+    setTimeout(() => nickInput.style.borderColor = '#3a5020', 1000);
   });
 
   nickInput.addEventListener('keydown', e => {
@@ -90,41 +93,50 @@ document.addEventListener('DOMContentLoaded', () => {
     modalTitle.textContent = title;
     modalBody.innerHTML = content;
     modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
   }
 
   function closeModal() {
     modal.classList.add('hidden');
+    document.body.style.overflow = '';
   }
 
   modalClose.addEventListener('click', closeModal);
   modalOverlay.addEventListener('click', closeModal);
+  
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+      closeModal();
+    }
+  });
 
   // ====== ИНФОРМАЦИЯ ======
   infoBtn.addEventListener('click', () => {
     const content = `
       <div class="info-step">
         <div class="info-step-num">Шаг 1. IP сервера</div>
-        <p>Скопируй IP: <code>play.growagarden.ru</code> и вставь в Minecraft.<br>
-        Зайди в «Сетевая игра» → «Добавить сервер».</p>
+        <p>Скопируй IP: <code>play.growagarden.ru</code><br>
+        Открой Minecraft, зайди в раздел «Сетевая игра», нажми «Добавить сервер» и вставь IP-адрес.</p>
       </div>
       <div class="info-step">
         <div class="info-step-num">Шаг 2. Регистрация</div>
-        <p>Зайдя на сервер, тебе нужно зарегистрироваться.<br>
-        Введи команду: <code>/register твой_пароль</code><br>
-        Запомни пароль — он понадобится для входа!</p>
+        <p>После подключения к серверу тебе нужно зарегистрироваться.<br>
+        В чате введи команду:<br>
+        <code>/register твой_пароль</code><br>
+        Обязательно запомни пароль — он нужен для входа!</p>
       </div>
       <div class="info-step">
         <div class="info-step-num">Шаг 3. Выбери режим</div>
-        <p>На сервере есть несколько режимов:<br>
-        • Выживание — основной режим<br>
-        • Фермерство — ухаживай за садом<br>
-        • Строительство — создавай свой мир</p>
+        <p>На сервере есть несколько режимов игры:<br>
+        • Выживание — классический режим<br>
+        • Фермерство — ухаживай за растениями<br>
+        • Строительство — создавай постройки<br>
+        Выбрать режим можно в меню при входе.</p>
       </div>
       <div class="info-step">
         <div class="info-step-num">Шаг 4. Подойди к пчеле</div>
-        <p>На спавне ты найдёшь большую пчелу. Подойди к ней и нажми ПКМ.<br>
-        Она расскажет, как начать играть на сервере Grow-a-Garden,<br>
-        какие команды использовать и что делать в первую очередь!</p>
+        <p>На спавне ты увидишь большую дружелюбную пчелу. Нажми на неё ПКМ (правой кнопкой мыши).<br>
+        Она проведёт обучение, расскажет про команды, покажет где брать семена, как сажать растения и зарабатывать игровую валюту.</p>
       </div>
     `;
     openModal('Обучение', content);
@@ -135,37 +147,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const content = `
       <div class="rule-item">
         <div class="rule-title">1. Взаимное уважение</div>
-        <div class="rule-text">Запрещается оскорблять, унижать, провоцировать или каким-либо образом унижать других игроков, включая публичные высказывания в чатах и голосовых каналах. Агрессивное поведение, троллинг и флуд, мешающий игре других, также не допускаются.</div>
+        <div class="rule-text">Запрещается оскорблять, унижать, провоцировать или каким-либо образом принижать других игроков. Это касается публичных высказываний в чатах и голосовых каналах. Агрессивное поведение, троллинг и флуд, мешающий игре других участников, также не допускаются.</div>
         <div class="rule-punish">Наказание: Бан на 1 день</div>
       </div>
       <div class="rule-item">
-        <div class="rule-title">2. Запрет на использование читов и стороннего ПО</div>
-        <div class="rule-text">Строго запрещено использование читов, модификаций, макросов, багов игрового клиента и любых сторонних программ, дающих преимущества в игре. Любые подозрения на нечестную игру будут рассматриваться администрацией и могут привести к блокировке без предупреждения.</div>
+        <div class="rule-title">2. Запрет на читы и стороннее ПО</div>
+        <div class="rule-text">Строго запрещено использование читов, модификаций, макросов, эксплойтов игрового клиента и любых сторонних программ, дающих преимущества в игре. Любые подозрения на нечестную игру рассматриваются администрацией и могут привести к блокировке без предупреждения.</div>
         <div class="rule-punish">Наказание: Бан на 30 дней</div>
       </div>
       <div class="rule-item">
         <div class="rule-title">3. Запрет на взлом и мошенничество</div>
-        <div class="rule-text">Взлом чужих аккаунтов, сбор и распространение личных данных игроков, а также мошеннические действия запрещены. Никакая ответственность за утрату аккаунта по причине передачи данных третьим лицам не возлагается на администрацию.</div>
+        <div class="rule-text">Взлом чужих аккаунтов, сбор и распространение личных данных игроков, а также любые мошеннические действия строго запрещены. Администрация не несёт ответственности за утрату аккаунта по причине передачи данных третьим лицам.</div>
         <div class="rule-punish">Наказание: Бан навсегда</div>
       </div>
       <div class="rule-item">
-        <div class="rule-title">4. Запрет на продажу и обмен аккаунтами</div>
-        <div class="rule-text">Запрещается продажа, покупка или обмен учетных записей сервера. Нарушение данного правила ведет к блокировке всех связанных аккаунтов без возможности восстановления.</div>
+        <div class="rule-title">4. Запрет на продажу аккаунтов</div>
+        <div class="rule-text">Запрещается продажа, покупка или обмен учетных записей сервера. Нарушение данного правила ведёт к блокировке всех связанных аккаунтов без возможности восстановления.</div>
         <div class="rule-punish">Наказание: Бан навсегда</div>
       </div>
       <div class="rule-item">
-        <div class="rule-title">5. Правила поведения на сервере и в игре</div>
-        <div class="rule-text">Запрещено создавать запрещённый контент (оскорбительные символы, надписи, неприемлемые постройки и т.д.).</div>
+        <div class="rule-title">5. Правила поведения</div>
+        <div class="rule-text">Запрещено создавать оскорбительный контент: неприемлемые символы, надписи, постройки, а также любые формы дискриминации и провокаций.</div>
         <div class="rule-punish">Наказание: Бан на 7 дней</div>
       </div>
       <div class="rule-item">
         <div class="rule-title">6. Запрет на спам и рекламу</div>
-        <div class="rule-text">Запрещена рассылка спама, рекламы других серверов, сайтов, продуктов или услуг. Запрещено навязчивое приглашение других игроков в сторонние сообщества и проекты.</div>
+        <div class="rule-text">Запрещена рассылка спама, рекламы других серверов, сайтов, продуктов или услуг. Также запрещено навязчивое приглашение игроков в сторонние сообщества и проекты.</div>
         <div class="rule-punish">Наказание: Мут на 7 дней</div>
       </div>
       <div class="rule-item">
-        <div class="rule-title">7. Ответственность за собственные действия</div>
-        <div class="rule-text">Каждый игрок несет личную ответственность за свои действия в игре и на сервере. Администрация не несет ответственности за технические сбои, потерю данных, проблемы с интернет-соединением или клиентом игры.</div>
+        <div class="rule-title">7. Ответственность игрока</div>
+        <div class="rule-text">Каждый игрок несёт личную ответственность за свои действия в игре и на сервере. Администрация не несёт ответственности за технические сбои, потерю данных, проблемы с интернет-соединением или клиентом игры.</div>
       </div>
     `;
     openModal('Правила сервера', content);
@@ -198,7 +210,11 @@ document.addEventListener('DOMContentLoaded', () => {
   copyBtn.addEventListener('click', () => {
     navigator.clipboard.writeText(serverIp.textContent.trim()).then(() => {
       copyBtn.textContent = 'OK';
-      setTimeout(() => copyBtn.innerHTML = '<span class="copy-icon"></span>', 1200);
+      copyBtn.style.color = '#80ff80';
+      setTimeout(() => {
+        copyBtn.innerHTML = '<span class="copy-icon"></span>';
+        copyBtn.style.color = '#a0c060';
+      }, 1500);
     });
   });
 
@@ -216,14 +232,15 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', resize);
 
     const flies = [];
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 35; i++) {
       flies.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        r: Math.random() * 2 + 1,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        phase: Math.random() * Math.PI * 2
+        r: Math.random() * 2.5 + 1,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        phase: Math.random() * Math.PI * 2,
+        brightness: Math.random() * 0.5 + 0.3
       });
     }
 
@@ -231,21 +248,21 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       flies.forEach(f => {
-        f.x += f.vx + Math.sin(t/3000 + f.phase) * 0.3;
-        f.y += f.vy + Math.cos(t/2500 + f.phase) * 0.3;
+        f.x += f.vx + Math.sin(t/3000 + f.phase) * 0.4;
+        f.y += f.vy + Math.cos(t/2500 + f.phase) * 0.4;
         
-        if (f.x < 0) f.x = canvas.width;
-        if (f.x > canvas.width) f.x = 0;
-        if (f.y < 0) f.y = canvas.height;
-        if (f.y > canvas.height) f.y = 0;
+        if (f.x < -20) f.x = canvas.width + 20;
+        if (f.x > canvas.width + 20) f.x = -20;
+        if (f.y < -20) f.y = canvas.height + 20;
+        if (f.y > canvas.height + 20) f.y = -20;
         
-        const alpha = 0.3 + Math.sin(t/800 + f.phase) * 0.3;
+        const alpha = f.brightness + Math.sin(t/800 + f.phase) * 0.3;
         ctx.beginPath();
         ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(180, 255, 100, ' + alpha + ')';
+        ctx.fillStyle = 'rgba(180, 255, 100, ' + Math.max(0.05, alpha) + ')';
         ctx.fill();
         ctx.shadowColor = 'rgba(150, 255, 80, 0.8)';
-        ctx.shadowBlur = 6;
+        ctx.shadowBlur = 8;
         ctx.fill();
         ctx.shadowBlur = 0;
       });
