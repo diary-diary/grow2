@@ -6,44 +6,96 @@
 
 body {
   font-family: 'Press Start 2P', cursive;
-  background: #3b5e2b; /* fallback */
-  /* Фон с садовыми мотивами */
-  background-image: url('https://i.imgur.com/h7LqjQd.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  background: #1a0f0a;
   color: #f0e6c5;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding: 20px;
+  overflow-x: hidden;
+  position: relative;
 }
 
-body::before {
-  content: "";
+/* ========== ФОНОВЫЙ CANVAS (ПАРТИКЛЫ) ========== */
+#bg-canvas {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(30, 45, 20, 0.6);
-  z-index: -1;
+  z-index: 0;
+  pointer-events: none;
 }
 
+/* ========== ПЛАВАЮЩИЕ НАДПИСИ ========== */
+.floating-texts {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.float-text {
+  position: absolute;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.5rem;
+  color: rgba(255, 215, 0, 0.08);
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+  animation: floatAround 12s ease-in-out infinite;
+  white-space: nowrap;
+  letter-spacing: 4px;
+}
+
+.float-text:nth-child(1) { animation-duration: 10s; animation-delay: 0s; }
+.float-text:nth-child(2) { animation-duration: 13s; animation-delay: -2s; }
+.float-text:nth-child(3) { animation-duration: 11s; animation-delay: -4s; }
+.float-text:nth-child(4) { animation-duration: 14s; animation-delay: -6s; }
+.float-text:nth-child(5) { animation-duration: 9s; animation-delay: -3s; }
+.float-text:nth-child(6) { animation-duration: 15s; animation-delay: -5s; }
+.float-text:nth-child(7) { animation-duration: 12s; animation-delay: -7s; }
+.float-text:nth-child(8) { animation-duration: 10s; animation-delay: -1s; }
+
+@keyframes floatAround {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.06;
+  }
+  25% {
+    transform: translate(30px, -20px) scale(1.1);
+    opacity: 0.12;
+  }
+  50% {
+    transform: translate(-20px, 15px) scale(0.9);
+    opacity: 0.04;
+  }
+  75% {
+    transform: translate(15px, 25px) scale(1.05);
+    opacity: 0.1;
+  }
+}
+
+/* ========== ОСНОВНОЙ КОНТЕЙНЕР ========== */
 .container {
   max-width: 850px;
   width: 100%;
-  background: rgba(45, 65, 35, 0.9);
+  background: rgba(25, 18, 10, 0.85);
   border: 4px solid #6b4f32;
   border-radius: 16px;
   padding: 25px 30px;
-  box-shadow: 0 0 25px rgba(80, 50, 20, 0.5);
-  backdrop-filter: blur(3px);
+  box-shadow: 
+    0 0 30px rgba(80, 50, 20, 0.4),
+    inset 0 0 30px rgba(30, 20, 10, 0.5);
+  backdrop-filter: blur(5px);
   position: relative;
+  z-index: 1;
 }
 
-/* Шапка */
+/* ========== ШАПКА ========== */
 .main-header {
   display: flex;
   justify-content: space-between;
@@ -57,9 +109,15 @@ body::before {
   font-size: 1.8rem;
   color: #f7d354;
   text-shadow: 3px 3px 0 #3a5a2a;
+  animation: pulse 2s ease-in-out infinite;
 }
 
-/* Аватарка + ник */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+/* ========== ПРОФИЛЬ ========== */
 .profile-area {
   position: relative;
   display: flex;
@@ -70,24 +128,30 @@ body::before {
   border: 2px solid #8b6b4b;
   border-radius: 50px;
   padding: 6px 18px 6px 6px;
-  transition: border-color 0.2s;
+  transition: all 0.3s ease;
 }
 
 .profile-area:hover {
   border-color: #c8a96e;
+  box-shadow: 0 0 15px rgba(200, 169, 110, 0.3);
 }
 
 .avatar {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: #6b4f32;
+  background: linear-gradient(135deg, #6b4f32, #8b6b4b);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.8rem;
   border: 2px solid #c8a96e;
   flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.profile-area:hover .avatar {
+  transform: rotate(15deg);
 }
 
 .nickname-header {
@@ -95,25 +159,37 @@ body::before {
   color: #f9e076;
 }
 
-/* Выпадающее меню профиля */
+/* ========== ВЫПАДАЮЩЕЕ МЕНЮ ========== */
 .profile-dropdown {
   position: absolute;
   top: 60px;
   right: 0;
-  background: #3c4f2b;
+  background: linear-gradient(135deg, #3c4f2b, #2a3a1e);
   border: 3px solid #8b6b4b;
   border-radius: 12px;
   padding: 20px;
   width: 280px;
   z-index: 15;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.8);
   display: flex;
   flex-direction: column;
   gap: 12px;
+  animation: dropdownAppear 0.3s ease;
+}
+
+@keyframes dropdownAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .dropdown-top {
@@ -126,7 +202,7 @@ body::before {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #6b4f32;
+  background: linear-gradient(135deg, #6b4f32, #8b6b4b);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -143,6 +219,7 @@ body::before {
 
 .dropdown-balance {
   color: #ffd966;
+  margin-top: 4px;
 }
 
 .btn-green, .btn-brown {
@@ -152,22 +229,29 @@ body::before {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
   color: white;
+  text-transform: uppercase;
 }
 
 .btn-green {
-  background: #4c7a34;
+  background: linear-gradient(135deg, #4c7a34, #5e963e);
+  box-shadow: 0 4px 10px rgba(76, 122, 52, 0.4);
 }
 .btn-green:hover {
-  background: #5e963e;
+  background: linear-gradient(135deg, #5e963e, #6faa47);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(76, 122, 52, 0.5);
 }
 
 .btn-brown {
-  background: #7a5230;
+  background: linear-gradient(135deg, #7a5230, #9c6b40);
+  box-shadow: 0 4px 10px rgba(122, 82, 48, 0.4);
 }
 .btn-brown:hover {
-  background: #9c6b40;
+  background: linear-gradient(135deg, #9c6b40, #b37d4f);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(122, 82, 48, 0.5);
 }
 
 .dropdown-section {
@@ -189,12 +273,24 @@ body::before {
   padding-left: 0;
 }
 
+.history-list::-webkit-scrollbar {
+  width: 4px;
+}
+.history-list::-webkit-scrollbar-thumb {
+  background: #8b6b4b;
+  border-radius: 2px;
+}
+
 .dimmed {
   font-size: 0.45rem;
   color: #999;
 }
 
-/* Основной контент */
+/* ========== ОСНОВНОЙ КОНТЕНТ ========== */
+.main-content {
+  position: relative;
+}
+
 .welcome-text {
   text-align: center;
   margin-bottom: 20px;
@@ -209,13 +305,25 @@ body::before {
 .welcome-text .sub {
   font-size: 0.6rem;
   color: #c8b878;
+  animation: fadeInOut 3s ease-in-out infinite;
 }
 
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* ========== БЛОК СЕРВЕРА ========== */
 .server-block {
   background: rgba(50, 40, 25, 0.8);
   border: 2px solid #7a5c3e;
   border-radius: 12px;
   padding: 20px;
+  transition: box-shadow 0.3s ease;
+}
+
+.server-block:hover {
+  box-shadow: 0 0 20px rgba(200, 169, 110, 0.2);
 }
 
 .ip-box {
@@ -239,12 +347,17 @@ body::before {
   cursor: pointer;
   padding: 3px 10px;
   border-radius: 6px;
-  transition: 0.2s;
+  transition: all 0.3s ease;
 }
 
 #copy-ip:hover {
   background: #8b6b4b;
   color: white;
+  transform: scale(1.1);
+}
+
+#copy-ip:active {
+  transform: scale(0.95);
 }
 
 .status {
@@ -253,11 +366,18 @@ body::before {
   padding: 6px;
   border-radius: 4px;
   margin-bottom: 5px;
+  transition: all 0.3s ease;
 }
 
 .status.online {
   background: #3c6e3c;
   color: #e0f0d0;
+  animation: statusGlow 2s ease-in-out infinite;
+}
+
+@keyframes statusGlow {
+  0%, 100% { box-shadow: 0 0 5px rgba(60, 110, 60, 0.5); }
+  50% { box-shadow: 0 0 15px rgba(60, 110, 60, 0.8); }
 }
 
 .status.offline {
@@ -271,6 +391,7 @@ body::before {
   color: #e6d7b0;
 }
 
+/* ========== ФУТЕР ========== */
 footer {
   text-align: center;
   margin-top: 20px;
@@ -278,13 +399,13 @@ footer {
   color: #b2a48b;
 }
 
-/* Адаптивность */
+/* ========== АДАПТИВНОСТЬ ========== */
 @media (max-width: 600px) {
   .container {
     padding: 20px;
   }
   .logo {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
   .profile-area {
     padding: 6px 12px 6px 6px;
@@ -292,5 +413,8 @@ footer {
   .profile-dropdown {
     right: -10px;
     width: 240px;
+  }
+  .float-text {
+    font-size: 1rem;
   }
 }
