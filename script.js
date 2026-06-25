@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // ====== ДАННЫЕ ======
   let nickname = localStorage.getItem('mc_nick') || '';
   let tickets = JSON.parse(localStorage.getItem('mc_tickets') || '[]');
-  let currentTicketId = null;
 
   const leafColors = [
     { bg: '#3a6020', border: '#5a8030', inner: '#4a8a20' },
@@ -102,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeModal() {
     modal.classList.add('hidden');
     document.body.style.overflow = '';
-    currentTicketId = null;
   }
 
   modalClose.addEventListener('click', closeModal);
@@ -151,37 +149,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const content = `
       <div class="rule-item">
         <div class="rule-title">1. Взаимное уважение</div>
-        <div class="rule-text">Запрещается оскорблять, унижать, провоцировать или каким-либо образом принижать других игроков. Это касается публичных высказываний в чатах и голосовых каналах. Агрессивное поведение, троллинг и флуд, мешающий игре других участников, также не допускаются.</div>
+        <div class="rule-text">Запрещается оскорблять, унижать, провоцировать или каким-либо образом принижать других игроков.</div>
         <div class="rule-punish">Наказание: Бан на 1 день</div>
       </div>
       <div class="rule-item">
         <div class="rule-title">2. Запрет на читы и стороннее ПО</div>
-        <div class="rule-text">Строго запрещено использование читов, модификаций, макросов, эксплойтов игрового клиента и любых сторонних программ, дающих преимущества в игре. Любые подозрения на нечестную игру рассматриваются администрацией и могут привести к блокировке без предупреждения.</div>
+        <div class="rule-text">Строго запрещено использование читов, модификаций, макросов, эксплойтов.</div>
         <div class="rule-punish">Наказание: Бан на 30 дней</div>
       </div>
       <div class="rule-item">
         <div class="rule-title">3. Запрет на взлом и мошенничество</div>
-        <div class="rule-text">Взлом чужих аккаунтов, сбор и распространение личных данных игроков, а также любые мошеннические действия строго запрещены. Администрация не несёт ответственности за утрату аккаунта по причине передачи данных третьим лицам.</div>
+        <div class="rule-text">Взлом чужих аккаунтов, сбор и распространение личных данных запрещены.</div>
         <div class="rule-punish">Наказание: Бан навсегда</div>
       </div>
       <div class="rule-item">
         <div class="rule-title">4. Запрет на продажу аккаунтов</div>
-        <div class="rule-text">Запрещается продажа, покупка или обмен учетных записей сервера. Нарушение данного правила ведёт к блокировке всех связанных аккаунтов без возможности восстановления.</div>
+        <div class="rule-text">Запрещается продажа, покупка или обмен учетных записей сервера.</div>
         <div class="rule-punish">Наказание: Бан навсегда</div>
       </div>
       <div class="rule-item">
         <div class="rule-title">5. Правила поведения</div>
-        <div class="rule-text">Запрещено создавать оскорбительный контент: неприемлемые символы, надписи, постройки, а также любые формы дискриминации и провокаций.</div>
+        <div class="rule-text">Запрещено создавать оскорбительный контент.</div>
         <div class="rule-punish">Наказание: Бан на 7 дней</div>
       </div>
       <div class="rule-item">
         <div class="rule-title">6. Запрет на спам и рекламу</div>
-        <div class="rule-text">Запрещена рассылка спама, рекламы других серверов, сайтов, продуктов или услуг. Также запрещено навязчивое приглашение игроков в сторонние сообщества и проекты.</div>
+        <div class="rule-text">Запрещена рассылка спама и рекламы.</div>
         <div class="rule-punish">Наказание: Мут на 7 дней</div>
       </div>
       <div class="rule-item">
         <div class="rule-title">7. Ответственность игрока</div>
-        <div class="rule-text">Каждый игрок несёт личную ответственность за свои действия в игре и на сервере. Администрация не несёт ответственности за технические сбои, потерю данных, проблемы с интернет-соединением или клиентом игры.</div>
+        <div class="rule-text">Каждый игрок несёт личную ответственность за свои действия.</div>
       </div>
     `;
     openModal('Правила сервера', content);
@@ -189,27 +187,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ====== ПОДДЕРЖКА ======
   supportBtn.addEventListener('click', () => {
-    // Проверяем, есть ли уже тикеты
     const myTickets = tickets.filter(t => t.contact === (nickname || 'Гость'));
     
     if (myTickets.length > 0) {
-      // Показываем список тикетов
-      showTicketList(myTickets);
+      showTicketList();
     } else {
-      // Показываем форму создания
       showNewTicketForm();
     }
   });
 
-  function showTicketList(myTickets) {
-    let ticketsHtml = myTickets.map((ticket, i) => {
+  function showTicketList() {
+    const myTickets = tickets.filter(t => t.contact === (nickname || 'Гость'));
+    
+    let ticketsHtml = '';
+    
+    myTickets.forEach((ticket, i) => {
+      const realIndex = tickets.indexOf(ticket);
       const status = ticket.status || 'open';
-      const statusText = status === 'open' ? 'Открыт' : status === 'closed' ? 'Закрыт' : 'В обработке';
-      const statusClass = status === 'open' ? 'ticket-open' : status === 'closed' ? 'ticket-closed' : 'ticket-progress';
+      const statusText = status === 'open' ? 'Открыт' : 'Закрыт';
+      const statusClass = status === 'open' ? 'ticket-open' : 'ticket-closed';
       const msgCount = ticket.messages ? ticket.messages.length : 0;
       
-      return `
-        <div class="ticket-card" data-ticket-id="${i}">
+      ticketsHtml += `
+        <div class="ticket-card" data-index="${realIndex}">
           <div class="ticket-card-header">
             <span class="ticket-topic">${ticket.topicText}</span>
             <span class="ticket-status ${statusClass}">${statusText}</span>
@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `;
-    }).join('');
+    });
 
     const content = `
       <div class="ticket-list-container">
@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <h3>Мои обращения</h3>
           <button class="btn-new-ticket" id="btn-new-ticket">+ Новое</button>
         </div>
-        <div class="ticket-list">
+        <div class="ticket-list" id="ticket-list">
           ${ticketsHtml}
         </div>
       </div>
@@ -236,20 +236,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     openModal('Поддержка', content);
     
-    // Обработчики
-    document.querySelectorAll('.ticket-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const ticketIndex = parseInt(card.dataset.ticketId);
-        openTicketChat(ticketIndex);
+    // Вешаем обработчики после вставки
+    setTimeout(() => {
+      document.querySelectorAll('.ticket-card').forEach(card => {
+        card.addEventListener('click', function() {
+          const index = parseInt(this.dataset.index);
+          openTicketChat(index);
+        });
       });
-    });
-    
-    const btnNewTicket = $('btn-new-ticket');
-    if (btnNewTicket) {
-      btnNewTicket.addEventListener('click', () => {
-        showNewTicketForm();
-      });
-    }
+      
+      const btnNew = document.getElementById('btn-new-ticket');
+      if (btnNew) {
+        btnNew.addEventListener('click', showNewTicketForm);
+      }
+    }, 100);
   }
 
   function showNewTicketForm() {
@@ -275,20 +275,19 @@ document.addEventListener('DOMContentLoaded', () => {
           <label class="form-label">
             <span class="form-label-icon">2</span> Опиши ситуацию
           </label>
-          <textarea class="form-textarea" id="description" rows="6" placeholder="Опиши что произошло, когда, при каких обстоятельствах..." required></textarea>
+          <textarea class="form-textarea" id="description" rows="5" placeholder="Опиши что произошло..." required></textarea>
         </div>
 
         <div class="form-group">
           <label class="form-label">
             <span class="form-label-icon">3</span> Контакты
           </label>
-          <input type="text" class="form-input" id="contact" placeholder="Discord: User#1234 или Ник в Minecraft" value="${nickname || ''}" required>
-          <p class="form-hint">Укажи свой Discord ID или никнейм в игре, чтобы мы могли с тобой связаться</p>
+          <input type="text" class="form-input" id="contact" placeholder="Discord или Ник в Minecraft" value="${nickname || ''}" required>
         </div>
 
         <div class="form-group">
           <label class="form-label">
-            <span class="form-label-icon">4</span> Доказательства (скриншоты)
+            <span class="form-label-icon">4</span> Скриншоты
           </label>
           
           <div class="file-upload-area" id="file-upload-area">
@@ -305,232 +304,209 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="form-buttons">
           <button type="submit" class="form-submit-btn" id="submit-ticket">
-            <span class="send-icon"></span> Отправить обращение
+            <span class="send-icon"></span> Отправить
           </button>
         </div>
       </form>
     `;
     
     openModal('Новое обращение', content);
-    setTimeout(() => initNewTicketForm(), 100);
-  }
-
-  function initNewTicketForm() {
-    const supportForm = $('support-form');
-    const fileInput = $('file-input');
-    const fileUploadArea = $('file-upload-area');
-    const filePreviewList = $('file-preview-list');
     
-    let selectedFiles = [];
+    setTimeout(() => {
+      const form = document.getElementById('support-form');
+      const fileInput = document.getElementById('file-input');
+      const fileUploadArea = document.getElementById('file-upload-area');
+      const filePreviewList = document.getElementById('file-preview-list');
+      
+      if (!form) return;
+      
+      let selectedFiles = [];
 
-    fileUploadArea.addEventListener('click', () => fileInput.click());
+      fileUploadArea.addEventListener('click', () => fileInput.click());
 
-    fileUploadArea.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      fileUploadArea.classList.add('dragover');
-    });
-
-    fileUploadArea.addEventListener('dragleave', () => {
-      fileUploadArea.classList.remove('dragover');
-    });
-
-    fileUploadArea.addEventListener('drop', (e) => {
-      e.preventDefault();
-      fileUploadArea.classList.remove('dragover');
-      handleFiles(e.dataTransfer.files);
-    });
-
-    fileInput.addEventListener('change', () => handleFiles(fileInput.files));
-
-    function handleFiles(files) {
-      for (let file of files) {
-        if (!file.type.match(/^image\/(png|jpeg|gif)$/)) {
-          alert('Только PNG, JPG, GIF! Файл ' + file.name + ' пропущен.');
-          continue;
-        }
-        if (file.size > 5 * 1024 * 1024) {
-          alert('Файл ' + file.name + ' слишком большой (макс. 5 МБ).');
-          continue;
-        }
-        if (selectedFiles.length >= 5) {
-          alert('Максимум 5 файлов.');
-          break;
-        }
-        selectedFiles.push(file);
-      }
-      renderPreviews();
-    }
-
-    function renderPreviews() {
-      filePreviewList.innerHTML = '';
-      selectedFiles.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const preview = document.createElement('div');
-          preview.className = 'file-preview-item';
-          preview.innerHTML = `
-            <img src="${e.target.result}" alt="preview" class="file-preview-img">
-            <span class="file-preview-name">${file.name}</span>
-            <button type="button" class="file-preview-remove" data-index="${index}">
-              <span class="remove-icon"></span>
-            </button>
-          `;
-          filePreviewList.appendChild(preview);
-          preview.querySelector('.file-preview-remove').addEventListener('click', () => {
-            selectedFiles.splice(index, 1);
-            renderPreviews();
-          });
-        };
-        reader.readAsDataURL(file);
+      fileUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileUploadArea.classList.add('dragover');
       });
-    }
 
-    supportForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      const topic = $('topic').value;
-      const description = $('description').value.trim();
-      const contact = $('contact').value.trim();
+      fileUploadArea.addEventListener('dragleave', () => {
+        fileUploadArea.classList.remove('dragover');
+      });
 
-      if (!topic || !description || !contact) {
-        alert('Заполни все поля!');
-        return;
+      fileUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileUploadArea.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
+      });
+
+      fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+      function handleFiles(files) {
+        for (let file of files) {
+          if (!file.type.match(/^image\/(png|jpeg|gif)$/)) continue;
+          if (file.size > 5 * 1024 * 1024) continue;
+          if (selectedFiles.length >= 5) break;
+          selectedFiles.push(file);
+        }
+        renderPreviews();
       }
 
-      const newTicket = {
-        id: Date.now(),
-        topic: topic,
-        topicText: $('topic').selectedOptions[0].text,
-        description: description,
-        contact: contact,
-        files: selectedFiles.map(f => f.name),
-        date: new Date().toISOString(),
-        status: 'open',
-        messages: [
-          {
-            from: 'user',
-            text: description,
-            date: new Date().toISOString(),
-            files: selectedFiles.map(f => f.name)
-          },
-          {
-            from: 'support',
-            text: 'Здравствуйте! Ваше обращение получено. Мы рассмотрим его в ближайшее время. Если у вас есть дополнительные вопросы, пишите сюда.',
-            date: new Date().toISOString()
-          }
-        ]
-      };
+      function renderPreviews() {
+        filePreviewList.innerHTML = '';
+        selectedFiles.forEach((file, index) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const preview = document.createElement('div');
+            preview.className = 'file-preview-item';
+            preview.innerHTML = `
+              <img src="${e.target.result}" class="file-preview-img">
+              <span class="file-preview-name">${file.name}</span>
+              <button type="button" class="file-preview-remove" data-index="${index}">
+                <span class="remove-icon"></span>
+              </button>
+            `;
+            filePreviewList.appendChild(preview);
+            preview.querySelector('.file-preview-remove').addEventListener('click', () => {
+              selectedFiles.splice(index, 1);
+              renderPreviews();
+            });
+          };
+          reader.readAsDataURL(file);
+        });
+      }
 
-      tickets.push(newTicket);
-      localStorage.setItem('mc_tickets', JSON.stringify(tickets));
-      
-      openTicketChat(tickets.length - 1);
-    });
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const topic = document.getElementById('topic').value;
+        const description = document.getElementById('description').value.trim();
+        const contact = document.getElementById('contact').value.trim();
+
+        if (!topic || !description || !contact) {
+          alert('Заполни все поля!');
+          return;
+        }
+
+        const newTicket = {
+          id: Date.now(),
+          topic: topic,
+          topicText: document.getElementById('topic').selectedOptions[0].text,
+          description: description,
+          contact: contact,
+          date: new Date().toISOString(),
+          status: 'open',
+          messages: [
+            {
+              from: 'user',
+              text: description,
+              date: new Date().toISOString()
+            },
+            {
+              from: 'support',
+              text: 'Здравствуйте! Ваше обращение получено. Мы ответим в ближайшее время. Задавайте вопросы здесь.',
+              date: new Date().toISOString()
+            }
+          ]
+        };
+
+        tickets.push(newTicket);
+        localStorage.setItem('mc_tickets', JSON.stringify(tickets));
+        
+        openTicketChat(tickets.length - 1);
+      });
+    }, 100);
   }
 
   function openTicketChat(ticketIndex) {
-    currentTicketId = ticketIndex;
     const ticket = tickets[ticketIndex];
+    if (!ticket) return;
     
-    let messagesHtml = ticket.messages.map(msg => {
-      const isUser = msg.from === 'user';
-      const avatarIcon = isUser ? (nickname || 'Гость')[0].toUpperCase() : 'S';
-      const senderName = isUser ? (nickname || 'Гость') : 'Поддержка';
-      const time = new Date(msg.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    function renderChat() {
+      let messagesHtml = '';
       
-      let filesHtml = '';
-      if (msg.files && msg.files.length > 0) {
-        filesHtml = msg.files.map(f => `<span class="chat-file">[${f}]</span>`).join('');
-      }
-
-      return `
-        <div class="chat-message ${isUser ? 'chat-user' : 'chat-support'}">
-          <div class="chat-avatar">${avatarIcon}</div>
-          <div class="chat-bubble">
-            <div class="chat-sender">${senderName}</div>
-            <div class="chat-text">${msg.text}</div>
-            ${filesHtml ? '<div class="chat-files">' + filesHtml + '</div>' : ''}
-            <div class="chat-time">${time}</div>
+      ticket.messages.forEach(msg => {
+        const isUser = msg.from === 'user';
+        const senderName = isUser ? (nickname || 'Гость') : 'Поддержка';
+        const time = new Date(msg.date).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        
+        messagesHtml += `
+          <div class="chat-message ${isUser ? 'chat-user' : 'chat-support'}">
+            <div class="chat-avatar">${isUser ? 'Я' : 'S'}</div>
+            <div class="chat-bubble">
+              <div class="chat-sender">${senderName}</div>
+              <div class="chat-text">${msg.text.replace(/\n/g, '<br>')}</div>
+              <div class="chat-time">${time}</div>
+            </div>
           </div>
+        `;
+      });
+
+      const content = `
+        <div class="chat-container">
+          <div class="chat-header-info">
+            <span class="chat-ticket-id">Тикет #${ticket.id}</span>
+            <span class="ticket-status ticket-open">${ticket.status === 'open' ? 'Открыт' : 'Закрыт'}</span>
+          </div>
+          <div class="chat-messages" id="chat-messages">
+            ${messagesHtml}
+          </div>
+          <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Сообщение..." maxlength="500">
+            <button class="chat-send-btn" id="chat-send-btn">Отпр.</button>
+          </div>
+          <button class="btn-back-tickets" id="btn-back-tickets">← К списку</button>
         </div>
       `;
-    }).join('');
 
-    const content = `
-      <div class="chat-container">
-        <div class="chat-header-info">
-          <span class="chat-ticket-id">Тикет #${ticket.id}</span>
-          <span class="ticket-status ${ticket.status === 'open' ? 'ticket-open' : 'ticket-closed'}">${ticket.status === 'open' ? 'Открыт' : 'Закрыт'}</span>
-        </div>
-        <div class="chat-messages" id="chat-messages">
-          ${messagesHtml}
-        </div>
-        <div class="chat-input-area">
-          <input type="text" class="chat-input" id="chat-input" placeholder="Введи сообщение..." maxlength="500">
-          <button class="chat-send-btn" id="chat-send-btn">
-            <span class="send-icon"></span>
-          </button>
-        </div>
-        <button class="btn-back-tickets" id="btn-back-tickets">← Назад к обращениям</button>
-      </div>
-    `;
+      openModal('Чат поддержки', content);
 
-    openModal('Чат поддержки', content);
-
-    // Прокрутка вниз
-    setTimeout(() => {
-      const chatMessages = $('chat-messages');
-      if (chatMessages) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    }, 200);
-
-    // Отправка сообщений
-    const chatInput = $('chat-input');
-    const chatSendBtn = $('chat-send-btn');
-
-    function sendMessage() {
-      const text = chatInput.value.trim();
-      if (!text) return;
-
-      const newMsg = {
-        from: 'user',
-        text: text,
-        date: new Date().toISOString()
-      };
-
-      ticket.messages.push(newMsg);
-      localStorage.setItem('mc_tickets', JSON.stringify(tickets));
-
-      // Автоответ поддержки
       setTimeout(() => {
-        const autoReply = {
-          from: 'support',
-          text: 'Спасибо за сообщение! Мы получили вашу информацию и ответим в ближайшее время.',
-          date: new Date().toISOString()
-        };
-        ticket.messages.push(autoReply);
-        localStorage.setItem('mc_tickets', JSON.stringify(tickets));
-        openTicketChat(ticketIndex);
-      }, 1500);
+        const chatMessages = document.getElementById('chat-messages');
+        if (chatMessages) {
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
 
-      chatInput.value = '';
-      openTicketChat(ticketIndex);
+        const chatInput = document.getElementById('chat-input');
+        const chatSendBtn = document.getElementById('chat-send-btn');
+        const btnBack = document.getElementById('btn-back-tickets');
+
+        function sendMessage() {
+          const text = chatInput.value.trim();
+          if (!text) return;
+
+          ticket.messages.push({
+            from: 'user',
+            text: text,
+            date: new Date().toISOString()
+          });
+
+          // Автоответ через 1 сек
+          setTimeout(() => {
+            ticket.messages.push({
+              from: 'support',
+              text: 'Спасибо за обращение! Мы получили информацию и скоро ответим.',
+              date: new Date().toISOString()
+            });
+            localStorage.setItem('mc_tickets', JSON.stringify(tickets));
+            renderChat();
+          }, 1000);
+
+          localStorage.setItem('mc_tickets', JSON.stringify(tickets));
+          renderChat();
+        }
+
+        chatSendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') sendMessage();
+        });
+
+        btnBack.addEventListener('click', () => {
+          showTicketList();
+        });
+      }, 100);
     }
 
-    chatSendBtn.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') sendMessage();
-    });
-
-    // Кнопка назад
-    const btnBack = $('btn-back-tickets');
-    if (btnBack) {
-      btnBack.addEventListener('click', () => {
-        const myTickets = tickets.filter(t => t.contact === (nickname || 'Гость'));
-        showTicketList(myTickets);
-      });
-    }
+    renderChat();
   }
 
   // ====== СТАТУС СЕРВЕРА ======
