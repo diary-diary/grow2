@@ -252,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     openModal('Поддержка', content);
     
-    // Инициализация загрузки файлов после вставки в DOM
     setTimeout(() => initSupportForm(), 100);
   });
 
@@ -266,12 +265,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let selectedFiles = [];
 
-    // Клик по области загрузки
     fileUploadArea.addEventListener('click', () => {
       fileInput.click();
     });
 
-    // Drag and drop
     fileUploadArea.addEventListener('dragover', (e) => {
       e.preventDefault();
       fileUploadArea.classList.add('dragover');
@@ -287,7 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
       handleFiles(e.dataTransfer.files);
     });
 
-    // Выбор файлов через input
     fileInput.addEventListener('change', () => {
       handleFiles(fileInput.files);
     });
@@ -328,7 +324,6 @@ document.addEventListener('DOMContentLoaded', () => {
           `;
           filePreviewList.appendChild(preview);
           
-          // Кнопка удаления
           preview.querySelector('.file-preview-remove').addEventListener('click', () => {
             selectedFiles.splice(index, 1);
             renderFilePreviews();
@@ -338,7 +333,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Отправка формы
     supportForm.addEventListener('submit', (e) => {
       e.preventDefault();
       
@@ -359,7 +353,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Собираем данные
       const formData = {
         topic: topic,
         topicText: $('topic').selectedOptions[0].text,
@@ -371,16 +364,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       console.log('Обращение отправлено:', formData);
       
-      // Сохраняем в localStorage для демонстрации
       const tickets = JSON.parse(localStorage.getItem('mc_tickets') || '[]');
       tickets.push(formData);
       localStorage.setItem('mc_tickets', JSON.stringify(tickets));
 
-      // Показываем успех
-      supportForm.querySelector('.form-group').style.display = 'none';
-      supportForm.querySelector('.form-group:nth-child(2)').style.display = 'none';
-      supportForm.querySelector('.form-group:nth-child(3)').style.display = 'none';
-      supportForm.querySelector('.form-group:nth-child(4)').style.display = 'none';
+      const formGroups = supportForm.querySelectorAll('.form-group');
+      formGroups.forEach(g => g.style.display = 'none');
       supportForm.querySelector('.form-buttons').style.display = 'none';
       formSuccess.classList.remove('hidden');
       
