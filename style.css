@@ -1,246 +1,591 @@
-document.addEventListener('DOMContentLoaded', () => {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  const $ = id => document.getElementById(id);
-  
-  const serverIp = $('server-ip');
-  const copyBtn = $('copy-ip');
-  const statusEl = $('server-status');
-  const playersEl = $('players-count');
+body {
+  font-family: 'Press Start 2P', cursive;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden;
+  background: #0a0f08;
+}
 
-  const profileBar = $('profile-bar');
-  const profileBody = $('profile-body');
-  const avatarEl = $('avatar');
-  const nicknameEl = $('nickname');
+/* ====== НЕБО ====== */
+.sky-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70%;
+  background: 
+    radial-gradient(ellipse at 70% 80%, rgba(20,40,60,0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 30% 90%, rgba(15,30,50,0.3) 0%, transparent 45%),
+    linear-gradient(180deg, 
+      #0a0e1a 0%, #0c1220 10%, #0e1628 20%, #101a30 30%,
+      #122035 40%, #142838 50%, #163040 60%, #183845 70%,
+      #1a4048 80%, #1c4850 90%, #1e5058 100%
+    );
+  z-index: -2;
+}
 
-  const nickInput = $('nick-input');
-  const saveNickBtn = $('save-nick');
-  const logoutBtn = $('logout-btn');
+/* ====== ЗВЁЗДЫ ====== */
+.stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 65%;
+  pointer-events: none;
+}
 
-  const modal = $('modal');
-  const modalOverlay = $('modal-overlay');
-  const modalTitle = $('modal-title');
-  const modalBody = $('modal-body');
-  const modalClose = $('modal-close');
-  const infoBtn = $('info-btn');
-  const rulesBtn = $('rules-btn');
-  const supportBtn = $('support-btn');
+.stars::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 5% 8%, rgba(255,255,255,.9), transparent),
+    radial-gradient(1px 1px at 12% 15%, rgba(255,255,255,.7), transparent),
+    radial-gradient(2px 2px at 20% 5%, rgba(255,255,255,.8), transparent),
+    radial-gradient(1px 1px at 28% 22%, rgba(255,255,255,.6), transparent),
+    radial-gradient(2px 2px at 35% 10%, rgba(255,255,255,.85), transparent),
+    radial-gradient(1px 1px at 42% 18%, rgba(255,255,255,.7), transparent),
+    radial-gradient(2px 2px at 50% 6%, rgba(200,220,255,.8), transparent),
+    radial-gradient(1px 1px at 58% 25%, rgba(255,255,255,.5), transparent),
+    radial-gradient(2px 2px at 65% 12%, rgba(255,255,255,.8), transparent),
+    radial-gradient(1px 1px at 72% 8%, rgba(255,255,255,.65), transparent),
+    radial-gradient(2px 2px at 80% 20%, rgba(255,255,255,.7), transparent),
+    radial-gradient(1px 1px at 88% 14%, rgba(255,255,255,.55), transparent),
+    radial-gradient(2px 2px at 94% 5%, rgba(255,255,255,.9), transparent);
+  animation: twinkle 4s infinite;
+}
 
-  // ====== ДАННЫЕ ======
-  let nickname = localStorage.getItem('mc_nick') || '';
-  let tickets = JSON.parse(localStorage.getItem('mc_tickets') || '[]');
+.stars::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(1px 1px at 3% 30%, rgba(255,255,255,.4), transparent),
+    radial-gradient(1px 1px at 10% 40%, rgba(255,255,255,.5), transparent),
+    radial-gradient(2px 2px at 18% 25%, rgba(255,255,255,.45), transparent),
+    radial-gradient(1px 1px at 25% 35%, rgba(255,255,255,.35), transparent),
+    radial-gradient(1px 1px at 33% 45%, rgba(255,255,255,.5), transparent),
+    radial-gradient(2px 2px at 40% 28%, rgba(255,255,255,.4), transparent),
+    radial-gradient(1px 1px at 48% 38%, rgba(255,255,255,.55), transparent),
+    radial-gradient(1px 1px at 55% 42%, rgba(255,255,255,.3), transparent),
+    radial-gradient(2px 2px at 62% 32%, rgba(255,255,255,.45), transparent),
+    radial-gradient(1px 1px at 70% 48%, rgba(255,255,255,.5), transparent),
+    radial-gradient(1px 1px at 78% 35%, rgba(255,255,255,.4), transparent),
+    radial-gradient(2px 2px at 85% 22%, rgba(255,255,255,.55), transparent),
+    radial-gradient(1px 1px at 92% 40%, rgba(255,255,255,.35), transparent);
+  animation: twinkle 5s infinite 1.5s;
+}
 
-  const leafColors = [
-    { bg: '#3a6020', border: '#5a8030', inner: '#4a8a20' },
-    { bg: '#2a5018', border: '#4a7028', inner: '#3a7820' },
-    { bg: '#305820', border: '#508030', inner: '#408020' },
-    { bg: '#284818', border: '#487028', inner: '#387820' },
-    { bg: '#3a5828', border: '#5a7838', inner: '#4a8830' },
-    { bg: '#265020', border: '#467828', inner: '#368018' },
-    { bg: '#345828', border: '#547838', inner: '#448028' },
-  ];
+@keyframes twinkle {
+  0%, 100% { opacity: .9; }
+  30% { opacity: .4; }
+  60% { opacity: .7; }
+  85% { opacity: .3; }
+}
 
-  function getLeafColor(name) {
-    return leafColors[name.length % leafColors.length];
-  }
+/* ====== ЛУНА ====== */
+.moon {
+  position: absolute;
+  top: 8%;
+  right: 10%;
+  width: 90px;
+  height: 90px;
+  background: radial-gradient(circle at 40% 35%, #fffef8 5%, #fffde8 25%, #fff8d0 50%, #ffe8a0 80%, #ffd080 100%);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 30px rgba(255,240,200,.8),
+    0 0 60px rgba(255,220,150,.5),
+    0 0 100px rgba(255,200,100,.3),
+    0 0 150px rgba(200,180,120,.15),
+    0 0 0 8px rgba(255,240,200,.08),
+    0 0 0 16px rgba(255,220,150,.04);
+  z-index: -1;
+}
 
-  // ====== ОТРИСОВКА ======
-  function renderAll() {
-    const displayName = nickname || 'Гость';
-    nicknameEl.textContent = displayName;
-    const colors = getLeafColor(displayName);
-    avatarEl.style.background = 'linear-gradient(135deg, ' + colors.bg + ', ' + colors.inner + ')';
-    avatarEl.style.borderColor = colors.border;
-    nickInput.value = nickname;
-  }
+.moon::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: 
+    radial-gradient(6px 6px at 25% 30%, rgba(160,140,80,.5), transparent),
+    radial-gradient(4px 4px at 55% 20%, rgba(140,120,60,.4), transparent),
+    radial-gradient(8px 8px at 40% 55%, rgba(150,130,70,.45), transparent),
+    radial-gradient(5px 5px at 70% 40%, rgba(130,110,50,.5), transparent),
+    radial-gradient(3px 3px at 35% 70%, rgba(160,140,80,.35), transparent),
+    radial-gradient(6px 6px at 60% 65%, rgba(140,120,60,.4), transparent),
+    radial-gradient(4px 4px at 20% 50%, rgba(150,130,70,.3), transparent),
+    radial-gradient(5px 5px at 75% 25%, rgba(130,110,50,.45), transparent);
+}
 
-  saveNickBtn.addEventListener('click', () => {
-    const val = nickInput.value.trim();
-    if (!val || val.length < 2) {
-      nickInput.style.borderColor = '#803030';
-      setTimeout(() => nickInput.style.borderColor = '#3a5020', 1500);
-      return;
-    }
-    nickname = val;
-    localStorage.setItem('mc_nick', nickname);
-    renderAll();
-  });
+.moon::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 15px;
+  width: 25px;
+  height: 25px;
+  background: rgba(255,255,255,.15);
+  border-radius: 50%;
+  filter: blur(3px);
+}
 
-  nickInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveNickBtn.click(); });
+/* ====== ОБЛАКА ====== */
+.clouds-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
 
-  logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('mc_nick');
-    nickname = '';
-    profileBody.classList.add('hidden');
-    profileBar.classList.remove('open');
-    renderAll();
-  });
+.cloud {
+  position: absolute;
+  background: rgba(255,255,255,.06);
+  border-radius: 50px;
+}
 
-  profileBar.addEventListener('click', () => {
-    profileBody.classList.toggle('hidden');
-    profileBar.classList.toggle('open');
-    if (!profileBody.classList.contains('hidden')) renderAll();
-  });
+.cloud::before,
+.cloud::after {
+  content: '';
+  position: absolute;
+  background: rgba(255,255,255,.04);
+  border-radius: 50%;
+}
 
-  // ====== МОДАЛЬНОЕ ОКНО ======
-  function openModal(title, content) {
-    modalTitle.textContent = title;
-    modalBody.innerHTML = content;
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-  }
+.cloud-1 {
+  width: 180px;
+  height: 45px;
+  top: 15%;
+  right: -200px;
+  left: auto;
+  animation: driftLeft 50s linear infinite;
+}
+.cloud-1::before { width: 80px; height: 80px; top: -30px; left: 30px; }
+.cloud-1::after { width: 100px; height: 60px; top: -20px; left: 75px; }
 
-  function closeModal() {
-    modal.classList.add('hidden');
-    document.body.style.overflow = '';
-  }
+.cloud-2 {
+  width: 150px;
+  height: 38px;
+  top: 28%;
+  left: -170px;
+  right: auto;
+  animation: driftRight 45s linear 8s infinite;
+}
+.cloud-2::before { width: 65px; height: 65px; top: -25px; left: 20px; }
+.cloud-2::after { width: 80px; height: 50px; top: -15px; left: 60px; }
 
-  modalClose.addEventListener('click', closeModal);
-  modalOverlay.addEventListener('click', closeModal);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+.cloud-3 {
+  width: 200px;
+  height: 50px;
+  top: 40%;
+  left: -220px;
+  right: auto;
+  animation: driftRight 55s linear 20s infinite;
+}
+.cloud-3::before { width: 90px; height: 90px; top: -35px; left: 40px; }
+.cloud-3::after { width: 110px; height: 70px; top: -25px; left: 90px; }
 
-  // ====== ИНФОРМАЦИЯ ======
-  infoBtn.addEventListener('click', () => {
-    openModal('Обучение', `
-      <div class="info-step"><div class="info-step-num">Шаг 1. IP сервера</div><p>Скопируй IP: <code>play.growagarden.ru</code><br>Открой Minecraft, зайди в «Сетевая игра», нажми «Добавить сервер» и вставь IP-адрес.</p></div>
-      <div class="info-step"><div class="info-step-num">Шаг 2. Регистрация</div><p>В чате введи команду:<br><code>/register твой_пароль</code><br>Запомни пароль для входа!</p></div>
-      <div class="info-step"><div class="info-step-num">Шаг 3. Выбери режим</div><p>• Выживание • Фермерство • Строительство</p></div>
-      <div class="info-step"><div class="info-step-num">Шаг 4. Подойди к пчеле</div><p>На спавне нажми ПКМ на пчелу — она проведёт обучение.</p></div>
-    `);
-  });
+.cloud-4 {
+  width: 130px;
+  height: 35px;
+  top: 8%;
+  right: -150px;
+  left: auto;
+  animation: driftLeft 40s linear 12s infinite;
+}
+.cloud-4::before { width: 55px; height: 55px; top: -20px; left: 18px; }
+.cloud-4::after { width: 70px; height: 45px; top: -12px; left: 50px; }
 
-  // ====== ПРАВИЛА ======
-  rulesBtn.addEventListener('click', () => {
-    openModal('Правила сервера', `
-      <div class="rule-item"><div class="rule-title">1. Взаимное уважение</div><div class="rule-text">Запрещены оскорбления и агрессивное поведение.</div><div class="rule-punish">Бан на 1 день</div></div>
-      <div class="rule-item"><div class="rule-title">2. Запрет на читы</div><div class="rule-text">Запрещено использование читов и стороннего ПО.</div><div class="rule-punish">Бан на 30 дней</div></div>
-      <div class="rule-item"><div class="rule-title">3. Запрет на взлом</div><div class="rule-text">Взлом аккаунтов и мошенничество запрещены.</div><div class="rule-punish">Бан навсегда</div></div>
-      <div class="rule-item"><div class="rule-title">4. Запрет на продажу аккаунтов</div><div class="rule-text">Продажа/покупка аккаунтов запрещена.</div><div class="rule-punish">Бан навсегда</div></div>
-      <div class="rule-item"><div class="rule-title">5. Правила поведения</div><div class="rule-text">Запрещён оскорбительный контент.</div><div class="rule-punish">Бан на 7 дней</div></div>
-      <div class="rule-item"><div class="rule-title">6. Запрет на спам</div><div class="rule-text">Спам и реклама запрещены.</div><div class="rule-punish">Мут на 7 дней</div></div>
-      <div class="rule-item"><div class="rule-title">7. Ответственность</div><div class="rule-text">Игрок несёт ответственность за свои действия.</div></div>
-    `);
-  });
+@keyframes driftLeft {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-100vw - 500px)); }
+}
 
-  // ====== ПОДДЕРЖКА ======
-  supportBtn.addEventListener('click', () => {
-    const myTickets = tickets.filter(t => t.contact === (nickname || 'Гость'));
-    if (myTickets.length > 0) showTicketList();
-    else showNewTicketForm();
-  });
+@keyframes driftRight {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(100vw + 500px)); }
+}
 
-  function showTicketList() {
-    const myTickets = tickets.filter(t => t.contact === (nickname || 'Гость'));
-    let html = '';
-    myTickets.forEach(ticket => {
-      const idx = tickets.indexOf(ticket);
-      html += `<div class="ticket-card" data-index="${idx}">
-        <div class="ticket-card-header"><span class="ticket-topic">${ticket.topicText}</span><span class="ticket-status ticket-open">Открыт</span></div>
-        <div class="ticket-card-info"><span>${ticket.date.split('T')[0]}</span><span>${ticket.messages.length} сообщ.</span></div>
-      </div>`;
-    });
-    openModal('Поддержка', `<div class="ticket-list-container"><button class="btn-new-ticket-top" id="btn-new-ticket-top">+ Новое обращение</button><div class="ticket-list">${html}</div></div>`);
-    setTimeout(() => {
-      document.querySelectorAll('.ticket-card').forEach(c => c.addEventListener('click', function(){ openTicketChat(parseInt(this.dataset.index)); }));
-      const btn = $('btn-new-ticket-top'); if (btn) btn.addEventListener('click', showNewTicketForm);
-    }, 100);
-  }
+/* ====== СВЕТЛЯЧКИ ====== */
+#fireflies {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
 
-  function showNewTicketForm() {
-    openModal('Новое обращение', `
-      <form class="support-form" id="support-form">
-        <div class="form-group"><label class="form-label"><span class="form-label-icon">1</span> Тема</label><select class="form-select" id="topic"><option value="">Выбери...</option><option value="bug">Баг</option><option value="player">Жалоба</option><option value="other">Другое</option></select></div>
-        <div class="form-group"><label class="form-label"><span class="form-label-icon">2</span> Описание</label><textarea class="form-textarea" id="description" rows="5" placeholder="Опиши ситуацию..."></textarea></div>
-        <div class="form-group"><label class="form-label"><span class="form-label-icon">3</span> Контакты</label><input class="form-input" id="contact" placeholder="Discord или ник" value="${nickname||''}"></div>
-        <div class="form-group"><label class="form-label"><span class="form-label-icon">4</span> Скриншоты</label><div class="file-upload-area" id="file-upload-area"><div class="file-upload-icon"><span class="upload-icon-img"></span></div><p class="file-upload-text">Нажми или перетащи</p><input type="file" class="file-input" id="file-input" accept="image/*" multiple></div><div class="file-preview-list" id="file-preview-list"></div></div>
-        <div class="form-buttons"><button type="button" class="btn-back-form" id="btn-back-form">← Назад</button><button type="submit" class="form-submit-btn">Отправить</button></div>
-      </form>
-    `);
-    setTimeout(() => {
-      const form = $('support-form'); if (!form) return;
-      let files = [];
-      $('file-upload-area').addEventListener('click', ()=> $('file-input').click());
-      $('file-input').addEventListener('change', ()=> handleFiles($('file-input').files));
-      function handleFiles(list) { /* сокращённая обработка */ }
-      form.addEventListener('submit', e => {
-        e.preventDefault();
-        const topic = $('topic').value, desc = $('description').value.trim(), contact = $('contact').value.trim();
-        if (!topic || !desc || !contact) return alert('Заполни все поля');
-        const ticket = { id: Date.now(), topic, topicText: $('topic').selectedOptions[0].text, description: desc, contact, date: new Date().toISOString(), status:'open', messages:[
-          {from:'user', text:desc, date:new Date().toISOString()},
-          {from:'support', text:'Обращение получено. Ожидайте ответа.', date:new Date().toISOString()}
-        ]};
-        tickets.push(ticket);
-        localStorage.setItem('mc_tickets', JSON.stringify(tickets));
-        openTicketChat(tickets.length-1);
-      });
-      const back = $('btn-back-form'); if (back) back.addEventListener('click', ()=>{ const mt = tickets.filter(t=>t.contact===(nickname||'Гость')); if(mt.length) showTicketList(); else closeModal(); });
-    }, 100);
-  }
+/* ====== ЗЕМЛЯ ====== */
+.ground {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 32%;
+  z-index: -2;
+  image-rendering: pixelated;
+}
 
-  function openTicketChat(idx) {
-    const ticket = tickets[idx];
-    function render() {
-      let msgs = ticket.messages.map(m => {
-        const isUser = m.from==='user';
-        return `<div class="chat-message ${isUser?'chat-user':'chat-support'}"><div class="chat-avatar">${isUser?(nickname||'Я')[0]:'S'}</div><div class="chat-bubble"><div class="chat-sender">${isUser?(nickname||'Гость'):'Поддержка'}</div><div class="chat-text">${m.text}</div><div class="chat-time">${new Date(m.date).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</div></div></div>`;
-      }).join('');
-      openModal('Чат поддержки', `<div class="chat-container"><div class="chat-header-info"><span>Тикет #${ticket.id}</span></div><div class="chat-messages" id="chat-messages">${msgs}</div><div class="chat-input-area"><input class="chat-input" id="chat-input" placeholder="Сообщение..."><button class="chat-send-btn" id="chat-send-btn">Отпр.</button></div><button class="btn-back-tickets" id="btn-back-tickets">← К списку</button></div>`);
-      setTimeout(() => {
-        $('chat-messages').scrollTop = $('chat-messages').scrollHeight;
-        $('chat-send-btn').addEventListener('click', send);
-        $('chat-input').addEventListener('keydown', e=>{ if(e.key==='Enter') send(); });
-        $('btn-back-tickets').addEventListener('click', ()=> showTicketList());
-        function send() {
-          const text = $('chat-input').value.trim(); if(!text) return;
-          ticket.messages.push({from:'user', text, date: new Date().toISOString()});
-          setTimeout(() => { ticket.messages.push({from:'support', text:'Спасибо за обращение!', date: new Date().toISOString()}); localStorage.setItem('mc_tickets', JSON.stringify(tickets)); render(); }, 1500);
-          localStorage.setItem('mc_tickets', JSON.stringify(tickets));
-          render();
-        }
-      }, 100);
-    }
-    render();
-  }
+.ground::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  background: repeating-linear-gradient(90deg,
+    #5a9a30 0px, #4a8a28 3px, #3d7a22 3px, #509030 6px,
+    #4a8828 6px, #3e7822 9px, #559030 9px, #488828 12px
+  );
+  border-bottom: 2px solid #2d5a18;
+}
 
-  // ====== СТАТУС СЕРВЕРА ======
-  async function checkStatus() {
-    try {
-      const res = await fetch('https://api.mcsrvstat.us/2/play.growagarden.ru:25565');
-      const data = await res.json();
-      statusEl.className = 'status ' + (data.online ? 'online' : 'offline');
-      statusEl.innerHTML = data.online ? '<span class="status-dot"></span> онлайн' : '<span class="status-dot"></span> оффлайн';
-      playersEl.textContent = data.players ? 'игроков ' + data.players.online + '/' + data.players.max : '';
-    } catch { statusEl.className = 'status offline'; statusEl.innerHTML = '<span class="status-dot"></span> нет связи'; }
-  }
-  checkStatus();
-  setInterval(checkStatus, 60000);
+.ground::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 6px, rgba(0,0,0,.06) 6px, rgba(0,0,0,.06) 7px),
+    repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(255,255,255,.02) 5px, rgba(255,255,255,.02) 6px);
+}
 
-  copyBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(serverIp.textContent.trim()).then(() => {
-      copyBtn.textContent = 'OK'; setTimeout(() => copyBtn.innerHTML = '<span class="copy-icon"></span>', 1500);
-    });
-  });
+.dirt-layers {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 48px);
+  background: linear-gradient(180deg, #6B4F10 0%, #5A4210 25%, #4A3508 50%, #3A2806 75%, #2a1a04 100%);
+}
 
-  // ====== СВЕТЛЯЧКИ ======
-  (function() {
-    const canvas = $('fireflies'); if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight * 0.7; }
-    resize(); window.addEventListener('resize', resize);
-    const flies = Array.from({length:35}, () => ({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*2.5+1, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5, phase: Math.random()*Math.PI*2, brightness: Math.random()*0.5+0.3 }));
-    function animate(t) {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      flies.forEach(f => {
-        f.x += f.vx + Math.sin(t/3000+f.phase)*0.4; f.y += f.vy + Math.cos(t/2500+f.phase)*0.4;
-        if(f.x<-20) f.x=canvas.width+20; if(f.x>canvas.width+20) f.x=-20; if(f.y<-20) f.y=canvas.height+20; if(f.y>canvas.height+20) f.y=-20;
-        const alpha = Math.max(0.05, f.brightness + Math.sin(t/800+f.phase)*0.3);
-        ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,Math.PI*2); ctx.fillStyle = `rgba(180,255,100,${alpha})`; ctx.fill();
-        ctx.shadowColor = 'rgba(150,255,80,0.8)'; ctx.shadowBlur = 8; ctx.fill(); ctx.shadowBlur = 0;
-      });
-      requestAnimationFrame(animate);
-    }
-    requestAnimationFrame(animate);
-  })();
+.dirt-layers::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(0,0,0,.08) 4px, rgba(0,0,0,.08) 5px),
+    repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,255,255,.02) 8px, rgba(255,255,255,.02) 9px);
+}
 
-  renderAll();
-});
+.dirt-layers::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(6px 5px at 15% 30%, rgba(100,95,90,.3), transparent),
+    radial-gradient(8px 6px at 30% 50%, rgba(90,85,80,.25), transparent),
+    radial-gradient(5px 4px at 48% 20%, rgba(95,90,85,.3), transparent),
+    radial-gradient(7px 5px at 62% 45%, rgba(85,80,75,.25), transparent),
+    radial-gradient(9px 7px at 78% 35%, rgba(90,85,80,.2), transparent),
+    radial-gradient(4px 4px at 90% 55%, rgba(95,90,85,.3), transparent);
+}
+
+/* ====== КОНТЕНТ ====== */
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  max-width: 480px;
+}
+
+/* ====== КНОПКИ ====== */
+.top-buttons { display: flex; gap: 8px; }
+
+.top-btn {
+  flex: 1;
+  font-family: 'Press Start 2P', cursive;
+  font-size: .46rem;
+  padding: 12px 6px;
+  background: linear-gradient(180deg, rgba(30,40,20,.95), rgba(18,24,12,.95));
+  border: 3px solid #4a6a30;
+  color: #c0e080;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all .25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-shadow: 1px 1px 0 rgba(0,0,0,.5);
+  box-shadow: 0 4px 15px rgba(0,0,0,.4);
+}
+
+.top-btn:hover {
+  background: linear-gradient(180deg, rgba(40,50,25,.95), rgba(25,32,16,.95));
+  border-color: #80b040;
+  color: #e0ffa0;
+  box-shadow: 0 0 25px rgba(100,160,60,.4), 0 6px 20px rgba(0,0,0,.5);
+  transform: translateY(-2px);
+}
+
+/* ====== ИКОНКИ ====== */
+.info-icon, .rules-icon, .support-icon {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid currentColor; position: relative; flex-shrink: 0;
+}
+.info-icon { border-radius: 50%; }
+.info-icon::after { content: '?'; position: absolute; top: -2px; left: 3px; font-size: 9px; font-weight: bold; }
+.rules-icon { border-radius: 2px; }
+.rules-icon::before { content: ''; position: absolute; top: 2px; left: 2px; width: 6px; height: 2px; background: currentColor; }
+.rules-icon::after { content: ''; position: absolute; top: 2px; left: 4px; width: 2px; height: 7px; background: currentColor; }
+.support-icon { border-radius: 50%; }
+.support-icon::before { content: ''; position: absolute; bottom: 2px; left: 3px; width: 4px; height: 6px; border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); }
+
+/* ====== ЦВЕТОК ====== */
+.pixel-flower { width: 56px; height: 64px; margin: 0 auto; position: relative; }
+.flower-stem { position: absolute; bottom: 0; left: 24px; width: 8px; height: 36px; background: linear-gradient(180deg, #6aaa30, #4a7a20); border-radius: 2px; }
+.flower-head { position: absolute; top: 0; left: 8px; width: 40px; height: 40px; }
+.petal { position: absolute; width: 14px; height: 14px; background: radial-gradient(circle, #f99, #f66); border-radius: 50%; border: 2px solid #c44; }
+.petal-1 { top: 0; left: 13px; } .petal-2 { top: 10px; left: 0; } .petal-3 { top: 10px; right: 0; }
+.petal-4 { bottom: 0; left: 8px; } .petal-5 { bottom: 0; right: 8px; }
+.flower-center { position: absolute; top: 11px; left: 11px; width: 18px; height: 18px; background: radial-gradient(circle, #ffe066, #fc0); border-radius: 50%; border: 2px solid #da0; }
+.flower-leaf-left, .flower-leaf-right { position: absolute; width: 14px; height: 8px; background: #5aaa30; border: 1px solid #3a7020; }
+.flower-leaf-left { bottom: 12px; left: 10px; border-radius: 0 50% 50% 0; transform: rotate(-30deg); }
+.flower-leaf-right { bottom: 18px; right: 8px; border-radius: 50% 0 0 50%; transform: rotate(30deg); }
+
+/* ====== ЛИСТ ====== */
+.pixel-leaf-detailed { width: 24px; height: 24px; position: relative; }
+.leaf-stem { position: absolute; bottom: 0; left: 10px; width: 4px; height: 12px; background: #4a7a20; }
+.leaf-body { position: absolute; top: 2px; left: 2px; width: 20px; height: 14px; background: linear-gradient(145deg, #6ab830, #4a9020); clip-path: polygon(50% 0%, 100% 40%, 100% 80%, 50% 100%, 0% 80%, 0% 40%); border: 1px solid #3a7018; }
+.leaf-vein { position: absolute; top: 4px; left: 11px; width: 2px; height: 10px; background: rgba(255,255,255,.2); }
+
+/* ====== ИКОНКИ ИНТЕРФЕЙСА ====== */
+.copy-icon { display: inline-block; width: 16px; height: 16px; border: 2px solid currentColor; border-radius: 2px; position: relative; top: -2px; }
+.copy-icon::after { content: ''; position: absolute; top: -4px; left: 4px; width: 10px; height: 10px; border: 2px solid currentColor; border-radius: 2px; background: #1a2410; }
+.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #888; margin-right: 6px; vertical-align: middle; }
+.arrow { display: inline-block; width: 12px; height: 12px; border-right: 3px solid #5a8030; border-bottom: 3px solid #5a8030; transform: rotate(45deg); transition: .3s; flex-shrink: 0; }
+.profile-bar.open .arrow { transform: rotate(-135deg); border-color: #a0e060; }
+.exit-icon { display: inline-block; width: 14px; height: 14px; border: 2px solid #faa; border-radius: 2px; vertical-align: middle; margin-right: 6px; position: relative; }
+.exit-icon::after { content: ''; position: absolute; top: 3px; right: -5px; width: 8px; height: 8px; border-top: 2px solid #faa; border-right: 2px solid #faa; transform: rotate(45deg); }
+.close-cross { display: inline-block; width: 20px; height: 20px; position: relative; }
+.close-cross::before, .close-cross::after { content: ''; position: absolute; top: 9px; left: 0; width: 20px; height: 3px; background: currentColor; border-radius: 1px; }
+.close-cross::before { transform: rotate(45deg); } .close-cross::after { transform: rotate(-45deg); }
+
+/* ====== КАРТОЧКА СЕРВЕРА ====== */
+.server-card {
+  background: linear-gradient(180deg, rgba(30,40,20,.95), rgba(18,24,12,.95) 50%, rgba(15,20,10,.95));
+  border: 3px solid #5a8030;
+  border-radius: 24px;
+  padding: 34px 26px;
+  text-align: center;
+  box-shadow: 0 0 0 4px rgba(30,50,20,.5), 0 0 0 8px rgba(20,35,15,.3), 0 10px 50px rgba(0,0,0,.7), inset 0 2px 0 rgba(255,255,255,.03);
+  position: relative;
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+}
+.server-card::before { content: ''; position: absolute; top: 0; left: 20px; right: 20px; height: 2px; background: linear-gradient(90deg, transparent, rgba(180,220,120,.4), transparent); }
+.server-card::after { content: ''; position: absolute; bottom: 8px; left: 30px; right: 30px; height: 1px; background: linear-gradient(90deg, transparent, rgba(100,140,60,.3), transparent); }
+.server-icon { margin-bottom: 18px; position: relative; z-index: 1; }
+.server-card h1 { font-size: 1.6rem; color: #c8ff80; text-shadow: 3px 3px 0 #1a3a0a, 0 0 20px rgba(160,220,80,.3); margin-bottom: 10px; letter-spacing: 2px; }
+.server-card p { font-size: .58rem; color: #90b060; margin-bottom: 22px; }
+
+.ip-box {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,.4));
+  border: 2px solid #4a6a30; border-radius: 16px; padding: 14px 18px; margin-bottom: 18px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.4);
+}
+.ip-box code { font-family: 'Press Start 2P', cursive; font-size: .78rem; color: #e0ffa0; text-shadow: 0 0 10px rgba(200,255,100,.3); }
+
+#copy-ip {
+  font-family: 'Press Start 2P', cursive; font-size: .9rem;
+  background: linear-gradient(180deg, rgba(60,100,40,.6), rgba(40,70,25,.6));
+  border: 2px solid #5a8a3a; color: #c0e080; border-radius: 12px;
+  padding: 10px 14px; cursor: pointer; transition: all .25s; box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+#copy-ip:hover { background: linear-gradient(180deg, rgba(80,120,50,.7), rgba(50,80,30,.7)); border-color: #80b040; color: #fff; transform: translateY(-1px); }
+
+.status-line { display: flex; justify-content: center; align-items: center; gap: 15px; }
+.status { font-size: .58rem; padding: 8px 16px; border-radius: 20px; font-weight: bold; }
+.status.checking { color: #888; }
+.status.online { color: #b0ffb0; background: linear-gradient(180deg, rgba(30,70,30,.6), rgba(20,50,20,.6)); border: 1px solid rgba(80,160,80,.4); box-shadow: 0 0 15px rgba(60,140,60,.3); }
+.status.online .status-dot { background: #80ff80; box-shadow: 0 0 10px #80ff80; animation: pulse 1.5s infinite; }
+.status.offline { color: #faa; background: linear-gradient(180deg, rgba(60,20,20,.6), rgba(40,15,15,.6)); border: 1px solid rgba(160,40,40,.4); }
+.status.offline .status-dot { background: #f66; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+#players-count { font-size: .52rem; color: #90b060; }
+
+/* ====== ПРОФИЛЬ ====== */
+.profile-card {
+  background: linear-gradient(180deg, rgba(30,40,20,.95), rgba(18,24,12,.95) 50%, rgba(15,20,10,.95));
+  border: 3px solid #5a8030; border-radius: 24px; overflow: hidden;
+  box-shadow: 0 0 0 4px rgba(30,50,20,.5), 0 0 0 8px rgba(20,35,15,.3), 0 10px 50px rgba(0,0,0,.7);
+  position: relative; backdrop-filter: blur(8px);
+}
+.profile-card::before { content: ''; position: absolute; top: 0; left: 20px; right: 20px; height: 2px; background: linear-gradient(90deg, transparent, rgba(180,220,120,.3), transparent); z-index: 1; pointer-events: none; }
+.profile-bar { display: flex; align-items: center; gap: 14px; padding: 18px 22px; cursor: pointer; transition: .3s; position: relative; z-index: 1; }
+.profile-bar:hover { background: rgba(255,255,255,.03); }
+.avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #2a4018, #3a5820); display: flex; align-items: center; justify-content: center; border: 3px solid #6a9030; flex-shrink: 0; box-shadow: 0 0 15px rgba(80,120,40,.3); transition: .3s; }
+.profile-bar:hover .avatar { box-shadow: 0 0 25px rgba(100,160,60,.5); border-color: #80b040; }
+#nickname { font-size: .72rem; color: #d0f080; flex: 1; text-shadow: 1px 1px 0 rgba(0,0,0,.5); }
+.profile-body { padding: 0 22px 22px; display: flex; flex-direction: column; gap: 16px; }
+.hidden { display: none !important; }
+
+.nick-input-row { display: flex; gap: 8px; }
+.nick-input-row input { font-family: 'Press Start 2P', cursive; font-size: .52rem; padding: 14px; background: rgba(0,0,0,.5); border: 2px solid #4a6a30; border-radius: 12px; color: #d0ff90; outline: none; flex: 1; box-shadow: inset 0 2px 4px rgba(0,0,0,.3); }
+.nick-input-row input:focus { border-color: #80b040; }
+.nick-input-row button { font-family: 'Press Start 2P', cursive; font-size: .55rem; padding: 14px 20px; background: linear-gradient(180deg, #4a7a2e, #3a5e20); border: 2px solid #5a8a3a; color: #fff; border-radius: 12px; cursor: pointer; transition: .25s; }
+.nick-input-row button:hover { background: linear-gradient(180deg, #5a8e3a, #4a7228); border-color: #80b040; transform: translateY(-1px); }
+
+.server-details { background: rgba(0,0,0,.5); border: 2px solid #4a6a30; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.detail-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(60,80,30,.2); }
+.detail-item:last-child { border-bottom: none; }
+.detail-label { font-size: .5rem; color: #80a060; }
+.detail-value { font-size: .52rem; color: #d0ff90; }
+
+.logout-btn { font-family: 'Press Start 2P', cursive; font-size: .52rem; padding: 14px; background: linear-gradient(180deg, rgba(140,40,40,.6), rgba(100,30,30,.6)); border: 2px solid #904040; color: #faa; border-radius: 12px; cursor: pointer; transition: .25s; }
+.logout-btn:hover { background: linear-gradient(180deg, rgba(170,50,50,.7), rgba(120,35,35,.7)); border-color: #b05050; transform: translateY(-1px); }
+footer { text-align: center; font-size: .5rem; color: #507030; }
+
+/* ====== МОДАЛКА ====== */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: flex; align-items: center; justify-content: center; }
+.modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.75); }
+.modal-window { position: relative; background: linear-gradient(180deg, rgba(25,32,16,.98), rgba(18,24,12,.98)); border: 4px solid #4a6a30; border-radius: 20px; width: 94%; max-width: 680px; max-height: 84vh; overflow-y: auto; box-shadow: 0 0 0 3px rgba(30,50,20,.4), 0 12px 60px rgba(0,0,0,.9); }
+.modal-window::-webkit-scrollbar { width: 8px; }
+.modal-window::-webkit-scrollbar-thumb { background: #4a6a30; border-radius: 4px; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 2px solid #3a5020; position: sticky; top: 0; background: rgba(25,32,16,.98); z-index: 2; }
+.modal-header h2 { font-size: .85rem; color: #c8ff80; }
+.modal-close { font-family: 'Press Start 2P', cursive; font-size: 1rem; background: none; border: 3px solid #5a8030; color: #c0e080; width: 42px; height: 42px; border-radius: 10px; cursor: pointer; transition: .2s; display: flex; align-items: center; justify-content: center; }
+.modal-close:hover { background: #5a8030; color: #fff; }
+.modal-body { padding: 24px; }
+
+/* ====== ИНФО И ПРАВИЛА ====== */
+.info-step, .rule-item { background: rgba(0,0,0,.35); border: 2px solid #3a5020; border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+.info-step-num, .rule-title { font-size: .52rem; color: #ffd700; margin-bottom: 10px; }
+.info-step p, .rule-text { font-size: .48rem; color: #c0d0a0; line-height: 2; }
+.rule-text { color: #b0c090; line-height: 1.9; }
+.rule-punish { font-size: .42rem; color: #ff8080; margin-top: 10px; padding-top: 10px; border-top: 1px solid #3a3020; }
+.info-step code { font-family: 'Press Start 2P', cursive; font-size: .46rem; color: #d4ff80; background: rgba(0,0,0,.5); padding: 4px 8px; border-radius: 6px; display: inline-block; margin: 4px 0; }
+
+/* ====== ФОРМА ====== */
+.support-form { display: flex; flex-direction: column; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: .48rem; color: #ffd700; display: flex; align-items: center; gap: 8px; }
+.form-label-icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: #4a6a30; color: #fff; border-radius: 50%; font-size: .4rem; }
+.form-select, .form-input { font-family: 'Press Start 2P', cursive; font-size: .42rem; padding: 10px; background: rgba(0,0,0,.5); border: 2px solid #3a5020; border-radius: 8px; color: #d0ff90; outline: none; }
+.form-select option { background: #1a2410; color: #d0ff90; }
+.form-select:focus, .form-input:focus, .form-textarea:focus { border-color: #70a040; }
+.form-textarea { font-family: 'Press Start 2P', cursive; font-size: .4rem; padding: 10px; background: rgba(0,0,0,.5); border: 2px solid #3a5020; border-radius: 8px; color: #d0ff90; outline: none; resize: vertical; min-height: 100px; line-height: 1.8; }
+.form-hint { font-size: .35rem; color: #668050; margin-top: 2px; }
+
+/* ====== ЗАГРУЗКА ФАЙЛОВ ====== */
+.file-upload-area { border: 2px dashed #3a5020; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: .2s; background: rgba(0,0,0,.3); }
+.file-upload-area:hover { border-color: #70a040; }
+.file-upload-area.dragover { border-color: #ffd700; background: rgba(40,30,0,.4); }
+.file-upload-icon { margin-bottom: 8px; }
+.upload-icon-img { display: inline-block; width: 28px; height: 28px; border: 2px solid #5a8030; border-radius: 4px; position: relative; }
+.upload-icon-img::before { content: ''; position: absolute; top: 6px; left: 8px; width: 8px; height: 2px; background: #5a8030; }
+.upload-icon-img::after { content: ''; position: absolute; top: 3px; left: 11px; width: 2px; height: 8px; background: #5a8030; }
+.file-upload-text { font-size: .4rem; color: #80a060; margin-bottom: 4px; }
+.file-upload-hint { font-size: .32rem; color: #555; }
+.file-input { display: none; }
+.file-preview-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.file-preview-item { position: relative; width: 80px; height: 80px; border: 2px solid #3a5020; border-radius: 8px; overflow: hidden; background: rgba(0,0,0,.5); }
+.file-preview-img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+.file-preview-name { position: absolute; bottom: 0; left: 0; right: 0; font-size: .25rem; background: rgba(0,0,0,.8); color: #ccc; padding: 2px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-preview-remove { position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; background: rgba(200,40,40,.8); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.remove-icon { display: inline-block; width: 8px; height: 2px; background: white; }
+
+/* ====== КНОПКИ ФОРМЫ ====== */
+.form-buttons { display: flex; gap: 10px; }
+.form-submit-btn { flex: 1; font-family: 'Press Start 2P', cursive; font-size: .48rem; padding: 14px; background: linear-gradient(180deg, #4a7a2e, #3a5e20); border: 2px solid #5a8a3a; color: white; border-radius: 10px; cursor: pointer; transition: .2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.form-submit-btn:hover { background: linear-gradient(180deg, #5a8e3a, #4a7228); }
+.send-icon { display: inline-block; width: 12px; height: 12px; border-top: 2px solid white; border-right: 2px solid white; transform: rotate(45deg); position: relative; top: -2px; }
+.btn-back-form { font-family: 'Press Start 2P', cursive; font-size: .42rem; padding: 14px; background: rgba(0,0,0,.4); border: 2px solid #3a5020; color: #80a060; border-radius: 10px; cursor: pointer; transition: .2s; }
+.btn-back-form:hover { border-color: #70a040; color: #c0e080; }
+
+/* ====== УСПЕХ ====== */
+.form-success { text-align: center; padding: 30px 20px; }
+.success-icon { width: 50px; height: 50px; margin: 0 auto 16px; border: 3px solid #80ff80; border-radius: 50%; position: relative; animation: pop .5s ease; }
+.success-icon::after { content: ''; position: absolute; top: 12px; left: 14px; width: 16px; height: 10px; border-left: 3px solid #80ff80; border-bottom: 3px solid #80ff80; transform: rotate(-45deg); }
+@keyframes pop { 0% { transform: scale(0); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
+.success-title { font-size: .6rem; color: #80ff80; margin-bottom: 8px; }
+.success-text { font-size: .4rem; color: #80a060; line-height: 1.8; }
+
+/* ====== ТИКЕТЫ ====== */
+.ticket-list-container { display: flex; flex-direction: column; gap: 14px; }
+.btn-new-ticket-top { font-family: 'Press Start 2P', cursive; font-size: .42rem; padding: 12px; background: linear-gradient(180deg, #5a8a3a, #4a7a2e); border: 2px solid #6aaa40; color: white; border-radius: 10px; cursor: pointer; transition: .2s; width: 100%; margin-bottom: 10px; }
+.btn-new-ticket-top:hover { background: linear-gradient(180deg, #6a9a4a, #5a8a3a); border-color: #80c050; }
+.ticket-list-header h3 { font-size: .55rem; color: #c8ff80; }
+.ticket-list { display: flex; flex-direction: column; gap: 10px; }
+.ticket-card { background: rgba(0,0,0,.35); border: 2px solid #3a5020; border-radius: 12px; padding: 14px; cursor: pointer; transition: .2s; }
+.ticket-card:hover { border-color: #70a040; background: rgba(0,0,0,.45); }
+.ticket-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.ticket-topic { font-size: .45rem; color: #c0e080; }
+.ticket-status { font-size: .38rem; padding: 4px 10px; border-radius: 12px; }
+.ticket-open { background: rgba(40,120,40,.5); color: #80ff80; }
+.ticket-closed { background: rgba(80,40,40,.5); color: #faa; }
+.ticket-card-info { display: flex; justify-content: space-between; font-size: .35rem; color: #668050; }
+
+/* ====== ЧАТ ====== */
+.chat-container { display: flex; flex-direction: column; height: 55vh; min-height: 400px; }
+.chat-header-info { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #3a5020; margin-bottom: 14px; }
+.chat-ticket-id { font-size: .48rem; color: #c8ff80; }
+.chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-right: 8px; }
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-thumb { background: #3a5020; border-radius: 2px; }
+.chat-message { display: flex; gap: 10px; max-width: 90%; }
+.chat-user { align-self: flex-end; flex-direction: row-reverse; }
+.chat-support { align-self: flex-start; }
+.chat-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #3a5820, #4a6a30); display: flex; align-items: center; justify-content: center; font-size: .5rem; color: #c0e080; flex-shrink: 0; border: 2px solid #5a8030; }
+.chat-user .chat-avatar { background: linear-gradient(135deg, #4a6a30, #5a8a40); border-color: #80b040; }
+.chat-bubble { background: rgba(0,0,0,.4); border: 2px solid #3a5020; border-radius: 12px; padding: 10px 14px; min-width: 100px; }
+.chat-user .chat-bubble { background: rgba(40,60,20,.5); border-color: #5a8030; }
+.chat-sender { font-size: .38rem; color: #ffd700; margin-bottom: 6px; }
+.chat-text { font-size: .42rem; color: #c0d0a0; line-height: 1.8; }
+.chat-time { font-size: .3rem; color: #556040; margin-top: 6px; text-align: right; }
+.chat-input-area { display: flex; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #3a5020; }
+.chat-input { flex: 1; font-family: 'Press Start 2P', cursive; font-size: .4rem; padding: 10px; background: rgba(0,0,0,.5); border: 2px solid #3a5020; border-radius: 8px; color: #d0ff90; outline: none; }
+.chat-input:focus { border-color: #70a040; }
+.chat-send-btn { font-family: 'Press Start 2P', cursive; font-size: .5rem; padding: 10px 16px; background: linear-gradient(180deg, #4a7a2e, #3a5e20); border: 2px solid #5a8a3a; color: white; border-radius: 8px; cursor: pointer; transition: .2s; }
+.chat-send-btn:hover { background: linear-gradient(180deg, #5a8e3a, #4a7228); }
+.btn-back-tickets { font-family: 'Press Start 2P', cursive; font-size: .38rem; padding: 10px; background: none; border: 2px solid #3a5020; color: #80a060; border-radius: 8px; cursor: pointer; margin-top: 10px; transition: .2s; }
+.btn-back-tickets:hover { border-color: #70a040; color: #c0e080; }
+
+/* ====== АДАПТИВ ====== */
+@media (max-width: 450px) {
+  .server-card h1 { font-size: 1.2rem; }
+  .ip-box code { font-size: .6rem; }
+  .top-btn { font-size: .38rem; padding: 8px 4px; }
+  .modal-window { max-width: 96%; max-height: 86vh; }
+  .modal-header h2 { font-size: .7rem; }
+  .info-step p, .rule-text { font-size: .42rem; }
+  .info-step-num, .rule-title { font-size: .48rem; }
+  .top-buttons { gap: 5px; }
+}
