@@ -1,0 +1,169 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Press Start 2P', cursive;
+  background: #2d5a27 url('https://i.imgur.com/5LwBZQs.jpg') center/cover no-repeat fixed;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  image-rendering: pixelated;
+}
+
+/* Полупрозрачный тёмный слой для читаемости */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: -1;
+}
+
+.container {
+  max-width: 800px;
+  width: 100%;
+  background: rgba(37, 56, 29, 0.9);
+  border: 4px solid #6b4f32;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.7);
+}
+
+header h1 {
+  font-size: 2.2rem;
+  text-align: center;
+  color: #b0ff90;
+  text-shadow: 3px 3px 0 #2a4a1e;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 0.7rem;
+  color: #c2e0b0;
+  margin-bottom: 30px;
+}
+
+.server-info {
+  background: #3c2e1f;
+  padding: 15px;
+  border: 2px solid #7a5c3e;
+  border-radius: 6px;
+  margin-bottom: 25px;
+}
+
+.ip-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.ip-box strong {
+  color: #ffd966;
+}
+
+#copy-ip {
+  background: none;
+  border: 2px solid #a68a64;
+  color: #ffd966;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 4px;
+  transition: 0.2s;
+}
+
+#copy-ip:hover {
+  background: #a68a64;
+  color: #fff;
+}
+
+.status {
+  text-align: center;
+  font-size: 0.8rem;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.status.online {
+  background: #2e7d32;
+  color: #c8e6c9;
+}
+
+.status.offline {
+  background: #b71c1c;
+  color: #ffcdd2;
+}
+
+.players-count {
+  text-align: center;
+  font-size: 0.7rem;
+  margin-top: 5px;
+  color: #ffecb3;
+}
+
+section {
+  margin-bottom: 25px;
+}
+
+h2 {
+  font-size: 1.2rem;
+  color: #ffd966;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #6b4f32;
+  display: inline-block;
+  padding-bottom: 4px;
+}
+
+p, li {
+  font-size: 0.7rem;
+  line-height: 1.8;
+  color: #e0e0e0;
+}
+
+code {
+  background: #2a3a1e;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #ffecb3;
+}
+
+ol, ul {
+  padding-left: 25px;
+}
+
+ol li, ul li {
+  margin-bottom: 8px;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.55rem;
+  margin-top: 30px;
+  color: #a5b89a;
+}
+
+/* Адаптация для телефонов */
+@media (max-width: 600px) {
+  .container {
+    padding: 15px;
+  }
+  header h1 {
+    font-size: 1.5rem;
+  }
+  h2 {
+    font-size: 1rem;
+  }
+}
