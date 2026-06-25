@@ -41,7 +41,19 @@
     <!-- Карточка сервера -->
     <div class="server-card">
       <div class="server-icon">
-        <div class="pixel-flower"></div>
+        <div class="pixel-flower">
+          <div class="flower-stem"></div>
+          <div class="flower-head">
+            <div class="petal petal-1"></div>
+            <div class="petal petal-2"></div>
+            <div class="petal petal-3"></div>
+            <div class="petal petal-4"></div>
+            <div class="petal petal-5"></div>
+            <div class="flower-center"></div>
+          </div>
+          <div class="flower-leaf-left"></div>
+          <div class="flower-leaf-right"></div>
+        </div>
       </div>
       <h1>Grow-a-Garden</h1>
       <p>Уютный сервер Minecraft</p>
@@ -65,7 +77,11 @@
     <div class="profile-card" id="profile-card">
       <div class="profile-bar" id="profile-bar">
         <div class="avatar" id="avatar">
-          <div class="pixel-leaf"></div>
+          <div class="pixel-leaf-detailed">
+            <div class="leaf-stem"></div>
+            <div class="leaf-body"></div>
+            <div class="leaf-vein"></div>
+          </div>
         </div>
         <span id="nickname">Гость</span>
         <span class="arrow" id="arrow"></span>
@@ -105,10 +121,12 @@
   <!-- Модальное окно -->
   <div class="modal hidden" id="modal">
     <div class="modal-overlay" id="modal-overlay"></div>
-    <div class="modal-window">
+    <div class="modal-window" id="modal-window">
       <div class="modal-header">
         <h2 id="modal-title"></h2>
-        <button class="modal-close" id="modal-close">✕</button>
+        <button class="modal-close" id="modal-close">
+          <span class="close-cross"></span>
+        </button>
       </div>
       <div class="modal-body" id="modal-body"></div>
     </div>
