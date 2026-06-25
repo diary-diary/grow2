@@ -367,24 +367,156 @@ body {
 .support-icon { border-radius: 50%; }
 .support-icon::before { content: ''; position: absolute; bottom: 2px; left: 3px; width: 4px; height: 6px; border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); }
 
-/* ====== ЦВЕТОК ====== */
-.pixel-flower { width: 56px; height: 64px; margin: 0 auto; position: relative; }
-.flower-stem { position: absolute; bottom: 0; left: 24px; width: 8px; height: 36px; background: linear-gradient(180deg, #6aaa30, #4a7a20); border-radius: 2px; }
-.flower-head { position: absolute; top: 0; left: 8px; width: 40px; height: 40px; }
-.petal { position: absolute; width: 14px; height: 14px; background: radial-gradient(circle, #f99, #f66); border-radius: 50%; border: 2px solid #c44; }
-.petal-1 { top: 0; left: 13px; } .petal-2 { top: 10px; left: 0; } .petal-3 { top: 10px; right: 0; }
-.petal-4 { bottom: 0; left: 8px; } .petal-5 { bottom: 0; right: 8px; }
-.flower-center { position: absolute; top: 11px; left: 11px; width: 18px; height: 18px; background: radial-gradient(circle, #ffe066, #fc0); border-radius: 50%; border: 2px solid #da0; }
-.flower-leaf-left, .flower-leaf-right { position: absolute; width: 14px; height: 8px; background: #5aaa30; border: 1px solid #3a7020; }
-.flower-leaf-left { bottom: 12px; left: 10px; border-radius: 0 50% 50% 0; transform: rotate(-30deg); }
-.flower-leaf-right { bottom: 18px; right: 8px; border-radius: 50% 0 0 50%; transform: rotate(30deg); }
+/* ====== ПИКСЕЛЬНЫЙ ЦВЕТОК ====== */
+.pixel-flower {
+  width: 80px;
+  height: 100px;
+  margin: 0 auto;
+  position: relative;
+  animation: flowerFloat 3s ease-in-out infinite;
+}
 
-/* ====== ЛИСТ ====== */
-.pixel-leaf-detailed { width: 24px; height: 24px; position: relative; }
-.leaf-stem { position: absolute; bottom: 0; left: 10px; width: 4px; height: 12px; background: #4a7a20; }
-.leaf-body { position: absolute; top: 2px; left: 2px; width: 20px; height: 14px; background: linear-gradient(145deg, #6ab830, #4a9020); clip-path: polygon(50% 0%, 100% 40%, 100% 80%, 50% 100%, 0% 80%, 0% 40%); border: 1px solid #3a7018; }
-.leaf-vein { position: absolute; top: 4px; left: 11px; width: 2px; height: 10px; background: rgba(255,255,255,.2); }
+@keyframes flowerFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
 
+/* Стебель */
+.flower-stem {
+  position: absolute;
+  bottom: 0;
+  left: 36px;
+  width: 8px;
+  height: 50px;
+  background: linear-gradient(180deg, #7cc840 0%, #5a9a28 40%, #4a8020 100%);
+  border-radius: 2px;
+  box-shadow: inset 2px 0 0 rgba(255,255,255,.1);
+}
+
+/* Листья */
+.flower-leaf-left {
+  position: absolute;
+  bottom: 20px;
+  left: 14px;
+  width: 22px;
+  height: 10px;
+  background: linear-gradient(135deg, #6ab830, #4a9020);
+  border-radius: 0 50% 50% 0;
+  border: 1px solid #3a7018;
+  transform: rotate(-35deg);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.15);
+}
+
+.flower-leaf-right {
+  position: absolute;
+  bottom: 28px;
+  right: 12px;
+  width: 22px;
+  height: 10px;
+  background: linear-gradient(225deg, #6ab830, #4a9020);
+  border-radius: 50% 0 0 50%;
+  border: 1px solid #3a7018;
+  transform: rotate(35deg);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.15);
+}
+
+/* Голова цветка */
+.flower-head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 80px;
+  animation: flowerBob 4s ease-in-out infinite;
+}
+
+@keyframes flowerBob {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(3deg); }
+  75% { transform: rotate(-3deg); }
+}
+
+/* Лепестки */
+.petal {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,0,0,.15);
+  box-shadow: inset 0 3px 6px rgba(255,255,255,.3), 0 2px 4px rgba(0,0,0,.2);
+}
+
+/* Верхний */
+.petal-1 {
+  top: 0;
+  left: 27px;
+  background: linear-gradient(180deg, #ffb3b3 0%, #ff8080 50%, #e86060 100%);
+}
+
+/* Левый */
+.petal-2 {
+  top: 20px;
+  left: 2px;
+  background: linear-gradient(135deg, #ffaaaa 0%, #ff7070 50%, #e85555 100%);
+}
+
+/* Правый */
+.petal-3 {
+  top: 20px;
+  right: 2px;
+  background: linear-gradient(225deg, #ffaaaa 0%, #ff7070 50%, #e85555 100%);
+}
+
+/* Нижний левый */
+.petal-4 {
+  bottom: 8px;
+  left: 12px;
+  background: linear-gradient(45deg, #ff9999 0%, #ff6060 50%, #e05050 100%);
+}
+
+/* Нижний правый */
+.petal-5 {
+  bottom: 8px;
+  right: 12px;
+  background: linear-gradient(315deg, #ff9999 0%, #ff6060 50%, #e05050 100%);
+}
+
+/* Центр цветка */
+.flower-center {
+  position: absolute;
+  top: 19px;
+  left: 19px;
+  width: 42px;
+  height: 42px;
+  background: radial-gradient(circle at 40% 35%, #fff8c0 10%, #ffe566 40%, #ffcc00 75%, #e6a800 100%);
+  border-radius: 50%;
+  border: 2px solid #cc8800;
+  box-shadow: 
+    inset 0 2px 8px rgba(255,255,255,.4),
+    0 0 15px rgba(255,200,0,.3);
+  animation: centerGlow 2s ease-in-out infinite;
+}
+
+@keyframes centerGlow {
+  0%, 100% { box-shadow: inset 0 2px 8px rgba(255,255,255,.4), 0 0 15px rgba(255,200,0,.3); }
+  50% { box-shadow: inset 0 2px 8px rgba(255,255,255,.4), 0 0 25px rgba(255,200,0,.5); }
+}
+
+/* Точки на центре */
+.flower-center::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 22px;
+  height: 22px;
+  background: 
+    radial-gradient(2px 2px at 4px 4px, rgba(180,120,0,.5), transparent),
+    radial-gradient(2px 2px at 14px 6px, rgba(180,120,0,.5), transparent),
+    radial-gradient(2px 2px at 8px 14px, rgba(180,120,0,.5), transparent),
+    radial-gradient(2px 2px at 16px 16px, rgba(180,120,0,.4), transparent);
+  border-radius: 50%;
+}
 /* ====== ИКОНКИ ИНТЕРФЕЙСА ====== */
 .copy-icon { display: inline-block; width: 16px; height: 16px; border: 2px solid currentColor; border-radius: 2px; position: relative; top: -2px; }
 .copy-icon::after { content: ''; position: absolute; top: -4px; left: 4px; width: 10px; height: 10px; border: 2px solid currentColor; border-radius: 2px; background: #1a2410; }
