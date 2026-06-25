@@ -132,13 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <p>На сервере есть несколько режимов игры:<br>
         • Выживание — классический режим<br>
         • Фермерство — ухаживай за растениями<br>
-        • Строительство — создавай постройки<br>
-        Выбрать режим можно в меню при входе.</p>
+        • Строительство — создавай постройки</p>
       </div>
       <div class="info-step">
         <div class="info-step-num">Шаг 4. Подойди к пчеле</div>
-        <p>На спавне ты увидишь большую дружелюбную пчелу. Нажми на неё ПКМ (правой кнопкой мыши).<br>
-        Она проведёт обучение, расскажет про команды, покажет где брать семена, как сажать растения и зарабатывать игровую валюту.</p>
+        <p>На спавне ты увидишь большую дружелюбную пчелу. Нажми на неё ПКМ.<br>
+        Она проведёт обучение и расскажет что делать дальше.</p>
       </div>
     `;
     openModal('Обучение', content);
@@ -185,23 +184,26 @@ document.addEventListener('DOMContentLoaded', () => {
     openModal('Правила сервера', content);
   });
 
-  // ====== ПОДДЕРЖКА ======
+  // ====== ПОДДЕРЖКА - ГЛАВНАЯ ЛОГИКА ======
   supportBtn.addEventListener('click', () => {
     const myTickets = tickets.filter(t => t.contact === (nickname || 'Гость'));
     
     if (myTickets.length > 0) {
+      // Есть обращения - показываем список
       showTicketList();
     } else {
+      // Нет обращений - показываем форму
       showNewTicketForm();
     }
   });
 
+  // ====== ПОКАЗАТЬ СПИСОК ТИКЕТОВ ======
   function showTicketList() {
     const myTickets = tickets.filter(t => t.contact === (nickname || 'Гость'));
     
     let ticketsHtml = '';
     
-    myTickets.forEach((ticket, i) => {
+    myTickets.forEach((ticket) => {
       const realIndex = tickets.indexOf(ticket);
       const status = ticket.status || 'open';
       const statusText = status === 'open' ? 'Открыт' : 'Закрыт';
@@ -224,9 +226,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const content = `
       <div class="ticket-list-container">
+        <button class="btn-new-ticket-top" id="btn-new-ticket-top">+ Создать новое обращение</button>
         <div class="ticket-list-header">
-          <h3>Мои обращения</h3>
-          <button class="btn-new-ticket" id="btn-new-ticket">+ Новое</button>
+          <h3>Мои обращения (${myTickets.length})</h3>
         </div>
         <div class="ticket-list" id="ticket-list">
           ${ticketsHtml}
@@ -236,22 +238,25 @@ document.addEventListener('DOMContentLoaded', () => {
     
     openModal('Поддержка', content);
     
-    // Вешаем обработчики после вставки
+    // Вешаем обработчики
     setTimeout(() => {
+      // Кнопка "Создать новое"
+      const btnNewTop = document.getElementById('btn-new-ticket-top');
+      if (btnNewTop) {
+        btnNewTop.addEventListener('click', showNewTicketForm);
+      }
+      
+      // Карточки тикетов
       document.querySelectorAll('.ticket-card').forEach(card => {
         card.addEventListener('click', function() {
           const index = parseInt(this.dataset.index);
           openTicketChat(index);
         });
       });
-      
-      const btnNew = document.getElementById('btn-new-ticket');
-      if (btnNew) {
-        btnNew.addEventListener('click', showNewTicketForm);
-      }
     }, 100);
   }
 
+  // ====== ПОКАЗАТЬ ФОРМУ НОВОГО ТИКЕТА ======
   function showNewTicketForm() {
     const content = `
       <form class="support-form" id="support-form">
@@ -275,14 +280,15 @@ document.addEventListener('DOMContentLoaded', () => {
           <label class="form-label">
             <span class="form-label-icon">2</span> Опиши ситуацию
           </label>
-          <textarea class="form-textarea" id="description" rows="5" placeholder="Опиши что произошло..." required></textarea>
+          <textarea class="form-textarea" id="description" rows="5" placeholder="Опиши что произошло, когда и при каких обстоятельствах..." required></textarea>
         </div>
 
         <div class="form-group">
           <label class="form-label">
             <span class="form-label-icon">3</span> Контакты
           </label>
-          <input type="text" class="form-input" id="contact" placeholder="Discord или Ник в Minecraft" value="${nickname || ''}" required>
+          <input type="text" class="form-input" id="contact" placeholder="Discord: User#1234 или Ник в Minecraft" value="${nickname || ''}" required>
+          <p class="form-hint">Укажи свой Discord ID или никнейм в игре</p>
         </div>
 
         <div class="form-group">
@@ -295,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="upload-icon-img"></span>
             </div>
             <p class="file-upload-text">Нажми сюда или перетащи файлы</p>
-            <p class="file-upload-hint">PNG, JPG, GIF до 5 МБ</p>
+            <p class="file-upload-hint">PNG, JPG, GIF до 5 МБ (макс. 5 файлов)</p>
             <input type="file" class="file-input" id="file-input" accept="image/png,image/jpeg,image/gif" multiple>
           </div>
 
@@ -303,6 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="form-buttons">
+          <button type="button" class="btn-back-form" id="btn-back-form">← Назад</button>
           <button type="submit" class="form-submit-btn" id="submit-ticket">
             <span class="send-icon"></span> Отправить
           </button>
@@ -317,8 +324,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const fileInput = document.getElementById('file-input');
       const fileUploadArea = document.getElementById('file-upload-area');
       const filePreviewList = document.getElementById('file-preview-list');
+      const btnBack = document.getElementById('btn-back-form');
       
       if (!form) return;
+      
+      // Кнопка назад
+      if (btnBack) {
+        btnBack.addEventListener('click', () => {
+          const myTickets = tickets.filter(t => t.contact === (nickname || 'Гость'));
+          if (myTickets.length > 0) {
+            showTicketList();
+          } else {
+            closeModal();
+          }
+        });
+      }
       
       let selectedFiles = [];
 
@@ -383,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const contact = document.getElementById('contact').value.trim();
 
         if (!topic || !description || !contact) {
-          alert('Заполни все поля!');
+          alert('Заполни все обязательные поля!');
           return;
         }
 
@@ -403,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             {
               from: 'support',
-              text: 'Здравствуйте! Ваше обращение получено. Мы ответим в ближайшее время. Задавайте вопросы здесь.',
+              text: 'Здравствуйте! Ваше обращение получено и зарегистрировано. Мы рассмотрим его в ближайшее время. Если у вас появятся дополнительные вопросы — пишите прямо сюда.',
               date: new Date().toISOString()
             }
           ]
@@ -412,11 +432,13 @@ document.addEventListener('DOMContentLoaded', () => {
         tickets.push(newTicket);
         localStorage.setItem('mc_tickets', JSON.stringify(tickets));
         
+        // Открываем чат с новым тикетом
         openTicketChat(tickets.length - 1);
       });
     }, 100);
   }
 
+  // ====== ОТКРЫТЬ ЧАТ ТИКЕТА ======
   function openTicketChat(ticketIndex) {
     const ticket = tickets[ticketIndex];
     if (!ticket) return;
@@ -431,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         messagesHtml += `
           <div class="chat-message ${isUser ? 'chat-user' : 'chat-support'}">
-            <div class="chat-avatar">${isUser ? 'Я' : 'S'}</div>
+            <div class="chat-avatar">${isUser ? (nickname || 'Я')[0].toUpperCase() : 'S'}</div>
             <div class="chat-bubble">
               <div class="chat-sender">${senderName}</div>
               <div class="chat-text">${msg.text.replace(/\n/g, '<br>')}</div>
@@ -451,10 +473,10 @@ document.addEventListener('DOMContentLoaded', () => {
             ${messagesHtml}
           </div>
           <div class="chat-input-area">
-            <input type="text" class="chat-input" id="chat-input" placeholder="Сообщение..." maxlength="500">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Введи сообщение..." maxlength="500">
             <button class="chat-send-btn" id="chat-send-btn">Отпр.</button>
           </div>
-          <button class="btn-back-tickets" id="btn-back-tickets">← К списку</button>
+          <button class="btn-back-tickets" id="btn-back-tickets">← К списку обращений</button>
         </div>
       `;
 
@@ -480,16 +502,16 @@ document.addEventListener('DOMContentLoaded', () => {
             date: new Date().toISOString()
           });
 
-          // Автоответ через 1 сек
+          // Автоответ поддержки
           setTimeout(() => {
             ticket.messages.push({
               from: 'support',
-              text: 'Спасибо за обращение! Мы получили информацию и скоро ответим.',
+              text: 'Спасибо за дополнительную информацию! Мы приняли её к сведению и скоро ответим.',
               date: new Date().toISOString()
             });
             localStorage.setItem('mc_tickets', JSON.stringify(tickets));
             renderChat();
-          }, 1000);
+          }, 1500);
 
           localStorage.setItem('mc_tickets', JSON.stringify(tickets));
           renderChat();
@@ -501,6 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         btnBack.addEventListener('click', () => {
+          const myTickets = tickets.filter(t => t.contact === (nickname || 'Гость'));
           showTicketList();
         });
       }, 100);
