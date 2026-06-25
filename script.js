@@ -193,3 +193,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
   checkStatus();
   setInterval(checkStatus, 60000);
+
+  // ====== КОПИРОВАНИЕ IP ======
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(serverIp.textContent.trim()).then(() => {
+      copyBtn.textContent = 'OK';
+      setTimeout(() => copyBtn.innerHTML = '<span class="copy-icon"></span>', 1200);
+    });
+  });
+
+  // ====== СВЕТЛЯЧКИ ======
+  (function fireflies() {
+    const canvas = $('fireflies');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight * 0.7;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const flies = [];
+    for (let i = 0; i < 30; i++) {
+      flies.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2 + 1,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+
+    function animate(t) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      flies.forEach(f => {
+        f.x += f.vx + Math.sin(t/3000 + f.phase) * 0.3;
+        f.y += f.vy + Math.cos(t/2500 + f.phase) * 0.3;
+        
+        if (f.x < 0) f.x = canvas.width;
+        if (f.x > canvas.width) f.x = 0;
+        if (f.y < 0) f.y = canvas.height;
+        if (f.y > canvas.height) f.y = 0;
+        
+        const alpha = 0.3 + Math.sin(t/800 + f.phase) * 0.3;
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(180, 255, 100, ' + alpha + ')';
+        ctx.fill();
+        ctx.shadowColor = 'rgba(150, 255, 80, 0.8)';
+        ctx.shadowBlur = 6;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+      
+      requestAnimationFrame(animate);
+    }
+    
+    requestAnimationFrame(animate);
+  })();
+
+  renderAll();
+});
