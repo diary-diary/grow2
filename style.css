@@ -6,8 +6,13 @@
 
 body {
   font-family: 'Press Start 2P', cursive;
-  background: #0d0d1a url('https://i.imgur.com/n6Bq9Tk.jpg') center/cover no-repeat fixed;
-  color: #e0d7ff;
+  background: #3b5e2b; /* fallback */
+  /* Фон с садовыми мотивами */
+  background-image: url('https://i.imgur.com/h7LqjQd.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: #f0e6c5;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -22,19 +27,19 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(10, 5, 20, 0.7);
+  background: rgba(30, 45, 20, 0.6);
   z-index: -1;
 }
 
 .container {
-  max-width: 800px;
+  max-width: 850px;
   width: 100%;
-  background: rgba(20, 15, 35, 0.92);
-  border: 3px solid #b886ff;
-  border-radius: 12px;
+  background: rgba(45, 65, 35, 0.9);
+  border: 4px solid #6b4f32;
+  border-radius: 16px;
   padding: 25px 30px;
-  box-shadow: 0 0 25px rgba(180, 130, 255, 0.3);
-  backdrop-filter: blur(5px);
+  box-shadow: 0 0 25px rgba(80, 50, 20, 0.5);
+  backdrop-filter: blur(3px);
   position: relative;
 }
 
@@ -43,34 +48,46 @@ body::before {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-.main-header h1 {
+.logo {
   font-size: 1.8rem;
   color: #f7d354;
-  text-shadow: 3px 3px 0 #4b2e6b;
+  text-shadow: 3px 3px 0 #3a5a2a;
 }
 
-/* Иконка профиля */
-.profile-icon {
+/* Аватарка + ник */
+.profile-area {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  background: rgba(30, 23, 50, 0.8);
-  border: 2px solid #5b3f8c;
-  border-radius: 8px;
-  padding: 8px 15px;
+  background: rgba(60, 45, 30, 0.7);
+  border: 2px solid #8b6b4b;
+  border-radius: 50px;
+  padding: 6px 18px 6px 6px;
   transition: border-color 0.2s;
 }
 
-.profile-icon:hover {
-  border-color: #a374ff;
+.profile-area:hover {
+  border-color: #c8a96e;
 }
 
 .avatar {
-  font-size: 1.6rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #6b4f32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  border: 2px solid #c8a96e;
+  flex-shrink: 0;
 }
 
 .nickname-header {
@@ -81,15 +98,15 @@ body::before {
 /* Выпадающее меню профиля */
 .profile-dropdown {
   position: absolute;
-  top: 70px;
-  right: 30px;
-  background: #1e1730;
-  border: 2px solid #5b3f8c;
-  border-radius: 10px;
+  top: 60px;
+  right: 0;
+  background: #3c4f2b;
+  border: 3px solid #8b6b4b;
+  border-radius: 12px;
   padding: 20px;
-  width: 260px;
-  z-index: 10;
-  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+  width: 280px;
+  z-index: 15;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.7);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -99,75 +116,106 @@ body::before {
   display: none;
 }
 
-.dropdown-header {
+.dropdown-top {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  font-size: 0.6rem;
-  color: #f7d354;
+  gap: 15px;
+}
+
+.avatar-large {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #6b4f32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  border: 2px solid #c8a96e;
+}
+
+.dropdown-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.55rem;
+  color: #f0e6c5;
 }
 
 .dropdown-balance {
-  color: #a0e0a0;
+  color: #ffd966;
 }
 
-#top-up-btn, #logout-btn {
+.btn-green, .btn-brown {
   font-family: 'Press Start 2P', cursive;
-  font-size: 0.55rem;
+  font-size: 0.5rem;
   padding: 10px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s;
-}
-
-#top-up-btn {
-  background: #3a7d44;
   color: white;
 }
 
-#top-up-btn:hover {
-  background: #4caf50;
+.btn-green {
+  background: #4c7a34;
+}
+.btn-green:hover {
+  background: #5e963e;
 }
 
-.logout-btn {
-  background: #7d2a3a;
-  color: white;
+.btn-brown {
+  background: #7a5230;
 }
-
-.logout-btn:hover {
-  background: #b03a4e;
+.btn-brown:hover {
+  background: #9c6b40;
 }
 
 .dropdown-section {
-  margin-top: 5px;
+  margin-top: 4px;
 }
 
-.dropdown-title {
+.section-title {
   font-size: 0.55rem;
-  color: #b886ff;
+  color: #f7d354;
   margin-bottom: 5px;
 }
 
 .history-list {
   list-style: none;
-  font-size: 0.5rem;
-  color: #ccc;
-  max-height: 80px;
-  overflow-y: auto;
-}
-
-.empty-history, .coming-soon {
   font-size: 0.45rem;
-  color: #888;
+  color: #ddd;
+  max-height: 70px;
+  overflow-y: auto;
+  padding-left: 0;
 }
 
-/* Основная информация (IP) */
-.server-info {
-  background: #1e1730;
-  padding: 15px;
-  border: 2px solid #5b3f8c;
-  border-radius: 8px;
+.dimmed {
+  font-size: 0.45rem;
+  color: #999;
+}
+
+/* Основной контент */
+.welcome-text {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.welcome-text p {
+  font-size: 0.8rem;
+  margin: 5px 0;
+  color: #f5e7b3;
+}
+
+.welcome-text .sub {
+  font-size: 0.6rem;
+  color: #c8b878;
+}
+
+.server-block {
+  background: rgba(50, 40, 25, 0.8);
+  border: 2px solid #7a5c3e;
+  border-radius: 12px;
+  padding: 20px;
 }
 
 .ip-box {
@@ -176,27 +224,27 @@ body::before {
   align-items: center;
   gap: 10px;
   font-size: 0.85rem;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .ip-box strong {
-  color: #f9e076;
+  color: #ffd966;
 }
 
 #copy-ip {
   background: none;
-  border: 2px solid #8b6bc0;
-  color: #f9e076;
+  border: 2px solid #8b6b4b;
+  color: #ffd966;
   font-size: 1.2rem;
   cursor: pointer;
   padding: 3px 10px;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: 0.2s;
 }
 
 #copy-ip:hover {
-  background: #8b6bc0;
-  color: #fff;
+  background: #8b6b4b;
+  color: white;
 }
 
 .status {
@@ -208,19 +256,26 @@ body::before {
 }
 
 .status.online {
-  background: #2a5a2a;
-  color: #d4edda;
+  background: #3c6e3c;
+  color: #e0f0d0;
 }
 
 .status.offline {
-  background: #5a2020;
+  background: #7a3c3c;
   color: #f8d7da;
 }
 
 .players-count {
   text-align: center;
-  font-size: 0.65rem;
-  color: #d6c8ff;
+  font-size: 0.6rem;
+  color: #e6d7b0;
+}
+
+footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.5rem;
+  color: #b2a48b;
 }
 
 /* Адаптивность */
@@ -228,13 +283,14 @@ body::before {
   .container {
     padding: 20px;
   }
-  .main-header {
-    flex-direction: column;
-    gap: 15px;
+  .logo {
+    font-size: 1.3rem;
+  }
+  .profile-area {
+    padding: 6px 12px 6px 6px;
   }
   .profile-dropdown {
-    right: 10px;
-    top: 110px;
-    width: 220px;
+    right: -10px;
+    width: 240px;
   }
 }
