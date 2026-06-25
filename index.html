@@ -4,18 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grow-a-Garden — Уютный сервер Minecraft</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <!-- Предзагрузка шрифта для скорости -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"></noscript>
+  
   <link rel="stylesheet" href="style.css">
   
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-functions-compat.js"></script>
+  <!-- Firebase SDK (загружаются асинхронно) -->
+  <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-functions-compat.js"></script>
 </head>
 <body>
+  <!-- Фоновые частицы (canvas) -->
+  <canvas id="bg-canvas"></canvas>
+  
+  <!-- Плавающие надписи на фоне -->
+  <div class="floating-texts" id="floating-texts">
+    <span class="float-text" style="top: 15%; left: 10%;">🌱 GROW</span>
+    <span class="float-text" style="top: 25%; right: 15%;">🌿 GARDEN</span>
+    <span class="float-text" style="top: 50%; left: 20%;">🌸 BLOOM</span>
+    <span class="float-text" style="top: 70%; right: 10%;">🍄 FARM</span>
+    <span class="float-text" style="top: 35%; left: 60%;">💎 MINE</span>
+    <span class="float-text" style="top: 80%; left: 40%;">⭐ CRAFT</span>
+    <span class="float-text" style="top: 10%; right: 30%;">🌻 HARVEST</span>
+    <span class="float-text" style="top: 60%; left: 75%;">🪴 PLANT</span>
+  </div>
+
   <div class="container">
     <!-- Шапка -->
     <header class="main-header">
@@ -23,6 +40,7 @@
       <div class="profile-area" id="profile-area">
         <div class="avatar" id="avatar">🌿</div>
         <span class="nickname-header" id="nickname-display">Загрузка...</span>
+        
         <!-- Выпадающий профиль -->
         <div class="profile-dropdown hidden" id="profile-dropdown">
           <div class="dropdown-top">
@@ -70,6 +88,6 @@
     </footer>
   </div>
 
-  <script src="script.js"></script>
+  <script defer src="script.js"></script>
 </body>
 </html>
