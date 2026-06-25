@@ -1,13 +1,13 @@
-// Замени на реальный IP и порт своего сервера
+// IP и порт твоего сервера (можно изменить)
 const SERVER_IP = 'play.growagarden.ru';
-const SERVER_PORT = 25565; // стандартный порт Java Edition
+const SERVER_PORT = 25565; // 19132 для Bedrock
 
 const statusDiv = document.getElementById('server-status');
 const playersDiv = document.getElementById('players-online');
 const copyBtn = document.getElementById('copy-ip');
 const ipText = document.getElementById('server-ip');
 
-// Функция получения статуса через API mcsrvstat.us
+// Проверка статуса через mcsrvstat.us
 async function fetchServerStatus() {
   const url = `https://api.mcsrvstat.us/2/${SERVER_IP}:${SERVER_PORT}`;
   try {
@@ -33,7 +33,7 @@ async function fetchServerStatus() {
   }
 }
 
-// Копирование IP в буфер обмена
+// Копирование IP
 copyBtn.addEventListener('click', () => {
   const ip = ipText.textContent.trim();
   navigator.clipboard.writeText(ip).then(() => {
@@ -44,6 +44,16 @@ copyBtn.addEventListener('click', () => {
   });
 });
 
-// Загружаем статус при открытии и обновляем каждые 60 секунд
+// Обработка кнопок "Купить"
+document.querySelectorAll('.buy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.getAttribute('data-item');
+    // Здесь можно заменить на редирект в Discord или форму
+    alert(`Для покупки «${item}» напишите администратору в Discord: @admin`);
+    // Либо открыть Discord: window.open('https://discord.gg/твой-сервер', '_blank');
+  });
+});
+
+// Запуск проверки статуса
 fetchServerStatus();
 setInterval(fetchServerStatus, 60000);
