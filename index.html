@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grow-a-Garden Market — Профиль</title>
+  <title>Grow-a-Garden — Уютный сервер Minecraft</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -11,43 +11,55 @@
 </head>
 <body>
   <div class="container">
-    <!-- Шапка с профилем -->
+    <!-- Шапка -->
     <header class="main-header">
-      <h1>🛒 Grow-a-Garden Market</h1>
-      <div class="profile-icon" id="profile-icon">
-        <span class="avatar">👤</span>
-        <span id="nickname-display" class="nickname-header">Гость</span>
-      </div>
-      <!-- Выпадающее меню профиля -->
-      <div class="profile-dropdown hidden" id="profile-dropdown">
-        <div class="dropdown-header">
-          <span id="dropdown-nickname">Гость</span>
-          <span id="dropdown-balance" class="dropdown-balance">0 монет</span>
+      <h1 class="logo">🌱 Grow-a-Garden</h1>
+      <div class="profile-area" id="profile-area">
+        <div class="avatar" id="avatar">🌿</div>
+        <span class="nickname-header" id="nickname-display">Гость</span>
+        <!-- Выпадающий профиль -->
+        <div class="profile-dropdown hidden" id="profile-dropdown">
+          <div class="dropdown-top">
+            <div class="avatar-large" id="dropdown-avatar">🌿</div>
+            <div class="dropdown-info">
+              <span id="dropdown-nickname">Гость</span>
+              <span class="dropdown-balance">💰 <span id="dropdown-balance-value">0</span> монет</span>
+            </div>
+          </div>
+          <button id="top-up-btn" class="btn-green">Пополнить +100</button>
+          <div class="dropdown-section">
+            <p class="section-title">📜 История покупок</p>
+            <ul id="history-list" class="history-list"></ul>
+          </div>
+          <div class="dropdown-section">
+            <p class="section-title">🎟️ Промокоды</p>
+            <p class="dimmed">Скоро появятся</p>
+          </div>
+          <button id="logout-btn" class="btn-brown">Выйти</button>
         </div>
-        <button id="top-up-btn">Пополнить +100</button>
-        <div class="dropdown-section">
-          <p class="dropdown-title">📜 История покупок</p>
-          <ul id="history-list" class="history-list">
-            <li class="empty-history">Пока пусто</li>
-          </ul>
-        </div>
-        <div class="dropdown-section">
-          <p class="dropdown-title">🎟️ Промокоды</p>
-          <p class="coming-soon">Скоро появятся</p>
-        </div>
-        <button id="logout-btn" class="logout-btn">Выйти</button>
       </div>
     </header>
 
-    <!-- Основная информация -->
-    <section class="server-info">
-      <div class="ip-box">
-        <span>IP: <strong id="server-ip">play.growagarden.ru</strong></span>
-        <button id="copy-ip" title="Скопировать IP">📋</button>
+    <!-- Основной блок -->
+    <main class="main-content">
+      <div class="welcome-text">
+        <p>Добро пожаловать в уютный мир садоводства!</p>
+        <p class="sub">Выращивай, строй, дружи 🌻</p>
       </div>
-      <div id="server-status" class="status offline">Проверка статуса...</div>
-      <div id="players-online" class="players-count"></div>
-    </section>
+
+      <div class="server-block">
+        <div class="ip-box">
+          <span>IP: <strong id="server-ip">play.growagarden.ru</strong></span>
+          <button id="copy-ip" title="Скопировать IP">📋</button>
+        </div>
+        <div id="server-status" class="status offline">Проверка статуса...</div>
+        <div id="players-online" class="players-count"></div>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2026 Grow-a-Garden – Растим мир вместе!</p>
+    </footer>
   </div>
 
   <script src="script.js"></script>
