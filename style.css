@@ -24,17 +24,32 @@ body {
   width: 100%;
   height: 70%;
   background: 
-    radial-gradient(ellipse at 20% 80%, rgba(30,60,20,0.6) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 90%, rgba(20,50,15,0.5) 0%, transparent 40%),
+    radial-gradient(1px 1px at 5% 8%, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1px 1px at 12% 20%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(2px 2px at 20% 5%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 28% 15%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 35% 25%, rgba(255,255,255,0.9), transparent),
+    radial-gradient(2px 2px at 42% 8%, rgba(200,255,200,0.8), transparent),
+    radial-gradient(1px 1px at 50% 18%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 58% 28%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 65% 10%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 72% 22%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 80% 6%, rgba(255,255,255,0.9), transparent),
+    radial-gradient(2px 2px at 88% 16%, rgba(180,255,180,0.7), transparent),
+    radial-gradient(1px 1px at 93% 25%, rgba(255,255,255,0.5), transparent),
     linear-gradient(180deg, 
-      #0a1a0a 0%, 
-      #0d200d 8%, 
-      #112811 20%, 
-      #153015 35%, 
-      #1a3818 50%, 
-      #1d401a 65%, 
-      #1a3818 80%, 
-      #163016 100%
+      #0a0a1a 0%,
+      #0c0c20 5%,
+      #0e0e24 10%,
+      #101428 18%,
+      #141c30 28%,
+      #182438 40%,
+      #1c2c3c 52%,
+      #1a302e 62%,
+      #183420 72%,
+      #163016 82%,
+      #142a14 92%,
+      #122412 100%
     );
   z-index: -2;
 }
@@ -46,6 +61,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
 }
 
 .stars::before {
@@ -54,25 +70,23 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 65%;
   background-image: 
-    radial-gradient(3px 3px at 5% 12%, rgba(255,255,255,0.95), transparent),
-    radial-gradient(2px 2px at 12% 28%, rgba(255,255,255,0.8), transparent),
-    radial-gradient(1px 1px at 18% 8%, rgba(255,255,255,0.7), transparent),
-    radial-gradient(2px 2px at 25% 35%, rgba(255,255,255,0.85), transparent),
-    radial-gradient(1px 1px at 30% 15%, rgba(255,255,255,0.6), transparent),
-    radial-gradient(3px 3px at 38% 42%, rgba(200,255,200,0.9), transparent),
-    radial-gradient(1px 1px at 42% 5%, rgba(255,255,255,0.7), transparent),
-    radial-gradient(2px 2px at 50% 30%, rgba(255,255,255,0.8), transparent),
-    radial-gradient(1px 1px at 55% 18%, rgba(255,255,255,0.5), transparent),
-    radial-gradient(2px 2px at 62% 38%, rgba(255,255,255,0.75), transparent),
-    radial-gradient(1px 1px at 68% 10%, rgba(255,255,255,0.65), transparent),
-    radial-gradient(3px 3px at 75% 25%, rgba(180,255,180,0.85), transparent),
-    radial-gradient(1px 1px at 80% 8%, rgba(255,255,255,0.7), transparent),
-    radial-gradient(2px 2px at 88% 32%, rgba(255,255,255,0.8), transparent),
-    radial-gradient(1px 1px at 92% 15%, rgba(255,255,255,0.55), transparent),
-    radial-gradient(2px 2px at 96% 40%, rgba(255,255,255,0.7), transparent);
-  animation: twinkle 3s ease-in-out infinite;
+    radial-gradient(2px 2px at 3% 5%, rgba(255,255,255,0.95), transparent),
+    radial-gradient(1px 1px at 8% 12%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 15% 3%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 22% 18%, rgba(255,255,255,0.85), transparent),
+    radial-gradient(2px 2px at 30% 7%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 38% 15%, rgba(255,255,255,0.9), transparent),
+    radial-gradient(2px 2px at 45% 4%, rgba(200,255,200,0.75), transparent),
+    radial-gradient(1px 1px at 52% 20%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 60% 9%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 68% 14%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 75% 6%, rgba(255,255,255,0.85), transparent),
+    radial-gradient(1px 1px at 82% 22%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 90% 11%, rgba(180,255,180,0.8), transparent),
+    radial-gradient(1px 1px at 96% 8%, rgba(255,255,255,0.7), transparent);
+  animation: twinkleStars 4s ease-in-out infinite;
 }
 
 .stars::after {
@@ -81,69 +95,92 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 65%;
   background-image: 
-    radial-gradient(1px 1px at 8% 45%, rgba(255,255,255,0.5), transparent),
-    radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.4), transparent),
-    radial-gradient(2px 2px at 22% 50%, rgba(255,255,255,0.55), transparent),
-    radial-gradient(1px 1px at 35% 28%, rgba(255,255,255,0.45), transparent),
-    radial-gradient(1px 1px at 45% 48%, rgba(255,255,255,0.5), transparent),
-    radial-gradient(2px 2px at 52% 22%, rgba(255,255,255,0.6), transparent),
-    radial-gradient(1px 1px at 60% 44%, rgba(255,255,255,0.4), transparent),
-    radial-gradient(1px 1px at 70% 35%, rgba(255,255,255,0.5), transparent),
-    radial-gradient(2px 2px at 78% 50%, rgba(255,255,255,0.55), transparent),
-    radial-gradient(1px 1px at 85% 28%, rgba(255,255,255,0.45), transparent),
-    radial-gradient(1px 1px at 90% 42%, rgba(255,255,255,0.5), transparent);
-  animation: twinkle 4.5s ease-in-out infinite 1.5s;
+    radial-gradient(1px 1px at 5% 28%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 14% 35%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(2px 2px at 25% 22%, rgba(255,255,255,0.55), transparent),
+    radial-gradient(1px 1px at 33% 40%, rgba(255,255,255,0.45), transparent),
+    radial-gradient(1px 1px at 44% 30%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 55% 38%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 62% 25%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 72% 42%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 80% 32%, rgba(255,255,255,0.55), transparent),
+    radial-gradient(1px 1px at 88% 28%, rgba(255,255,255,0.45), transparent),
+    radial-gradient(1px 1px at 94% 36%, rgba(255,255,255,0.5), transparent);
+  animation: twinkleStars 5.5s ease-in-out infinite 2s;
 }
 
-@keyframes twinkle {
+@keyframes twinkleStars {
   0%, 100% { opacity: 0.9; }
-  30% { opacity: 0.5; }
-  60% { opacity: 0.75; }
-  85% { opacity: 0.35; }
+  25% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  75% { opacity: 0.4; }
 }
 
 /* ====== ЛУНА ====== */
 .moon {
   position: absolute;
-  top: 8%;
-  right: 16%;
-  width: 70px;
-  height: 70px;
-  background: 
-    radial-gradient(circle at 38% 38%, #fffef0 5%, #fff8d0 30%, #ffe082 55%, transparent 100%);
-  border-radius: 50%;
+  top: 5%;
+  right: 12%;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(180deg, #fffef5 0%, #fffde8 30%, #fff8d0 60%, #ffe8a0 100%);
+  border-radius: 8px;
   box-shadow: 
-    0 0 50px #ffe082, 
-    0 0 100px rgba(255,224,130,0.5), 
+    0 0 50px #ffe8a0,
+    0 0 100px rgba(255,224,130,0.5),
     0 0 150px rgba(255,224,130,0.3),
-    0 0 200px rgba(255,224,130,0.15),
-    inset 0 0 20px rgba(255,255,255,0.1);
+    0 0 0 3px rgba(255,255,255,0.4),
+    inset 0 0 30px rgba(255,255,255,0.3);
   z-index: -1;
+  image-rendering: pixelated;
+  transform: rotate(-5deg);
 }
 
 .moon::after {
   content: '';
   position: absolute;
-  top: 14px;
-  right: 16px;
-  width: 12px;
-  height: 12px;
-  background: rgba(200,180,120,0.5);
-  border-radius: 50%;
-  box-shadow: 0 0 6px rgba(200,180,120,0.6);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    linear-gradient(180deg, 
+      transparent 0px, transparent 8px,
+      rgba(180,160,100,0.5) 8px, rgba(180,160,100,0.5) 14px,
+      transparent 14px, transparent 22px,
+      rgba(160,140,80,0.4) 22px, rgba(160,140,80,0.4) 28px,
+      transparent 28px, transparent 38px,
+      rgba(170,150,90,0.45) 38px, rgba(170,150,90,0.45) 44px,
+      transparent 44px, transparent 52px,
+      rgba(150,130,70,0.35) 52px, rgba(150,130,70,0.35) 56px,
+      transparent 56px, transparent 64px,
+      rgba(180,160,100,0.4) 64px, rgba(180,160,100,0.4) 70px,
+      transparent 70px
+    ),
+    radial-gradient(4px 4px at 20% 25%, rgba(140,120,60,0.5), transparent),
+    radial-gradient(3px 3px at 60% 15%, rgba(150,130,70,0.45), transparent),
+    radial-gradient(5px 5px at 75% 40%, rgba(130,110,50,0.4), transparent),
+    radial-gradient(3px 3px at 30% 55%, rgba(160,140,80,0.5), transparent),
+    radial-gradient(4px 4px at 50% 70%, rgba(140,120,60,0.45), transparent),
+    radial-gradient(3px 3px at 80% 65%, rgba(150,130,70,0.4), transparent),
+    radial-gradient(5px 5px at 15% 45%, rgba(130,110,50,0.35), transparent),
+    radial-gradient(4px 4px at 45% 35%, rgba(160,140,80,0.4), transparent),
+    radial-gradient(3px 3px at 65% 55%, rgba(140,120,60,0.45), transparent);
+  border-radius: 8px;
 }
 
 .moon::before {
   content: '';
   position: absolute;
-  top: 32px;
-  right: 26px;
-  width: 8px;
-  height: 8px;
-  background: rgba(200,180,120,0.4);
-  border-radius: 50%;
+  top: 6px;
+  left: 6px;
+  width: 20px;
+  height: 20px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 4px;
+  box-shadow: 30px 10px 0 rgba(255,255,255,0.2);
 }
 
 /* ====== ОБЛАКА ====== */
@@ -159,81 +196,82 @@ body {
 
 .cloud {
   position: absolute;
-  background: rgba(255,255,255,0.06);
-  border-radius: 50px;
-}
-
-.cloud::before,
-.cloud::after {
-  content: '';
-  position: absolute;
-  background: rgba(255,255,255,0.05);
-  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  image-rendering: pixelated;
+  border-radius: 2px;
 }
 
 .cloud-1 {
-  width: 200px;
-  height: 55px;
-  top: 18%;
-  left: -220px;
-  animation: cloudDrift 45s linear infinite;
-}
-.cloud-1::before {
-  width: 90px;
-  height: 90px;
-  top: -35px;
-  left: 35px;
-}
-.cloud-1::after {
-  width: 110px;
-  height: 70px;
-  top: -25px;
-  left: 85px;
+  width: 180px;
+  height: 48px;
+  top: 14%;
+  left: -200px;
+  border-radius: 2px;
+  animation: cloudDrift 55s linear infinite;
+  box-shadow: 
+    20px -20px 0 0 rgba(255,255,255,0.08),
+    44px -20px 0 0 rgba(255,255,255,0.1),
+    68px -20px 0 0 rgba(255,255,255,0.09),
+    92px -20px 0 0 rgba(255,255,255,0.07),
+    116px -20px 0 0 rgba(255,255,255,0.08),
+    0px 0px 0 0 rgba(255,255,255,0.11),
+    24px 0px 0 0 rgba(255,255,255,0.13),
+    48px 0px 0 0 rgba(255,255,255,0.12),
+    72px 0px 0 0 rgba(255,255,255,0.14),
+    96px 0px 0 0 rgba(255,255,255,0.11),
+    120px 0px 0 0 rgba(255,255,255,0.1),
+    144px 0px 0 0 rgba(255,255,255,0.08),
+    20px 20px 0 0 rgba(255,255,255,0.06),
+    44px 20px 0 0 rgba(255,255,255,0.08),
+    68px 20px 0 0 rgba(255,255,255,0.07),
+    92px 20px 0 0 rgba(255,255,255,0.06);
 }
 
 .cloud-2 {
-  width: 160px;
-  height: 45px;
-  top: 28%;
-  left: -180px;
-  animation: cloudDrift 38s linear 12s infinite;
-}
-.cloud-2::before {
-  width: 70px;
-  height: 70px;
-  top: -28px;
-  left: 25px;
-}
-.cloud-2::after {
-  width: 85px;
-  height: 55px;
-  top: -18px;
-  left: 65px;
+  width: 140px;
+  height: 38px;
+  top: 24%;
+  left: -160px;
+  border-radius: 2px;
+  animation: cloudDrift 48s linear 18s infinite;
+  box-shadow: 
+    16px -16px 0 0 rgba(255,255,255,0.07),
+    40px -16px 0 0 rgba(255,255,255,0.09),
+    64px -16px 0 0 rgba(255,255,255,0.08),
+    88px -16px 0 0 rgba(255,255,255,0.06),
+    0px 0px 0 0 rgba(255,255,255,0.1),
+    24px 0px 0 0 rgba(255,255,255,0.12),
+    48px 0px 0 0 rgba(255,255,255,0.11),
+    72px 0px 0 0 rgba(255,255,255,0.13),
+    96px 0px 0 0 rgba(255,255,255,0.1),
+    120px 0px 0 0 rgba(255,255,255,0.07),
+    16px 16px 0 0 rgba(255,255,255,0.05),
+    40px 16px 0 0 rgba(255,255,255,0.07),
+    64px 16px 0 0 rgba(255,255,255,0.06);
 }
 
 .cloud-3 {
-  width: 240px;
-  height: 65px;
-  top: 10%;
-  left: -260px;
-  animation: cloudDrift 50s linear 25s infinite;
-}
-.cloud-3::before {
   width: 100px;
-  height: 100px;
-  top: -40px;
-  left: 50px;
-}
-.cloud-3::after {
-  width: 130px;
-  height: 80px;
-  top: -30px;
-  left: 100px;
+  height: 28px;
+  top: 8%;
+  left: -120px;
+  border-radius: 2px;
+  animation: cloudDrift 42s linear 35s infinite;
+  box-shadow: 
+    12px -12px 0 0 rgba(255,255,255,0.06),
+    36px -12px 0 0 rgba(255,255,255,0.08),
+    60px -12px 0 0 rgba(255,255,255,0.07),
+    0px 0px 0 0 rgba(255,255,255,0.09),
+    24px 0px 0 0 rgba(255,255,255,0.11),
+    48px 0px 0 0 rgba(255,255,255,0.1),
+    72px 0px 0 0 rgba(255,255,255,0.08),
+    12px 12px 0 0 rgba(255,255,255,0.04),
+    36px 12px 0 0 rgba(255,255,255,0.06);
 }
 
 @keyframes cloudDrift {
   from { transform: translateX(0); }
-  to { transform: translateX(calc(100vw + 500px)); }
+  to { transform: translateX(calc(100vw + 600px)); }
 }
 
 /* ====== СВЕТЛЯЧКИ ====== */
@@ -255,6 +293,7 @@ body {
   width: 100%;
   height: 35%;
   z-index: -2;
+  image-rendering: pixelated;
 }
 
 .ground::before {
@@ -263,17 +302,18 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 60px;
-  background: 
-    repeating-linear-gradient(
-      90deg,
-      #5a9a30 0px,
-      #4a8a28 4px,
-      #3d7a22 4px,
-      #509030 8px,
-      #4a8828 8px,
-      #3e7822 12px
-    );
+  height: 64px;
+  background: repeating-linear-gradient(
+    90deg,
+    #6aaa30 0px,
+    #5a9a28 4px,
+    #4a8a22 4px,
+    #5a9a28 8px,
+    #4a8a22 8px,
+    #3d7a1e 12px,
+    #509028 12px,
+    #4a8822 16px
+  );
   border-bottom: 3px solid #2d5a18;
 }
 
@@ -283,34 +323,28 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: 64px;
   background:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 5px,
-      rgba(0,0,0,0.06) 5px,
-      rgba(0,0,0,0.06) 6px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 3px,
-      rgba(255,255,255,0.03) 3px,
-      rgba(255,255,255,0.03) 4px
-    );
+    repeating-linear-gradient(0deg, transparent, transparent 7px, rgba(0,0,0,0.08) 7px, rgba(0,0,0,0.08) 8px),
+    repeating-linear-gradient(90deg, transparent, transparent 7px, rgba(255,255,255,0.04) 7px, rgba(255,255,255,0.04) 8px),
+    radial-gradient(2px 2px at 10% 30%, rgba(0,0,0,0.3), transparent),
+    radial-gradient(3px 3px at 25% 60%, rgba(0,0,0,0.25), transparent),
+    radial-gradient(2px 2px at 40% 20%, rgba(0,0,0,0.2), transparent),
+    radial-gradient(2px 2px at 55% 50%, rgba(0,0,0,0.3), transparent),
+    radial-gradient(3px 3px at 70% 40%, rgba(0,0,0,0.25), transparent),
+    radial-gradient(2px 2px at 85% 70%, rgba(0,0,0,0.2), transparent);
 }
 
 .dirt-layers {
   position: absolute;
-  top: 60px;
+  top: 64px;
   left: 0;
   width: 100%;
-  height: calc(100% - 60px);
+  height: calc(100% - 64px);
   background: 
-    linear-gradient(180deg, #8B6914 0%, #7A5E12 30%, transparent 30%),
-    linear-gradient(180deg, transparent 30%, #6B4F10 30%, #5A4210 60%, transparent 60%),
-    linear-gradient(180deg, transparent 60%, #4A3508 60%, #3A2806 100%);
+    repeating-linear-gradient(0deg, #8B6914 0px, #8B6914 2px, #7A5E12 2px, #7A5E12 4px, #8B6914 4px, #8B6914 6px, #7A5E12 6px, #7A5E12 8px),
+    linear-gradient(180deg, transparent 20%, #6B4F10 20%, #6B4F10 40%, #5A4210 40%, #5A4210 60%, transparent 60%),
+    linear-gradient(180deg, transparent 55%, #4A3508 55%, #4A3508 75%, #3A2806 75%, #3A2806 100%);
 }
 
 .dirt-layers::before {
@@ -321,14 +355,18 @@ body {
   width: 100%;
   height: 100%;
   background-image: 
-    radial-gradient(6px 5px at 15% 40%, rgba(100,100,100,0.25), transparent),
-    radial-gradient(8px 6px at 28% 55%, rgba(90,90,90,0.2), transparent),
-    radial-gradient(5px 4px at 42% 35%, rgba(110,110,110,0.22), transparent),
-    radial-gradient(7px 5px at 55% 50%, rgba(95,95,95,0.25), transparent),
-    radial-gradient(4px 4px at 68% 45%, rgba(105,105,105,0.2), transparent),
-    radial-gradient(9px 7px at 80% 38%, rgba(85,85,85,0.23), transparent),
-    radial-gradient(5px 5px at 92% 48%, rgba(100,100,100,0.2), transparent);
-  filter: blur(1px);
+    radial-gradient(8px 6px at 12% 25%, rgba(90,85,80,0.4), transparent),
+    radial-gradient(10px 8px at 28% 45%, rgba(80,75,70,0.35), transparent),
+    radial-gradient(6px 5px at 45% 30%, rgba(85,80,75,0.3), transparent),
+    radial-gradient(9px 7px at 58% 50%, rgba(75,70,65,0.4), transparent),
+    radial-gradient(7px 6px at 70% 35%, rgba(80,75,70,0.35), transparent),
+    radial-gradient(11px 8px at 85% 48%, rgba(85,80,75,0.3), transparent),
+    radial-gradient(5px 4px at 92% 28%, rgba(90,85,80,0.4), transparent),
+    radial-gradient(3px 3px at 18% 55%, rgba(100,95,90,0.25), transparent),
+    radial-gradient(4px 4px at 38% 22%, rgba(95,90,85,0.3), transparent),
+    radial-gradient(3px 3px at 52% 58%, rgba(100,95,90,0.25), transparent),
+    radial-gradient(4px 4px at 65% 42%, rgba(95,90,85,0.3), transparent),
+    radial-gradient(3px 3px at 78% 52%, rgba(100,95,90,0.25), transparent);
 }
 
 .dirt-layers::after {
@@ -339,15 +377,9 @@ body {
   width: 100%;
   height: 100%;
   background-image:
-    repeating-linear-gradient(
-      85deg,
-      transparent,
-      transparent 30px,
-      rgba(50,30,5,0.2) 30px,
-      rgba(50,30,5,0.2) 31px,
-      transparent 31px,
-      transparent 60px
-    );
+    repeating-linear-gradient(80deg, transparent, transparent 25px, rgba(40,25,5,0.25) 25px, rgba(40,25,5,0.25) 27px, transparent 27px, transparent 50px),
+    repeating-linear-gradient(100deg, transparent, transparent 35px, rgba(35,20,3,0.2) 35px, rgba(35,20,3,0.2) 37px, transparent 37px, transparent 70px),
+    repeating-linear-gradient(0deg, transparent, transparent 15px, rgba(0,0,0,0.15) 15px, rgba(0,0,0,0.15) 16px, transparent 16px, transparent 30px);
 }
 
 /* ====== КОНТЕНТ ====== */
@@ -372,8 +404,7 @@ body {
   font-family: 'Press Start 2P', cursive;
   font-size: 0.46rem;
   padding: 12px 6px;
-  background: 
-    linear-gradient(180deg, rgba(30,40,20,0.95) 0%, rgba(18,24,12,0.95) 100%);
+  background: linear-gradient(180deg, rgba(30,40,20,0.95) 0%, rgba(18,24,12,0.95) 100%);
   border: 3px solid #4a6a30;
   color: #c0e080;
   border-radius: 14px;
@@ -682,8 +713,7 @@ body {
 
 /* ====== КАРТОЧКА СЕРВЕРА ====== */
 .server-card {
-  background: 
-    linear-gradient(180deg, rgba(30,40,20,0.95) 0%, rgba(18,24,12,0.95) 50%, rgba(15,20,10,0.95) 100%);
+  background: linear-gradient(180deg, rgba(30,40,20,0.95) 0%, rgba(18,24,12,0.95) 50%, rgba(15,20,10,0.95) 100%);
   border: 3px solid #5a8030;
   border-radius: 24px;
   padding: 34px 26px;
@@ -729,9 +759,7 @@ body {
 .server-card h1 {
   font-size: 1.6rem;
   color: #c8ff80;
-  text-shadow: 
-    3px 3px 0 #1a3a0a,
-    0 0 20px rgba(160,220,80,0.3);
+  text-shadow: 3px 3px 0 #1a3a0a, 0 0 20px rgba(160,220,80,0.3);
   margin-bottom: 10px;
   letter-spacing: 2px;
   position: relative;
@@ -751,17 +779,14 @@ body {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: 
-    linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%);
+  background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%);
   border: 2px solid #4a6a30;
   border-radius: 16px;
   padding: 14px 18px;
   margin-bottom: 18px;
   position: relative;
   z-index: 1;
-  box-shadow: 
-    inset 0 2px 4px rgba(0,0,0,0.4),
-    0 2px 0 rgba(255,255,255,0.02);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 2px 0 rgba(255,255,255,0.02);
 }
 
 .ip-box code {
@@ -848,8 +873,7 @@ body {
 
 /* ====== КАРТОЧКА ПРОФИЛЯ ====== */
 .profile-card {
-  background: 
-    linear-gradient(180deg, rgba(30,40,20,0.95) 0%, rgba(18,24,12,0.95) 50%, rgba(15,20,10,0.95) 100%);
+  background: linear-gradient(180deg, rgba(30,40,20,0.95) 0%, rgba(18,24,12,0.95) 50%, rgba(15,20,10,0.95) 100%);
   border: 3px solid #5a8030;
   border-radius: 24px;
   overflow: hidden;
@@ -899,9 +923,7 @@ body {
   justify-content: center;
   border: 3px solid #6a9030;
   flex-shrink: 0;
-  box-shadow: 
-    0 0 15px rgba(80,120,40,0.3),
-    inset 0 2px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 0 15px rgba(80,120,40,0.3), inset 0 2px 0 rgba(255,255,255,0.05);
   transition: 0.3s;
 }
 
@@ -1001,15 +1023,8 @@ body {
   border-bottom: none;
 }
 
-.detail-label { 
-  font-size: 0.5rem; 
-  color: #80a060; 
-}
-.detail-value { 
-  font-size: 0.52rem; 
-  color: #d0ff90;
-  text-shadow: 0 0 6px rgba(180,255,100,0.2);
-}
+.detail-label { font-size: 0.5rem; color: #80a060; }
+.detail-value { font-size: 0.52rem; color: #d0ff90; text-shadow: 0 0 6px rgba(180,255,100,0.2); }
 
 .logout-btn {
   font-family: 'Press Start 2P', cursive;
@@ -1065,17 +1080,14 @@ footer {
 
 .modal-window {
   position: relative;
-  background: 
-    linear-gradient(180deg, rgba(25,32,16,0.98) 0%, rgba(18,24,12,0.98) 100%);
+  background: linear-gradient(180deg, rgba(25,32,16,0.98) 0%, rgba(18,24,12,0.98) 100%);
   border: 4px solid #4a6a30;
   border-radius: 20px;
   width: 94%;
   max-width: 680px;
   max-height: 84vh;
   overflow-y: auto;
-  box-shadow: 
-    0 0 0 3px rgba(30,50,20,0.4),
-    0 12px 60px rgba(0,0,0,0.9);
+  box-shadow: 0 0 0 3px rgba(30,50,20,0.4), 0 12px 60px rgba(0,0,0,0.9);
 }
 
 .modal-window::-webkit-scrollbar { width: 8px; }
@@ -1522,31 +1534,9 @@ footer {
   border-color: #80c050;
 }
 
-.ticket-list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .ticket-list-header h3 {
   font-size: 0.55rem;
   color: #c8ff80;
-}
-
-.btn-new-ticket {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 0.4rem;
-  padding: 10px 16px;
-  background: linear-gradient(180deg, #4a7a2e, #3a5e20);
-  border: 2px solid #5a8a3a;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.btn-new-ticket:hover {
-  background: linear-gradient(180deg, #5a8e3a, #4a7228);
 }
 
 .ticket-list {
@@ -1587,20 +1577,8 @@ footer {
   border-radius: 12px;
 }
 
-.ticket-open {
-  background: rgba(40,120,40,0.5);
-  color: #80ff80;
-}
-
-.ticket-progress {
-  background: rgba(120,100,20,0.5);
-  color: #ffd700;
-}
-
-.ticket-closed {
-  background: rgba(80,40,40,0.5);
-  color: #ffaaaa;
-}
+.ticket-open { background: rgba(40,120,40,0.5); color: #80ff80; }
+.ticket-closed { background: rgba(80,40,40,0.5); color: #ffaaaa; }
 
 .ticket-card-info {
   display: flex;
@@ -1649,14 +1627,8 @@ footer {
   max-width: 90%;
 }
 
-.chat-user {
-  align-self: flex-end;
-  flex-direction: row-reverse;
-}
-
-.chat-support {
-  align-self: flex-start;
-}
+.chat-user { align-self: flex-end; flex-direction: row-reverse; }
+.chat-support { align-self: flex-start; }
 
 .chat-avatar {
   width: 32px;
@@ -1690,39 +1662,9 @@ footer {
   border-color: #5a8030;
 }
 
-.chat-sender {
-  font-size: 0.38rem;
-  color: #ffd700;
-  margin-bottom: 6px;
-}
-
-.chat-text {
-  font-size: 0.42rem;
-  color: #c0d0a0;
-  line-height: 1.8;
-}
-
-.chat-files {
-  margin-top: 6px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.chat-file {
-  font-size: 0.32rem;
-  color: #80a060;
-  background: rgba(0,0,0,0.4);
-  padding: 3px 6px;
-  border-radius: 4px;
-}
-
-.chat-time {
-  font-size: 0.3rem;
-  color: #556040;
-  margin-top: 6px;
-  text-align: right;
-}
+.chat-sender { font-size: 0.38rem; color: #ffd700; margin-bottom: 6px; }
+.chat-text { font-size: 0.42rem; color: #c0d0a0; line-height: 1.8; }
+.chat-time { font-size: 0.3rem; color: #556040; margin-top: 6px; text-align: right; }
 
 .chat-input-area {
   display: flex;
