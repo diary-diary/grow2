@@ -1,5 +1,5 @@
 // =====================
-// FIREBASE
+// FIREBASE (опционально)
 // =====================
 const firebaseConfig = {
   apiKey: "AIzaSyCrSDxKoRPtLkmIVgXhVLVp_vAdlggKOU0",
@@ -10,9 +10,18 @@ const firebaseConfig = {
   appId: "1:953892412762:web:6effb58aa6a21fff6d2763"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+let db = null;
+let auth = null;
+let firebaseReady = false;
+
+try {
+  firebase.initializeApp(firebaseConfig);
+  auth = firebase.auth();
+  db = firebase.firestore();
+  firebaseReady = true;
+} catch (e) {
+  console.warn('Firebase не инициализирован, используем localStorage');
+}
 
 // =====================
 // СЕРВЕР
@@ -21,10 +30,11 @@ const SERVER_IP = 'play.growagarden.ru';
 const SERVER_PORT = 25565;
 
 // =====================
-// ЧАСТИЦЫ НА CANVAS
+// ЧАСТИЦЫ НА CANVAS (запускаем сразу)
 // =====================
 (function initParticles() {
   const canvas = document.getElementById('particles-canvas');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   
   function resize() {
@@ -80,209 +90,210 @@ const SERVER_PORT = 25565;
 })();
 
 // =====================
-// DOM
+// DOM (ждём загрузки)
 // =====================
-const statusDiv = document.getElementById('server-status');
-const playersDiv = document.getElementById('players-online');
-const copyBtn = document.getElementById('copy-ip');
-const ipText = document.getElementById('server-ip');
-const profileArea = document.getElementById('profile-area');
-const profileDropdown = document.getElementById('profile-dropdown');
-const nicknameDisplay = document.getElementById('nickname-display');
-const dropdownNickname = document.getElementById('dropdown-nickname');
-const dropdownBalance = document.getElementById('dropdown-balance-value');
-const topUpBtn = document.getElementById('top-up-btn');
-const historyList = document.getElementById('history-list');
-const logoutBtn = document.getElementById('logout-btn');
-const avatar = document.getElementById('avatar');
-const dropdownAvatar = document.getElementById('dropdown-avatar');
+document.addEventListener('DOMContentLoaded', () => {
+  
+  const statusDiv = document.getElementById('server-status');
+  const playersDiv = document.getElementById('players-online');
+  const copyBtn = document.getElementById('copy-ip');
+  const ipText = document.getElementById('server-ip');
+  const profileArea = document.getElementById('profile-area');
+  const profileDropdown = document.getElementById('profile-dropdown');
+  const nicknameDisplay = document.getElementById('nickname-display');
+  const dropdownNickname = document.getElementById('dropdown-nickname');
+  const dropdownBalance = document.getElementById('dropdown-balance-value');
+  const topUpBtn = document.getElementById('top-up-btn');
+  const historyList = document.getElementById('history-list');
+  const logoutBtn = document.getElementById('logout-btn');
+  const avatar = document.getElementById('avatar');
+  const dropdownAvatar = document.getElementById('dropdown-avatar');
 
-// =====================
-// СОСТОЯНИЕ
-// =====================
-let currentUser = null;
-let userNickname = '';
+  // =====================
+  // ЛОКАЛЬНЫЕ ДАННЫЕ (работает всегда)
+  // =====================
+  let nickname = localStorage.getItem('mc_nickname') || '';
+  let balance = parseInt(localStorage.getItem('mc_balance') || '0');
+  let history = JSON.parse(localStorage.getItem('mc_history') || '[]');
 
-// =====================
-// АУТЕНТИФИКАЦИЯ
-// =====================
-auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    currentUser = user;
-    const profile = await getProfile();
-    userNickname = profile.nickname || '';
-    
-    if (!userNickname) {
-      userNickname = prompt('🎮 Введите ваш игровой никнейм:') || 'Садовод';
-      await saveNickname(userNickname);
+  // =====================
+  // БЫСТРАЯ ИНИЦИАЛИЗАЦИЯ
+  // =====================
+  function initProfile() {
+    if (!nickname) {
+      nickname = prompt('🎮 Введите ваш игровой никнейм:');
+      if (!nickname || nickname.trim() === '') nickname = 'Садовод';
+      localStorage.setItem('mc_nickname', nickname);
     }
-    
-    updateProfileUI(profile);
-    loadTransactionHistory();
-  } else {
-    auth.signInAnonymically().catch(err => console.error('Auth:', err));
+    updateProfileUI();
+    updateHistoryUI();
   }
-});
 
-// =====================
-// ПРОФИЛЬ
-// =====================
-async function getProfile() {
-  try {
-    const doc = await db.collection('users').doc(currentUser.uid).get();
-    if (doc.exists) return doc.data();
+  function updateProfileUI() {
+    if (nicknameDisplay) nicknameDisplay.textContent = nickname;
+    if (dropdownNickname) dropdownNickname.textContent = nickname;
+    if (dropdownBalance) dropdownBalance.textContent = balance;
     
-    const def = { nickname: '', balance: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
-    await db.collection('users').doc(currentUser.uid).set(def);
-    return def;
-  } catch (e) {
-    console.error(e);
-    return { nickname: 'Ошибка', balance: 0 };
+    const icons = ['🌱','🌿','🍃','🌳','🌸','🌻','🍄','🌾','🌷','🪴'];
+    const icon = icons[nickname.length % icons.length];
+    if (avatar) avatar.textContent = icon;
+    if (dropdownAvatar) dropdownAvatar.textContent = icon;
   }
-}
 
-async function saveNickname(nick) {
-  try { await db.collection('users').doc(currentUser.uid).update({ nickname: nick }); } catch(e) {}
-}
-
-function updateProfileUI(p) {
-  const nick = p.nickname || userNickname || 'Садовод';
-  const bal = p.balance || 0;
-  
-  nicknameDisplay.textContent = nick;
-  dropdownNickname.textContent = nick;
-  dropdownBalance.textContent = bal;
-  
-  const icons = ['🌱','🌿','🍃','🌳','🌸','🌻','🍄','🌾','🌷','🪴'];
-  const icon = icons[nick.length % icons.length];
-  avatar.textContent = icon;
-  dropdownAvatar.textContent = icon;
-}
-
-// =====================
-// ПОПОЛНЕНИЕ
-// =====================
-topUpBtn.addEventListener('click', async () => {
-  if (!currentUser) return alert('❌ Вы не авторизованы!');
-  
-  const amount = parseInt(prompt('💰 Сумма пополнения (монет):', '100'));
-  if (!amount || amount <= 0) return alert('❌ Неверная сумма!');
-  
-  try {
-    topUpBtn.textContent = '⏳...';
-    topUpBtn.disabled = true;
-    
-    const ref = db.collection('users').doc(currentUser.uid);
-    const doc = await ref.get();
-    const cur = doc.data()?.balance || 0;
-    
-    await ref.update({ balance: firebase.firestore.FieldValue.increment(amount) });
-    await db.collection('transactions').add({
-      userId: currentUser.uid,
-      amount,
-      type: 'deposit',
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    
-    dropdownBalance.textContent = cur + amount;
-    loadTransactionHistory();
-    alert(`✅ +${amount} монет!`);
-  } catch(e) {
-    alert('❌ Ошибка: ' + e.message);
-  } finally {
-    topUpBtn.textContent = '💎 Пополнить баланс';
-    topUpBtn.disabled = false;
-  }
-});
-
-// =====================
-// ИСТОРИЯ
-// =====================
-async function loadTransactionHistory() {
-  if (!currentUser) return;
-  
-  try {
-    const snap = await db.collection('transactions')
-      .where('userId', '==', currentUser.uid)
-      .orderBy('timestamp', 'desc')
-      .limit(10)
-      .get();
-    
+  function updateHistoryUI() {
+    if (!historyList) return;
     historyList.innerHTML = '';
-    if (snap.empty) {
+    
+    if (history.length === 0) {
       historyList.innerHTML = '<li class="dimmed">Пока пусто</li>';
       return;
     }
     
-    snap.forEach(d => {
-      const data = d.data();
+    history.slice(-10).reverse().forEach(entry => {
       const li = document.createElement('li');
       li.style.cssText = 'font-size:0.42rem;margin-bottom:4px;color:#CCC;';
-      const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleDateString('ru-RU') : '—';
-      li.textContent = `${date}: 💎 Пополнение — +${data.amount} монет`;
+      li.textContent = `${entry.date}: 💎 ${entry.type} — +${entry.amount} монет`;
       historyList.appendChild(li);
     });
-  } catch(e) {
-    historyList.innerHTML = '<li class="dimmed">Ошибка</li>';
   }
-}
 
-// =====================
-// ВЫХОД
-// =====================
-logoutBtn.addEventListener('click', async () => {
-  if (confirm('🚪 Выйти?')) {
-    await auth.signOut();
-    profileDropdown.classList.add('hidden');
+  // =====================
+  // ПОПОЛНЕНИЕ
+  // =====================
+  if (topUpBtn) {
+    topUpBtn.addEventListener('click', () => {
+      const amount = parseInt(prompt('💰 Сумма пополнения (монет):', '100'));
+      if (!amount || amount <= 0) return alert('❌ Неверная сумма!');
+      
+      balance += amount;
+      localStorage.setItem('mc_balance', balance);
+      
+      history.push({
+        date: new Date().toLocaleDateString('ru-RU'),
+        type: 'Пополнение',
+        amount: amount
+      });
+      localStorage.setItem('mc_history', JSON.stringify(history));
+      
+      updateProfileUI();
+      updateHistoryUI();
+      alert(`✅ Баланс пополнен на ${amount} монет!`);
+    });
   }
-});
 
-// =====================
-// UI ПРОФИЛЯ
-// =====================
-profileArea.addEventListener('click', e => {
-  e.stopPropagation();
-  profileDropdown.classList.toggle('hidden');
-  if (!profileDropdown.classList.contains('hidden')) loadTransactionHistory();
-});
+  // =====================
+  // ВЫХОД
+  // =====================
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('🚪 Выйти из аккаунта? Все данные будут сброшены.')) {
+        localStorage.removeItem('mc_nickname');
+        localStorage.removeItem('mc_balance');
+        localStorage.removeItem('mc_history');
+        nickname = '';
+        balance = 0;
+        history = [];
+        profileDropdown.classList.add('hidden');
+        nickname = prompt('🎮 Введите ваш игровой никнейм:') || 'Садовод';
+        localStorage.setItem('mc_nickname', nickname);
+        updateProfileUI();
+        updateHistoryUI();
+      }
+    });
+  }
 
-document.addEventListener('click', e => {
-  if (!profileArea.contains(e.target) && !profileDropdown.contains(e.target))
-    profileDropdown.classList.add('hidden');
-});
-
-// =====================
-// СТАТУС СЕРВЕРА
-// =====================
-async function fetchServerStatus() {
-  try {
-    const res = await fetch(`https://api.mcsrvstat.us/2/${SERVER_IP}:${SERVER_PORT}`);
-    const data = await res.json();
+  // =====================
+  // UI ПРОФИЛЯ
+  // =====================
+  if (profileArea && profileDropdown) {
+    profileArea.addEventListener('click', e => {
+      e.stopPropagation();
+      profileDropdown.classList.toggle('hidden');
+      if (!profileDropdown.classList.contains('hidden')) {
+        updateProfileUI();
+        updateHistoryUI();
+      }
+    });
     
-    if (data.online) {
-      statusDiv.className = 'status online';
-      statusDiv.innerHTML = '<span class="status-dot"></span> 🟢 Сервер онлайн';
-      playersDiv.textContent = data.players ? `👥 ${data.players.online}/${data.players.max}` : '';
-    } else {
-      statusDiv.className = 'status offline';
-      statusDiv.innerHTML = '<span class="status-dot"></span> 🔴 Сервер оффлайн';
-      playersDiv.textContent = '';
-    }
-  } catch {
-    statusDiv.className = 'status offline';
-    statusDiv.innerHTML = '<span class="status-dot"></span> ⚠️ Ошибка';
+    document.addEventListener('click', e => {
+      if (!profileArea.contains(e.target) && !profileDropdown.contains(e.target)) {
+        profileDropdown.classList.add('hidden');
+      }
+    });
   }
-}
 
-fetchServerStatus();
-setInterval(fetchServerStatus, 60000);
+  // =====================
+  // СТАТУС СЕРВЕРА
+  // =====================
+  async function fetchServerStatus() {
+    if (!statusDiv) return;
+    
+    try {
+      const res = await fetch(`https://api.mcsrvstat.us/2/${SERVER_IP}:${SERVER_PORT}`);
+      const data = await res.json();
+      
+      if (data.online) {
+        statusDiv.className = 'status online';
+        statusDiv.innerHTML = '<span class="status-dot"></span> 🟢 Сервер онлайн';
+        if (playersDiv && data.players) {
+          playersDiv.textContent = `👥 ${data.players.online}/${data.players.max}`;
+        }
+      } else {
+        statusDiv.className = 'status offline';
+        statusDiv.innerHTML = '<span class="status-dot"></span> 🔴 Сервер оффлайн';
+        if (playersDiv) playersDiv.textContent = '';
+      }
+    } catch {
+      statusDiv.className = 'status offline';
+      statusDiv.innerHTML = '<span class="status-dot"></span> ⚠️ Ошибка проверки';
+      if (playersDiv) playersDiv.textContent = '';
+    }
+  }
 
-// =====================
-// КОПИРОВАНИЕ IP
-// =====================
-copyBtn.addEventListener('click', () => {
-  navigator.clipboard.writeText(ipText.textContent.trim()).then(() => {
-    copyBtn.innerHTML = '✅ <span>Скопировано!</span>';
-    setTimeout(() => copyBtn.innerHTML = '📋 <span>Копировать</span>', 1500);
-  }).catch(() => alert('Не удалось скопировать'));
+  fetchServerStatus();
+  setInterval(fetchServerStatus, 60000);
+
+  // =====================
+  // КОПИРОВАНИЕ IP
+  // =====================
+  if (copyBtn && ipText) {
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(ipText.textContent.trim()).then(() => {
+        copyBtn.innerHTML = '✅ <span>Скопировано!</span>';
+        setTimeout(() => copyBtn.innerHTML = '📋 <span>Копировать</span>', 1500);
+      }).catch(() => alert('Не удалось скопировать'));
+    });
+  }
+
+  // =====================
+  // ЗАПУСК
+  // =====================
+  initProfile();
+
+  // Если Firebase работает — подгружаем данные оттуда
+  if (firebaseReady && auth && db) {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          const doc = await db.collection('users').doc(user.uid).get();
+          if (doc.exists) {
+            const data = doc.data();
+            if (data.nickname) {
+              nickname = data.nickname;
+              localStorage.setItem('mc_nickname', nickname);
+            }
+            if (data.balance !== undefined) {
+              balance = data.balance;
+              localStorage.setItem('mc_balance', balance);
+            }
+            updateProfileUI();
+          }
+        } catch(e) {
+          console.log('Firebase загружен, но данные из localStorage');
+        }
+      } else {
+        auth.signInAnonymically().catch(() => {});
+      }
+    });
+  }
 });
