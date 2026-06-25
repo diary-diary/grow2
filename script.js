@@ -1,13 +1,98 @@
-// IP и порт твоего сервера (можно изменить)
+// IP и порт сервера
 const SERVER_IP = 'play.growagarden.ru';
-const SERVER_PORT = 25565; // 19132 для Bedrock
+const SERVER_PORT = 25565;
 
+// Элементы
 const statusDiv = document.getElementById('server-status');
 const playersDiv = document.getElementById('players-online');
 const copyBtn = document.getElementById('copy-ip');
 const ipText = document.getElementById('server-ip');
 
-// Проверка статуса через mcsrvstat.us
+// Профиль
+const profileIcon = document.getElementById('profile-icon');
+const profileDropdown = document.getElementById('profile-dropdown');
+const nicknameDisplay = document.getElementById('nickname-display');
+const dropdownNickname = document.getElementById('dropdown-nickname');
+const dropdownBalance = document.getElementById('dropdown-balance');
+const topUpBtn = document.getElementById('top-up-btn');
+const historyList = document.getElementById('history-list');
+const logoutBtn = document.getElementById('logout-btn');
+
+// === Управление профилем (демо) ===
+let nickname = localStorage.getItem('mc_nickname') || null;
+let balance = parseInt(localStorage.getItem('mc_balance') || '0');
+let purchaseHistory = JSON.parse(localStorage.getItem('mc_history') || '[]');
+
+// Если нет ника, запросим при загрузке
+if (!nickname) {
+  nickname = prompt('Введите ваш игровой никнейм:');
+  if (!nickname) nickname = 'Гость';
+  localStorage.setItem('mc_nickname', nickname);
+}
+
+// Отображаем ник в шапке
+nicknameDisplay.textContent = nickname;
+dropdownNickname.textContent = nickname;
+
+// Функция обновления интерфейса профиля
+function updateProfileUI() {
+  dropdownBalance.textContent = `${balance} монет`;
+  // История
+  historyList.innerHTML = '';
+  if (purchaseHistory.length === 0) {
+    historyList.innerHTML = '<li class="empty-history">Пока пусто</li>';
+  } else {
+    purchaseHistory.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      li.style.fontSize = '0.5rem';
+      li.style.marginBottom = '4px';
+      historyList.appendChild(li);
+    });
+  }
+}
+
+// Пополнение баланса
+topUpBtn.addEventListener('click', () => {
+  balance += 100;
+  localStorage.setItem('mc_balance', balance);
+  updateProfileUI();
+});
+
+// Выход (сброс данных)
+logoutBtn.addEventListener('click', () => {
+  if (confirm('Вы уверены, что хотите выйти? Все локальные данные будут сброшены.')) {
+    localStorage.removeItem('mc_nickname');
+    localStorage.removeItem('mc_balance');
+    localStorage.removeItem('mc_history');
+    balance = 0;
+    purchaseHistory = [];
+    nickname = 'Гость';
+    nicknameDisplay.textContent = 'Гость';
+    dropdownNickname.textContent = 'Гость';
+    updateProfileUI();
+    profileDropdown.classList.add('hidden');
+  }
+});
+
+// Открытие/закрытие выпадающего меню
+profileIcon.addEventListener('click', (e) => {
+  e.stopPropagation();
+  profileDropdown.classList.toggle('hidden');
+  updateProfileUI(); // обновляем при открытии
+});
+
+// Закрытие при клике вне меню
+document.addEventListener('click', (e) => {
+  if (!profileIcon.contains(e.target) && !profileDropdown.contains(e.target)) {
+    profileDropdown.classList.add('hidden');
+  }
+});
+
+// Инициализация отображения
+updateProfileUI();
+
+// === Статус сервера ===
 async function fetchServerStatus() {
   const url = `https://api.mcsrvstat.us/2/${SERVER_IP}:${SERVER_PORT}`;
   try {
@@ -41,16 +126,6 @@ copyBtn.addEventListener('click', () => {
     setTimeout(() => { copyBtn.textContent = '📋'; }, 1500);
   }).catch(() => {
     alert('Не удалось скопировать IP');
-  });
-});
-
-// Обработка кнопок "Купить"
-document.querySelectorAll('.buy-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const item = btn.getAttribute('data-item');
-    // Здесь можно заменить на редирект в Discord или форму
-    alert(`Для покупки «${item}» напишите администратору в Discord: @admin`);
-    // Либо открыть Discord: window.open('https://discord.gg/твой-сервер', '_blank');
   });
 });
 
