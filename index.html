@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grow-a-Garden Market — Магазин предметов</title>
+  <title>Grow-a-Garden Market — Профиль</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -11,12 +11,35 @@
 </head>
 <body>
   <div class="container">
-    <header>
+    <!-- Шапка с профилем -->
+    <header class="main-header">
       <h1>🛒 Grow-a-Garden Market</h1>
-      <p class="subtitle">Покупай редкие предметы для своего сада и стройки!</p>
+      <div class="profile-icon" id="profile-icon">
+        <span class="avatar">👤</span>
+        <span id="nickname-display" class="nickname-header">Гость</span>
+      </div>
+      <!-- Выпадающее меню профиля -->
+      <div class="profile-dropdown hidden" id="profile-dropdown">
+        <div class="dropdown-header">
+          <span id="dropdown-nickname">Гость</span>
+          <span id="dropdown-balance" class="dropdown-balance">0 монет</span>
+        </div>
+        <button id="top-up-btn">Пополнить +100</button>
+        <div class="dropdown-section">
+          <p class="dropdown-title">📜 История покупок</p>
+          <ul id="history-list" class="history-list">
+            <li class="empty-history">Пока пусто</li>
+          </ul>
+        </div>
+        <div class="dropdown-section">
+          <p class="dropdown-title">🎟️ Промокоды</p>
+          <p class="coming-soon">Скоро появятся</p>
+        </div>
+        <button id="logout-btn" class="logout-btn">Выйти</button>
+      </div>
     </header>
 
-    <!-- IP и статус сервера -->
+    <!-- Основная информация -->
     <section class="server-info">
       <div class="ip-box">
         <span>IP: <strong id="server-ip">play.growagarden.ru</strong></span>
@@ -25,67 +48,6 @@
       <div id="server-status" class="status offline">Проверка статуса...</div>
       <div id="players-online" class="players-count"></div>
     </section>
-
-    <!-- Витрина товаров -->
-    <section class="shop">
-      <h2>🔥 Товары</h2>
-      <div class="items-grid">
-        <div class="item-card">
-          <div class="item-icon">💎</div>
-          <h3>Алмазный блок</h3>
-          <p class="price">50 монет</p>
-          <button class="buy-btn" data-item="Алмазный блок">Купить</button>
-        </div>
-        <div class="item-card">
-          <div class="item-icon">🔥</div>
-          <h3>Незеритовый слиток</h3>
-          <p class="price">200 монет</p>
-          <button class="buy-btn" data-item="Незеритовый слиток">Купить</button>
-        </div>
-        <div class="item-card">
-          <div class="item-icon">🧪</div>
-          <h3>Эликсир опыта</h3>
-          <p class="price">30 монет</p>
-          <button class="buy-btn" data-item="Эликсир опыта">Купить</button>
-        </div>
-        <div class="item-card">
-          <div class="item-icon">🎁</div>
-          <h3>Сундук ресурсов</h3>
-          <p class="price">100 монет</p>
-          <button class="buy-btn" data-item="Сундук ресурсов">Купить</button>
-        </div>
-        <div class="item-card">
-          <div class="item-icon">🗝️</div>
-          <h3>Ключ хранилища</h3>
-          <p class="price">150 монет</p>
-          <button class="buy-btn" data-item="Ключ хранилища">Купить</button>
-        </div>
-        <div class="item-card">
-          <div class="item-icon">⭐</div>
-          <h3>Звезда Незера</h3>
-          <p class="price">500 монет</p>
-          <button class="buy-btn" data-item="Звезда Незера">Купить</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Как купить -->
-    <section class="how-to-buy">
-      <h2>📦 Как купить</h2>
-      <ol>
-        <li>Выбери товар и нажми «Купить».</li>
-        <li>Напиши администратору в Discord: <code>@admin</code></li>
-        <li>После оплаты предмет появится у тебя в инвентаре.</li>
-        <li>Наслаждайся обновками! 🎉</li>
-      </ol>
-      <p style="margin-top: 10px; font-size: 0.7rem; color: #aaa;">
-        Работаем круглосуточно. Доставка мгновенная.
-      </p>
-    </section>
-
-    <footer>
-      <p>© 2026 Grow-a-Garden Market – Все права защищены 🌌</p>
-    </footer>
   </div>
 
   <script src="script.js"></script>
