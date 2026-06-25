@@ -5,87 +5,150 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grow-a-Garden — Уютный сервер Minecraft</title>
   
-  <!-- Предзагрузка шрифта для скорости -->
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"></noscript>
-  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   
-  <!-- Firebase SDK (загружаются асинхронно) -->
+  <!-- Firebase SDK -->
   <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-functions-compat.js"></script>
 </head>
 <body>
-  <!-- Фоновые частицы (canvas) -->
-  <canvas id="bg-canvas"></canvas>
+  <!-- Пиксельное небо -->
+  <div class="sky-layer"></div>
   
-  <!-- Плавающие надписи на фоне -->
-  <div class="floating-texts" id="floating-texts">
-    <span class="float-text" style="top: 15%; left: 10%;">🌱 GROW</span>
-    <span class="float-text" style="top: 25%; right: 15%;">🌿 GARDEN</span>
-    <span class="float-text" style="top: 50%; left: 20%;">🌸 BLOOM</span>
-    <span class="float-text" style="top: 70%; right: 10%;">🍄 FARM</span>
-    <span class="float-text" style="top: 35%; left: 60%;">💎 MINE</span>
-    <span class="float-text" style="top: 80%; left: 40%;">⭐ CRAFT</span>
-    <span class="float-text" style="top: 10%; right: 30%;">🌻 HARVEST</span>
-    <span class="float-text" style="top: 60%; left: 75%;">🪴 PLANT</span>
+  <!-- Солнце -->
+  <div class="sun"></div>
+  
+  <!-- Облака -->
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+  
+  <!-- Летающие частицы -->
+  <canvas id="particles-canvas"></canvas>
+  
+  <!-- Слой травы (нижняя часть) -->
+  <div class="ground-layer">
+    <div class="grass-blocks"></div>
+    <div class="dirt-layer"></div>
   </div>
-
+  
+  <!-- Основной контент -->
   <div class="container">
+    <!-- Верхняя декоративная полоса -->
+    <div class="top-decoration">
+      <span>🌱</span><span>🌸</span><span>🌿</span><span>🌻</span><span>🍄</span>
+    </div>
+    
     <!-- Шапка -->
     <header class="main-header">
-      <h1 class="logo">🌱 Grow-a-Garden</h1>
+      <div class="logo-wrapper">
+        <h1 class="logo">
+          <span class="logo-icon">🌱</span>
+          Grow-a-Garden
+          <span class="logo-icon">🌿</span>
+        </h1>
+        <p class="server-version">Minecraft 1.20.1+</p>
+      </div>
+      
       <div class="profile-area" id="profile-area">
-        <div class="avatar" id="avatar">🌿</div>
+        <div class="avatar-wrapper">
+          <div class="avatar" id="avatar">🌿</div>
+          <div class="avatar-glow"></div>
+        </div>
         <span class="nickname-header" id="nickname-display">Загрузка...</span>
+        <span class="dropdown-arrow">▼</span>
         
         <!-- Выпадающий профиль -->
         <div class="profile-dropdown hidden" id="profile-dropdown">
           <div class="dropdown-top">
-            <div class="avatar-large" id="dropdown-avatar">🌿</div>
-            <div class="dropdown-info">
-              <span id="dropdown-nickname">Загрузка...</span>
-              <span class="dropdown-balance">💰 <span id="dropdown-balance-value">0</span> монет</span>
+            <div class="avatar-large-wrapper">
+              <div class="avatar-large" id="dropdown-avatar">🌿</div>
+            </div>
+            <div class="dropdown-user-info">
+              <span class="dropdown-nickname" id="dropdown-nickname">Загрузка...</span>
+              <span class="dropdown-balance">
+                💰 <span id="dropdown-balance-value">0</span> монет
+              </span>
             </div>
           </div>
-          <button id="top-up-btn" class="btn-green">Пополнить +100</button>
+          
+          <div class="dropdown-divider"></div>
+          
+          <button id="top-up-btn" class="btn-deposit">
+            <span>💎</span> Пополнить баланс
+          </button>
+          
           <div class="dropdown-section">
             <p class="section-title">📜 История пополнений</p>
             <ul id="history-list" class="history-list">
               <li class="dimmed">Загрузка...</li>
             </ul>
           </div>
+          
           <div class="dropdown-section">
             <p class="section-title">🎟️ Промокоды</p>
-            <p class="dimmed">Скоро появятся</p>
+            <div class="promo-box">
+              <p class="dimmed">Скоро появятся</p>
+            </div>
           </div>
-          <button id="logout-btn" class="btn-brown">Выйти</button>
+          
+          <div class="dropdown-divider"></div>
+          
+          <button id="logout-btn" class="btn-logout">
+            🚪 Выйти из аккаунта
+          </button>
         </div>
       </div>
     </header>
 
-    <!-- Основной блок -->
-    <main class="main-content">
-      <div class="welcome-text">
-        <p>Добро пожаловать в уютный мир садоводства!</p>
-        <p class="sub">Выращивай, строй, дружи 🌻</p>
-      </div>
-
-      <div class="server-block">
-        <div class="ip-box">
-          <span>IP: <strong id="server-ip">play.growagarden.ru</strong></span>
-          <button id="copy-ip" title="Скопировать IP">📋</button>
+    <!-- Приветствие -->
+    <section class="welcome-section">
+      <div class="welcome-card">
+        <h2 class="welcome-title">🌸 Добро пожаловать!</h2>
+        <p class="welcome-text">
+          Уютный мир садоводства и фермерства ждёт тебя!
+        </p>
+        <div class="welcome-features">
+          <span>🌳 Построй свой сад</span>
+          <span>🤝 Найди друзей</span>
+          <span>🎁 Получай награды</span>
         </div>
-        <div id="server-status" class="status offline">Проверка статуса...</div>
-        <div id="players-online" class="players-count"></div>
       </div>
-    </main>
+    </section>
 
-    <footer>
-      <p>© 2026 Grow-a-Garden – Растим мир вместе!</p>
-    </footer>
+    <!-- Блок сервера -->
+    <section class="server-section">
+      <div class="server-card">
+        <div class="server-card-header">
+          <h3>🌐 Подключиться к серверу</h3>
+        </div>
+        
+        <div class="ip-box">
+          <div class="ip-label">IP адрес:</div>
+          <div class="ip-value" id="server-ip">play.growagarden.ru</div>
+          <button id="copy-ip" class="btn-copy" title="Копировать IP">
+            📋 <span>Копировать</span>
+          </button>
+        </div>
+        
+        <div class="server-status-row">
+          <div id="server-status" class="status checking">
+            <span class="status-dot"></span>
+            Проверка...
+          </div>
+          <div id="players-online" class="players-online"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Нижний декор -->
+    <div class="bottom-decoration">
+      <span>🍃</span><span>🌾</span><span>🪴</span><span>🌷</span><span>🍀</span>
+    </div>
   </div>
 
   <script defer src="script.js"></script>
