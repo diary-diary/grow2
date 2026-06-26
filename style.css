@@ -13,24 +13,25 @@ body {
   padding: 20px;
   position: relative;
   overflow-x: hidden;
-  background: #0a0f08;
+  background: #05080c;
 }
 
-/* ====== НЕБО ====== */
+/* ====== НЕБО (Обновлённый градиент) ====== */
 .sky-bg {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 70%;
-  background: 
-    radial-gradient(ellipse at 70% 80%, rgba(20,40,60,0.4) 0%, transparent 50%),
-    radial-gradient(ellipse at 30% 90%, rgba(15,30,50,0.3) 0%, transparent 45%),
-    linear-gradient(180deg, 
-      #0a0e1a 0%, #0c1220 10%, #0e1628 20%, #101a30 30%,
-      #122035 40%, #142838 50%, #163040 60%, #183845 70%,
-      #1a4048 80%, #1c4850 90%, #1e5058 100%
-    );
+  height: 75%;
+  /* Магические сумерки: от глубокого синего к изумрудному */
+  background: linear-gradient(180deg, 
+    #070a13 0%, 
+    #0c1424 25%, 
+    #132438 50%, 
+    #1a3840 75%, 
+    #184535 90%,
+    #143a25 100%
+  );
   z-index: -2;
 }
 
@@ -40,7 +41,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 65%;
+  height: 80%;
   pointer-events: none;
 }
 
@@ -58,14 +59,14 @@ body {
     radial-gradient(1px 1px at 28% 22%, rgba(255,255,255,.6), transparent),
     radial-gradient(2px 2px at 35% 10%, rgba(255,255,255,.85), transparent),
     radial-gradient(1px 1px at 42% 18%, rgba(255,255,255,.7), transparent),
-    radial-gradient(2px 2px at 50% 6%, rgba(200,220,255,.8), transparent),
+    radial-gradient(2px 2px at 50% 6%, rgba(200,255,220,.8), transparent), /* Лёгкий зелёный оттенок */
     radial-gradient(1px 1px at 58% 25%, rgba(255,255,255,.5), transparent),
     radial-gradient(2px 2px at 65% 12%, rgba(255,255,255,.8), transparent),
     radial-gradient(1px 1px at 72% 8%, rgba(255,255,255,.65), transparent),
     radial-gradient(2px 2px at 80% 20%, rgba(255,255,255,.7), transparent),
     radial-gradient(1px 1px at 88% 14%, rgba(255,255,255,.55), transparent),
     radial-gradient(2px 2px at 94% 5%, rgba(255,255,255,.9), transparent);
-  animation: twinkle 4s infinite;
+  animation: twinkle 4s infinite ease-in-out;
 }
 
 .stars::after {
@@ -89,7 +90,7 @@ body {
     radial-gradient(1px 1px at 78% 35%, rgba(255,255,255,.4), transparent),
     radial-gradient(2px 2px at 85% 22%, rgba(255,255,255,.55), transparent),
     radial-gradient(1px 1px at 92% 40%, rgba(255,255,255,.35), transparent);
-  animation: twinkle 5s infinite 1.5s;
+  animation: twinkle 5s infinite 1.5s ease-in-out;
 }
 
 @keyframes twinkle {
@@ -99,20 +100,45 @@ body {
   85% { opacity: .3; }
 }
 
+/* ====== ПАДАЮЩИЕ ЗВЁЗДЫ (НОВОЕ) ====== */
+#shooting-stars-container {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.shooting-star {
+  position: absolute;
+  width: 2px;
+  height: 70px;
+  background: linear-gradient(to bottom, rgba(255,255,255,1), transparent);
+  transform: rotate(-45deg);
+  opacity: 0;
+  animation: shoot ease-in forwards;
+  filter: drop-shadow(0 0 4px #fff);
+}
+
+@keyframes shoot {
+  0% { transform: translate(100px, -100px) rotate(-45deg) scale(0.5); opacity: 1; }
+  40% { opacity: 1; }
+  100% { transform: translate(-400px, 400px) rotate(-45deg) scale(1.5); opacity: 0; }
+}
+
 /* ====== ЛУНА ====== */
 .moon {
   position: absolute;
   top: 8%;
-  right: 10%;
+  right: 12%;
   width: 90px;
   height: 90px;
   background: radial-gradient(circle at 40% 35%, #fffef8 5%, #fffde8 25%, #fff8d0 50%, #ffe8a0 80%, #ffd080 100%);
   border-radius: 50%;
   box-shadow: 
-    0 0 30px rgba(255,240,200,.8),
-    0 0 60px rgba(255,220,150,.5),
-    0 0 100px rgba(255,200,100,.3),
-    0 0 150px rgba(200,180,120,.15),
+    0 0 40px rgba(255,240,200,.9),
+    0 0 80px rgba(255,220,150,.6),
+    0 0 120px rgba(255,200,100,.3),
     0 0 0 8px rgba(255,240,200,.08),
     0 0 0 16px rgba(255,220,150,.04);
   z-index: -1;
@@ -131,74 +157,39 @@ body {
     radial-gradient(4px 4px at 55% 20%, rgba(140,120,60,.4), transparent),
     radial-gradient(8px 8px at 40% 55%, rgba(150,130,70,.45), transparent),
     radial-gradient(5px 5px at 70% 40%, rgba(130,110,50,.5), transparent),
-    radial-gradient(3px 3px at 35% 70%, rgba(160,140,80,.35), transparent),
-    radial-gradient(6px 6px at 60% 65%, rgba(140,120,60,.4), transparent),
-    radial-gradient(4px 4px at 20% 50%, rgba(150,130,70,.3), transparent),
-    radial-gradient(5px 5px at 75% 25%, rgba(130,110,50,.45), transparent);
-}
-
-.moon::before {
-  content: '';
-  position: absolute;
-  top: 12px;
-  left: 15px;
-  width: 25px;
-  height: 25px;
-  background: rgba(255,255,255,.15);
-  border-radius: 50%;
-  filter: blur(3px);
+    radial-gradient(3px 3px at 35% 70%, rgba(160,140,80,.35), transparent);
 }
 
 /* ====== ОБЛАКА ====== */
 .clouds-layer {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: -1;
 }
 
 .cloud {
   position: absolute;
-  background: rgba(255,255,255,.06);
-  border-radius: 50px;
-}
-
-.cloud::before,
-.cloud::after {
-  content: '';
-  position: absolute;
   background: rgba(255,255,255,.04);
-  border-radius: 50%;
+  border-radius: 50px;
+  filter: blur(2px); /* Делаем облака мягче */
+}
+.cloud::before, .cloud::after {
+  content: ''; position: absolute; background: rgba(255,255,255,.03); border-radius: 50%;
 }
 
-.cloud-1 {
-  width: 180px; height: 45px; top: 15%; right: -200px; left: auto;
-  animation: driftLeft 50s linear infinite;
-}
+.cloud-1 { width: 180px; height: 45px; top: 15%; right: -200px; left: auto; animation: driftLeft 60s linear infinite; }
 .cloud-1::before { width: 80px; height: 80px; top: -30px; left: 30px; }
 .cloud-1::after { width: 100px; height: 60px; top: -20px; left: 75px; }
 
-.cloud-2 {
-  width: 150px; height: 38px; top: 28%; left: -170px; right: auto;
-  animation: driftRight 45s linear 8s infinite;
-}
+.cloud-2 { width: 150px; height: 38px; top: 28%; left: -170px; right: auto; animation: driftRight 50s linear 8s infinite; }
 .cloud-2::before { width: 65px; height: 65px; top: -25px; left: 20px; }
 .cloud-2::after { width: 80px; height: 50px; top: -15px; left: 60px; }
 
-.cloud-3 {
-  width: 200px; height: 50px; top: 40%; left: -220px; right: auto;
-  animation: driftRight 55s linear 20s infinite;
-}
+.cloud-3 { width: 200px; height: 50px; top: 40%; left: -220px; right: auto; animation: driftRight 65s linear 20s infinite; }
 .cloud-3::before { width: 90px; height: 90px; top: -35px; left: 40px; }
 .cloud-3::after { width: 110px; height: 70px; top: -25px; left: 90px; }
 
-.cloud-4 {
-  width: 130px; height: 35px; top: 8%; right: -150px; left: auto;
-  animation: driftLeft 40s linear 12s infinite;
-}
+.cloud-4 { width: 130px; height: 35px; top: 55%; right: -150px; left: auto; animation: driftLeft 45s linear 12s infinite; }
 .cloud-4::before { width: 55px; height: 55px; top: -20px; left: 18px; }
 .cloud-4::after { width: 70px; height: 45px; top: -12px; left: 50px; }
 
@@ -219,44 +210,50 @@ body {
 
 /* ====== ЗЕМЛЯ ====== */
 .ground {
-  position: fixed; bottom: 0; left: 0; width: 100%; height: 32%;
+  position: fixed; bottom: 0; left: 0; width: 100%; height: 28%;
   z-index: -2; image-rendering: pixelated;
 }
+
+/* МАГИЧЕСКИЙ ТУМАН (НОВОЕ) */
+.mist {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(to top, rgba(160, 255, 180, 0.1), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* УЛУЧШЕННАЯ ТРАВА */
 .ground::before {
   content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 48px;
   background: repeating-linear-gradient(90deg,
-    #5a9a30 0px, #4a8a28 3px, #3d7a22 3px, #509030 6px,
-    #4a8828 6px, #3e7822 9px, #559030 9px, #488828 12px);
+    #5a9a30 0px, #4a8a28 4px, #3d7a22 4px, #509030 8px,
+    #4a8828 8px, #3e7822 12px, #559030 12px, #488828 16px);
+  border-top: 4px solid #6ab830; /* Яркая кромка травы */
   border-bottom: 2px solid #2d5a18;
 }
 .ground::after {
   content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 48px;
   background:
-    repeating-linear-gradient(0deg, transparent, transparent 6px, rgba(0,0,0,.06) 6px, rgba(0,0,0,.06) 7px),
-    repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(255,255,255,.02) 5px, rgba(255,255,255,.02) 6px);
+    repeating-linear-gradient(0deg, transparent, transparent 6px, rgba(0,0,0,.1) 6px, rgba(0,0,0,.1) 8px),
+    repeating-linear-gradient(90deg, transparent, transparent 6px, rgba(255,255,255,.04) 6px, rgba(255,255,255,.04) 8px);
 }
+
 .dirt-layers {
   position: absolute; top: 48px; left: 0; width: 100%; height: calc(100% - 48px);
-  background: linear-gradient(180deg, #6B4F10 0%, #5A4210 25%, #4A3508 50%, #3A2806 75%, #2a1a04 100%);
+  background: linear-gradient(180deg, #6B4F10 0%, #5A4210 30%, #4A3508 60%, #3A2806 85%, #1f1402 100%);
 }
 .dirt-layers::before {
   content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
   background: 
-    repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(0,0,0,.08) 4px, rgba(0,0,0,.08) 5px),
-    repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,255,255,.02) 8px, rgba(255,255,255,.02) 9px);
-}
-.dirt-layers::after {
-  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  background-image: 
-    radial-gradient(6px 5px at 15% 30%, rgba(100,95,90,.3), transparent),
-    radial-gradient(8px 6px at 30% 50%, rgba(90,85,80,.25), transparent),
-    radial-gradient(5px 4px at 48% 20%, rgba(95,90,85,.3), transparent),
-    radial-gradient(7px 5px at 62% 45%, rgba(85,80,75,.25), transparent),
-    radial-gradient(9px 7px at 78% 35%, rgba(90,85,80,.2), transparent),
-    radial-gradient(4px 4px at 90% 55%, rgba(95,90,85,.3), transparent);
+    repeating-linear-gradient(0deg, transparent, transparent 8px, rgba(0,0,0,.1) 8px, rgba(0,0,0,.1) 10px),
+    repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,255,255,.02) 8px, rgba(255,255,255,.02) 10px);
 }
 
-/* ====== КОНТЕНТ ====== */
+/* ====== КОНТЕНТ (Без изменений) ====== */
 .content {
   position: relative; z-index: 1; display: flex; flex-direction: column;
   gap: 18px; width: 100%; max-width: 480px;
@@ -379,7 +376,7 @@ body {
 
 .logout-btn { font-family: 'Press Start 2P', cursive; font-size: .52rem; padding: 14px; background: linear-gradient(180deg, rgba(140,40,40,.6), rgba(100,30,30,.6)); border: 2px solid #904040; color: #faa; border-radius: 12px; cursor: pointer; transition: .25s; }
 .logout-btn:hover { background: linear-gradient(180deg, rgba(170,50,50,.7), rgba(120,35,35,.7)); border-color: #b05050; transform: translateY(-1px); }
-footer { text-align: center; font-size: .5rem; color: #507030; }
+footer { text-align: center; font-size: .5rem; color: #507030; text-shadow: 1px 1px 0 #000; }
 
 /* ====== МОДАЛКА ====== */
 .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: flex; align-items: center; justify-content: center; }
@@ -410,47 +407,16 @@ footer { text-align: center; font-size: .5rem; color: #507030; }
 .form-select option { background: #1a2410; color: #d0ff90; }
 .form-select:focus, .form-input:focus, .form-textarea:focus { border-color: #70a040; }
 .form-textarea { font-family: 'Press Start 2P', cursive; font-size: .4rem; padding: 10px; background: rgba(0,0,0,.5); border: 2px solid #3a5020; border-radius: 8px; color: #d0ff90; outline: none; resize: vertical; min-height: 100px; line-height: 1.8; }
-.form-hint { font-size: .35rem; color: #668050; margin-top: 2px; }
-
-/* ====== ЗАГРУЗКА ФАЙЛОВ ====== */
-.file-upload-area { border: 2px dashed #3a5020; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: .2s; background: rgba(0,0,0,.3); }
-.file-upload-area:hover { border-color: #70a040; }
-.file-upload-area.dragover { border-color: #ffd700; background: rgba(40,30,0,.4); }
-.file-upload-icon { margin-bottom: 8px; }
-.upload-icon-img { display: inline-block; width: 28px; height: 28px; border: 2px solid #5a8030; border-radius: 4px; position: relative; }
-.upload-icon-img::before { content: ''; position: absolute; top: 6px; left: 8px; width: 8px; height: 2px; background: #5a8030; }
-.upload-icon-img::after { content: ''; position: absolute; top: 3px; left: 11px; width: 2px; height: 8px; background: #5a8030; }
-.file-upload-text { font-size: .4rem; color: #80a060; margin-bottom: 4px; }
-.file-upload-hint { font-size: .32rem; color: #555; }
-.file-input { display: none; }
-.file-preview-list { display: flex; flex-wrap: wrap; gap: 8px; }
-.file-preview-item { position: relative; width: 80px; height: 80px; border: 2px solid #3a5020; border-radius: 8px; overflow: hidden; background: rgba(0,0,0,.5); }
-.file-preview-img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
-.file-preview-name { position: absolute; bottom: 0; left: 0; right: 0; font-size: .25rem; background: rgba(0,0,0,.8); color: #ccc; padding: 2px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.file-preview-remove { position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; background: rgba(200,40,40,.8); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.remove-icon { display: inline-block; width: 8px; height: 2px; background: white; }
-
-/* ====== КНОПКИ ФОРМЫ ====== */
 .form-buttons { display: flex; gap: 10px; }
-.form-submit-btn { flex: 1; font-family: 'Press Start 2P', cursive; font-size: .48rem; padding: 14px; background: linear-gradient(180deg, #4a7a2e, #3a5e20); border: 2px solid #5a8a3a; color: white; border-radius: 10px; cursor: pointer; transition: .2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.form-submit-btn { flex: 1; font-family: 'Press Start 2P', cursive; font-size: .48rem; padding: 14px; background: linear-gradient(180deg, #4a7a2e, #3a5e20); border: 2px solid #5a8a3a; color: white; border-radius: 10px; cursor: pointer; transition: .2s; }
 .form-submit-btn:hover { background: linear-gradient(180deg, #5a8e3a, #4a7228); }
-.send-icon { display: inline-block; width: 12px; height: 12px; border-top: 2px solid white; border-right: 2px solid white; transform: rotate(45deg); position: relative; top: -2px; }
 .btn-back-form { font-family: 'Press Start 2P', cursive; font-size: .42rem; padding: 14px; background: rgba(0,0,0,.4); border: 2px solid #3a5020; color: #80a060; border-radius: 10px; cursor: pointer; transition: .2s; }
 .btn-back-form:hover { border-color: #70a040; color: #c0e080; }
-
-/* ====== УСПЕХ ====== */
-.form-success { text-align: center; padding: 30px 20px; }
-.success-icon { width: 50px; height: 50px; margin: 0 auto 16px; border: 3px solid #80ff80; border-radius: 50%; position: relative; animation: pop .5s ease; }
-.success-icon::after { content: ''; position: absolute; top: 12px; left: 14px; width: 16px; height: 10px; border-left: 3px solid #80ff80; border-bottom: 3px solid #80ff80; transform: rotate(-45deg); }
-@keyframes pop { 0% { transform: scale(0); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
-.success-title { font-size: .6rem; color: #80ff80; margin-bottom: 8px; }
-.success-text { font-size: .4rem; color: #80a060; line-height: 1.8; }
 
 /* ====== ТИКЕТЫ ====== */
 .ticket-list-container { display: flex; flex-direction: column; gap: 14px; }
 .btn-new-ticket-top { font-family: 'Press Start 2P', cursive; font-size: .42rem; padding: 12px; background: linear-gradient(180deg, #5a8a3a, #4a7a2e); border: 2px solid #6aaa40; color: white; border-radius: 10px; cursor: pointer; transition: .2s; width: 100%; margin-bottom: 10px; }
 .btn-new-ticket-top:hover { background: linear-gradient(180deg, #6a9a4a, #5a8a3a); border-color: #80c050; }
-.ticket-list-header h3 { font-size: .55rem; color: #c8ff80; }
 .ticket-list { display: flex; flex-direction: column; gap: 10px; }
 .ticket-card { background: rgba(0,0,0,.35); border: 2px solid #3a5020; border-radius: 12px; padding: 14px; cursor: pointer; transition: .2s; }
 .ticket-card:hover { border-color: #70a040; background: rgba(0,0,0,.45); }
@@ -458,13 +424,11 @@ footer { text-align: center; font-size: .5rem; color: #507030; }
 .ticket-topic { font-size: .45rem; color: #c0e080; }
 .ticket-status { font-size: .38rem; padding: 4px 10px; border-radius: 12px; }
 .ticket-open { background: rgba(40,120,40,.5); color: #80ff80; }
-.ticket-closed { background: rgba(80,40,40,.5); color: #faa; }
 .ticket-card-info { display: flex; justify-content: space-between; font-size: .35rem; color: #668050; }
 
 /* ====== ЧАТ ====== */
 .chat-container { display: flex; flex-direction: column; height: 55vh; min-height: 400px; }
 .chat-header-info { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #3a5020; margin-bottom: 14px; }
-.chat-ticket-id { font-size: .48rem; color: #c8ff80; }
 .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-right: 8px; }
 .chat-messages::-webkit-scrollbar { width: 4px; }
 .chat-messages::-webkit-scrollbar-thumb { background: #3a5020; border-radius: 2px; }
