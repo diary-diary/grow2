@@ -114,10 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="rule-item"><div class="rule-title">1. Взаимное уважение</div><div class="rule-text">Запрещены оскорбления и агрессивное поведение.</div><div class="rule-punish">Бан на 1 день</div></div>
       <div class="rule-item"><div class="rule-title">2. Запрет на читы</div><div class="rule-text">Запрещено использование читов и стороннего ПО.</div><div class="rule-punish">Бан на 30 дней</div></div>
       <div class="rule-item"><div class="rule-title">3. Запрет на взлом</div><div class="rule-text">Взлом аккаунтов и мошенничество запрещены.</div><div class="rule-punish">Бан навсегда</div></div>
-      <div class="rule-item"><div class="rule-title">4. Запрет на продажу аккаунтов</div><div class="rule-text">Продажа/покупка аккаунтов запрещена.</div><div class="rule-punish">Бан навсегда</div></div>
-      <div class="rule-item"><div class="rule-title">5. Правила поведения</div><div class="rule-text">Запрещён оскорбительный контент.</div><div class="rule-punish">Бан на 7 дней</div></div>
-      <div class="rule-item"><div class="rule-title">6. Запрет на спам</div><div class="rule-text">Спам и реклама запрещены.</div><div class="rule-punish">Мут на 7 дней</div></div>
-      <div class="rule-item"><div class="rule-title">7. Ответственность</div><div class="rule-text">Игрок несёт ответственность за свои действия.</div></div>
+      <div class="rule-item"><div class="rule-title">4. Продажа аккаунтов</div><div class="rule-text">Продажа/покупка аккаунтов строго запрещена.</div><div class="rule-punish">Бан навсегда</div></div>
+      <div class="rule-item"><div class="rule-title">5. Правила поведения</div><div class="rule-text">Запрещён оскорбительный и токсичный контент.</div><div class="rule-punish">Бан на 7 дней</div></div>
+      <div class="rule-item"><div class="rule-title">6. Запрет на спам</div><div class="rule-text">Спам и реклама других проектов запрещены.</div><div class="rule-punish">Мут на 7 дней</div></div>
     `);
   });
 
@@ -151,23 +150,18 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="form-group"><label class="form-label"><span class="form-label-icon">1</span> Тема</label><select class="form-select" id="topic"><option value="">Выбери...</option><option value="bug">Баг</option><option value="player">Жалоба</option><option value="other">Другое</option></select></div>
         <div class="form-group"><label class="form-label"><span class="form-label-icon">2</span> Описание</label><textarea class="form-textarea" id="description" rows="5" placeholder="Опиши ситуацию..."></textarea></div>
         <div class="form-group"><label class="form-label"><span class="form-label-icon">3</span> Контакты</label><input class="form-input" id="contact" placeholder="Discord или ник" value="${nickname||''}"></div>
-        <div class="form-group"><label class="form-label"><span class="form-label-icon">4</span> Скриншоты</label><div class="file-upload-area" id="file-upload-area"><div class="file-upload-icon"><span class="upload-icon-img"></span></div><p class="file-upload-text">Нажми или перетащи</p><input type="file" class="file-input" id="file-input" accept="image/*" multiple></div><div class="file-preview-list" id="file-preview-list"></div></div>
         <div class="form-buttons"><button type="button" class="btn-back-form" id="btn-back-form">← Назад</button><button type="submit" class="form-submit-btn">Отправить</button></div>
       </form>
     `);
     setTimeout(() => {
       const form = $('support-form'); if (!form) return;
-      let files = [];
-      $('file-upload-area').addEventListener('click', ()=> $('file-input').click());
-      $('file-input').addEventListener('change', ()=> handleFiles($('file-input').files));
-      function handleFiles(list) { /* сокращённая обработка */ }
       form.addEventListener('submit', e => {
         e.preventDefault();
         const topic = $('topic').value, desc = $('description').value.trim(), contact = $('contact').value.trim();
-        if (!topic || !desc || !contact) return alert('Заполни все поля');
+        if (!topic || !desc || !contact) return alert('Пожалуйста, заполни все поля.');
         const ticket = { id: Date.now(), topic, topicText: $('topic').selectedOptions[0].text, description: desc, contact, date: new Date().toISOString(), status:'open', messages:[
           {from:'user', text:desc, date:new Date().toISOString()},
-          {from:'support', text:'Обращение получено. Ожидайте ответа.', date:new Date().toISOString()}
+          {from:'support', text:'Обращение получено. Наша команда скоро ответит.', date:new Date().toISOString()}
         ]};
         tickets.push(ticket);
         localStorage.setItem('mc_tickets', JSON.stringify(tickets));
@@ -193,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function send() {
           const text = $('chat-input').value.trim(); if(!text) return;
           ticket.messages.push({from:'user', text, date: new Date().toISOString()});
-          setTimeout(() => { ticket.messages.push({from:'support', text:'Спасибо за обращение!', date: new Date().toISOString()}); localStorage.setItem('mc_tickets', JSON.stringify(tickets)); render(); }, 1500);
+          setTimeout(() => { ticket.messages.push({from:'support', text:'Спасибо за ответ! Модератор скоро подключится.', date: new Date().toISOString()}); localStorage.setItem('mc_tickets', JSON.stringify(tickets)); render(); }, 1500);
           localStorage.setItem('mc_tickets', JSON.stringify(tickets));
           render();
         }
@@ -221,25 +215,85 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ====== СВЕТЛЯЧКИ ======
+  // ====== СВЕТЛЯЧКИ (Улучшенные) ======
   (function() {
     const canvas = $('fireflies'); if (!canvas) return;
     const ctx = canvas.getContext('2d');
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight * 0.7; }
     resize(); window.addEventListener('resize', resize);
-    const flies = Array.from({length:35}, () => ({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*2.5+1, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5, phase: Math.random()*Math.PI*2, brightness: Math.random()*0.5+0.3 }));
+    
+    // Больше разнообразия в размере и скорости
+    const flies = Array.from({length: 45}, () => ({ 
+      x: Math.random() * canvas.width, 
+      y: Math.random() * canvas.height, 
+      r: Math.random() * 2 + 0.8, 
+      vx: (Math.random() - 0.5) * 0.4, 
+      vy: (Math.random() - 0.5) * 0.4, 
+      phase: Math.random() * Math.PI * 2, 
+      brightness: Math.random() * 0.5 + 0.3,
+      color: Math.random() > 0.8 ? '220, 255, 150' : '180, 255, 100' // Редкие желтоватые светлячки
+    }));
+
     function animate(t) {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
       flies.forEach(f => {
-        f.x += f.vx + Math.sin(t/3000+f.phase)*0.4; f.y += f.vy + Math.cos(t/2500+f.phase)*0.4;
-        if(f.x<-20) f.x=canvas.width+20; if(f.x>canvas.width+20) f.x=-20; if(f.y<-20) f.y=canvas.height+20; if(f.y>canvas.height+20) f.y=-20;
-        const alpha = Math.max(0.05, f.brightness + Math.sin(t/800+f.phase)*0.3);
-        ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,Math.PI*2); ctx.fillStyle = `rgba(180,255,100,${alpha})`; ctx.fill();
-        ctx.shadowColor = 'rgba(150,255,80,0.8)'; ctx.shadowBlur = 8; ctx.fill(); ctx.shadowBlur = 0;
+        // Плавное движение на основе синусоид
+        f.x += f.vx + Math.sin(t / 2500 + f.phase) * 0.3; 
+        f.y += f.vy + Math.cos(t / 2000 + f.phase) * 0.3;
+        
+        // Перенос при выходе за экран
+        if(f.x < -20) f.x = canvas.width + 20; 
+        if(f.x > canvas.width + 20) f.x = -20; 
+        if(f.y < -20) f.y = canvas.height + 20; 
+        if(f.y > canvas.height + 20) f.y = -20;
+        
+        // Органичное пульсирующее свечение
+        const alpha = Math.max(0.05, f.brightness + Math.sin(t / 600 + f.phase) * 0.5);
+        
+        ctx.beginPath(); 
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); 
+        ctx.fillStyle = `rgba(${f.color}, ${alpha})`; 
+        
+        // Мягкий хвост/глоу
+        ctx.shadowColor = `rgba(${f.color}, 0.8)`; 
+        ctx.shadowBlur = 12; 
+        ctx.fill(); 
+        ctx.shadowBlur = 0;
       });
       requestAnimationFrame(animate);
     }
     requestAnimationFrame(animate);
+  })();
+
+  // ====== ПАДАЮЩИЕ ЗВЁЗДЫ ======
+  (function() {
+    const container = $('shooting-stars-container');
+    if (!container) return;
+
+    function spawnShootingStar() {
+      const star = document.createElement('div');
+      star.className = 'shooting-star';
+      
+      // Случайная позиция (в верхней половине экрана)
+      star.style.left = Math.random() * 100 + 'vw';
+      star.style.top = Math.random() * 30 + 'vh';
+      
+      // Немного разная длина и скорость
+      const duration = Math.random() * 1.5 + 1.5;
+      star.style.animationDuration = duration + 's';
+      
+      container.appendChild(star);
+      
+      // Удаляем элемент после завершения анимации
+      setTimeout(() => star.remove(), duration * 1000);
+      
+      // Следующая звезда через случайное время (от 3 до 10 секунд)
+      setTimeout(spawnShootingStar, Math.random() * 7000 + 3000);
+    }
+    
+    // Запуск первой звезды
+    setTimeout(spawnShootingStar, 2000);
   })();
 
   renderAll();
