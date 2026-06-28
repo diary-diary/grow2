@@ -43,7 +43,6 @@ body {
   height: 65%;
   pointer-events: none;
 }
-
 .stars::before {
   content: '';
   position: absolute;
@@ -67,7 +66,6 @@ body {
     radial-gradient(2px 2px at 94% 5%, rgba(255,255,255,.9), transparent);
   animation: twinkle 4s infinite;
 }
-
 .stars::after {
   content: '';
   position: absolute;
@@ -91,7 +89,6 @@ body {
     radial-gradient(1px 1px at 92% 40%, rgba(255,255,255,.35), transparent);
   animation: twinkle 5s infinite 1.5s;
 }
-
 @keyframes twinkle {
   0%, 100% { opacity: .9; }
   30% { opacity: .4; }
@@ -117,7 +114,6 @@ body {
     0 0 0 16px rgba(255,220,150,.04);
   z-index: -1;
 }
-
 .moon::after {
   content: '';
   position: absolute;
@@ -136,7 +132,6 @@ body {
     radial-gradient(4px 4px at 20% 50%, rgba(150,130,70,.3), transparent),
     radial-gradient(5px 5px at 75% 25%, rgba(130,110,50,.45), transparent);
 }
-
 .moon::before {
   content: '';
   position: absolute;
@@ -149,17 +144,11 @@ body {
   filter: blur(3px);
 }
 
-/* ====== ОБЛАКА (объёмные, пушистые) ====== */
+/* ====== ОБЛАКА (объёмные) ====== */
 .clouds-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: -1;
 }
-
 .cloud {
   position: absolute;
   background: 
@@ -168,7 +157,6 @@ body {
   border-radius: 50px;
   filter: blur(4px);
 }
-
 .cloud::before,
 .cloud::after {
   content: '';
@@ -177,118 +165,42 @@ body {
   border-radius: 50%;
   filter: blur(3px);
 }
-
-.cloud-1 {
-  width: 200px; height: 60px; top: 15%; right: -220px; left: auto;
-  animation: driftLeft 50s linear infinite;
-}
+.cloud-1 { width: 200px; height: 60px; top: 15%; right: -220px; left: auto; animation: driftLeft 50s linear infinite; }
 .cloud-1::before { width: 100px; height: 100px; top: -40px; left: 30px; }
 .cloud-1::after { width: 130px; height: 80px; top: -25px; left: 80px; }
-
-.cloud-2 {
-  width: 170px; height: 50px; top: 28%; left: -190px; right: auto;
-  animation: driftRight 45s linear 8s infinite;
-}
+.cloud-2 { width: 170px; height: 50px; top: 28%; left: -190px; right: auto; animation: driftRight 45s linear 8s infinite; }
 .cloud-2::before { width: 85px; height: 85px; top: -35px; left: 25px; }
 .cloud-2::after { width: 100px; height: 65px; top: -20px; left: 70px; }
-
-.cloud-3 {
-  width: 230px; height: 70px; top: 40%; left: -250px; right: auto;
-  animation: driftRight 55s linear 20s infinite;
-}
+.cloud-3 { width: 230px; height: 70px; top: 40%; left: -250px; right: auto; animation: driftRight 55s linear 20s infinite; }
 .cloud-3::before { width: 110px; height: 110px; top: -45px; left: 40px; }
 .cloud-3::after { width: 140px; height: 90px; top: -30px; left: 100px; }
-
-.cloud-4 {
-  width: 150px; height: 45px; top: 8%; right: -170px; left: auto;
-  animation: driftLeft 40s linear 12s infinite;
-}
+.cloud-4 { width: 150px; height: 45px; top: 8%; right: -170px; left: auto; animation: driftLeft 40s linear 12s infinite; }
 .cloud-4::before { width: 75px; height: 75px; top: -30px; left: 20px; }
 .cloud-4::after { width: 90px; height: 60px; top: -15px; left: 60px; }
-
-@keyframes driftLeft {
-  from { transform: translateX(0); }
-  to { transform: translateX(calc(-100vw - 500px)); }
-}
-@keyframes driftRight {
-  from { transform: translateX(0); }
-  to { transform: translateX(calc(100vw + 500px)); }
-}
+@keyframes driftLeft { from { transform: translateX(0); } to { transform: translateX(calc(-100vw - 500px)); } }
+@keyframes driftRight { from { transform: translateX(0); } to { transform: translateX(calc(100vw + 500px)); } }
 
 /* ====== СВЕТЛЯЧКИ ====== */
-#fireflies {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none; z-index: 0;
-}
+#fireflies { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
 
 /* ====== ЗЕМЛЯ ====== */
-.ground {
-  position: fixed; bottom: 0; left: 0; width: 100%; height: 32%;
-  z-index: -2; image-rendering: pixelated;
-}
-.ground::before {
-  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 48px;
-  background: repeating-linear-gradient(90deg,
-    #5a9a30 0px, #4a8a28 3px, #3d7a22 3px, #509030 6px,
-    #4a8828 6px, #3e7822 9px, #559030 9px, #488828 12px);
-  border-bottom: 2px solid #2d5a18;
-}
-.ground::after {
-  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 48px;
-  background:
-    repeating-linear-gradient(0deg, transparent, transparent 6px, rgba(0,0,0,.06) 6px, rgba(0,0,0,.06) 7px),
-    repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(255,255,255,.02) 5px, rgba(255,255,255,.02) 6px);
-}
-.dirt-layers {
-  position: absolute; top: 48px; left: 0; width: 100%; height: calc(100% - 48px);
-  background: linear-gradient(180deg, #6B4F10 0%, #5A4210 25%, #4A3508 50%, #3A2806 75%, #2a1a04 100%);
-}
-.dirt-layers::before {
-  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  background: 
-    repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(0,0,0,.08) 4px, rgba(0,0,0,.08) 5px),
-    repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,255,255,.02) 8px, rgba(255,255,255,.02) 9px);
-}
-.dirt-layers::after {
-  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  background-image: 
-    radial-gradient(6px 5px at 15% 30%, rgba(100,95,90,.3), transparent),
-    radial-gradient(8px 6px at 30% 50%, rgba(90,85,80,.25), transparent),
-    radial-gradient(5px 4px at 48% 20%, rgba(95,90,85,.3), transparent),
-    radial-gradient(7px 5px at 62% 45%, rgba(85,80,75,.25), transparent),
-    radial-gradient(9px 7px at 78% 35%, rgba(90,85,80,.2), transparent),
-    radial-gradient(4px 4px at 90% 55%, rgba(95,90,85,.3), transparent);
-}
+.ground { position: fixed; bottom: 0; left: 0; width: 100%; height: 32%; z-index: -2; image-rendering: pixelated; }
+.ground::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 48px; background: repeating-linear-gradient(90deg, #5a9a30 0px, #4a8a28 3px, #3d7a22 3px, #509030 6px, #4a8828 6px, #3e7822 9px, #559030 9px, #488828 12px); border-bottom: 2px solid #2d5a18; }
+.ground::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 48px; background: repeating-linear-gradient(0deg, transparent, transparent 6px, rgba(0,0,0,.06) 6px, rgba(0,0,0,.06) 7px), repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(255,255,255,.02) 5px, rgba(255,255,255,.02) 6px); }
+.dirt-layers { position: absolute; top: 48px; left: 0; width: 100%; height: calc(100% - 48px); background: linear-gradient(180deg, #6B4F10 0%, #5A4210 25%, #4A3508 50%, #3A2806 75%, #2a1a04 100%); }
+.dirt-layers::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(0,0,0,.08) 4px, rgba(0,0,0,.08) 5px), repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,255,255,.02) 8px, rgba(255,255,255,.02) 9px); }
+.dirt-layers::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(6px 5px at 15% 30%, rgba(100,95,90,.3), transparent), radial-gradient(8px 6px at 30% 50%, rgba(90,85,80,.25), transparent), radial-gradient(5px 4px at 48% 20%, rgba(95,90,85,.3), transparent), radial-gradient(7px 5px at 62% 45%, rgba(85,80,75,.25), transparent), radial-gradient(9px 7px at 78% 35%, rgba(90,85,80,.2), transparent), radial-gradient(4px 4px at 90% 55%, rgba(95,90,85,.3), transparent); }
 
 /* ====== КОНТЕНТ ====== */
-.content {
-  position: relative; z-index: 1; display: flex; flex-direction: column;
-  gap: 18px; width: 100%; max-width: 480px;
-}
+.content { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 480px; }
 
 /* ====== КНОПКИ ====== */
 .top-buttons { display: flex; gap: 8px; }
-.top-btn {
-  flex: 1; font-family: 'Press Start 2P', cursive; font-size: .46rem;
-  padding: 12px 6px;
-  background: linear-gradient(180deg, rgba(30,40,20,.95), rgba(18,24,12,.95));
-  border: 3px solid #4a6a30; color: #c0e080; border-radius: 14px;
-  cursor: pointer; transition: all .25s; display: flex; align-items: center;
-  justify-content: center; gap: 5px; text-shadow: 1px 1px 0 rgba(0,0,0,.5);
-  box-shadow: 0 4px 15px rgba(0,0,0,.4);
-}
-.top-btn:hover {
-  background: linear-gradient(180deg, rgba(40,50,25,.95), rgba(25,32,16,.95));
-  border-color: #80b040; color: #e0ffa0;
-  box-shadow: 0 0 25px rgba(100,160,60,.4), 0 6px 20px rgba(0,0,0,.5);
-  transform: translateY(-2px);
-}
+.top-btn { flex: 1; font-family: 'Press Start 2P', cursive; font-size: .46rem; padding: 12px 6px; background: linear-gradient(180deg, rgba(30,40,20,.95), rgba(18,24,12,.95)); border: 3px solid #4a6a30; color: #c0e080; border-radius: 14px; cursor: pointer; transition: all .25s; display: flex; align-items: center; justify-content: center; gap: 5px; text-shadow: 1px 1px 0 rgba(0,0,0,.5); box-shadow: 0 4px 15px rgba(0,0,0,.4); }
+.top-btn:hover { background: linear-gradient(180deg, rgba(40,50,25,.95), rgba(25,32,16,.95)); border-color: #80b040; color: #e0ffa0; box-shadow: 0 0 25px rgba(100,160,60,.4), 0 6px 20px rgba(0,0,0,.5); transform: translateY(-2px); }
 
 /* ====== ИКОНКИ ====== */
-.info-icon, .rules-icon, .support-icon {
-  display: inline-block; width: 14px; height: 14px;
-  border: 2px solid currentColor; position: relative; flex-shrink: 0;
-}
+.info-icon, .rules-icon, .support-icon { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor; position: relative; flex-shrink: 0; }
 .info-icon { border-radius: 50%; }
 .info-icon::after { content: '?'; position: absolute; top: -2px; left: 3px; font-size: 9px; font-weight: bold; }
 .rules-icon { border-radius: 2px; }
@@ -315,81 +227,16 @@ body {
 .close-cross::before, .close-cross::after { content: ''; position: absolute; top: 9px; left: 0; width: 20px; height: 3px; background: currentColor; border-radius: 1px; }
 .close-cross::before { transform: rotate(45deg); } .close-cross::after { transform: rotate(-45deg); }
 
-/* ====== АВТОРИЗАЦИЯ ====== */
-.auth-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-#pass-input {
-  flex: 1;
-  font-family: 'Press Start 2P', cursive;
-  font-size: .52rem;
-  padding: 14px;
-  background: rgba(0,0,0,.5);
-  border: 2px solid #4a6a30;
-  border-radius: 12px;
-  color: #d0ff90;
-  outline: none;
-  min-width: 0;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,.3);
-}
-#pass-input:focus { border-color: #80b040; }
-.auth-buttons {
-  display: flex;
-  gap: 6px;
-}
-.auth-btn {
-  font-family: 'Press Start 2P', cursive;
-  font-size: .45rem;
-  padding: 14px 16px;
-  background: linear-gradient(180deg, #4a7a2e, #3a5e20);
-  border: 2px solid #5a8a3a;
-  color: #fff;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: .25s;
-}
-.auth-btn:hover {
-  background: linear-gradient(180deg, #5a8e3a, #4a7228);
-  border-color: #80b040;
-  transform: translateY(-1px);
-}
-.auth-msg {
-  font-size: .4rem;
-  min-height: 16px;
-  color: #ff8080;
-  text-align: center;
-}
-
 /* ====== КАРТОЧКА СЕРВЕРА ====== */
-.server-card {
-  background: linear-gradient(180deg, rgba(30,40,20,.95), rgba(18,24,12,.95) 50%, rgba(15,20,10,.95));
-  border: 3px solid #5a8030; border-radius: 24px; padding: 34px 26px; text-align: center;
-  box-shadow: 0 0 0 4px rgba(30,50,20,.5), 0 0 0 8px rgba(20,35,15,.3), 0 10px 50px rgba(0,0,0,.7), inset 0 2px 0 rgba(255,255,255,.03);
-  position: relative; backdrop-filter: blur(8px); overflow: hidden;
-}
+.server-card { background: linear-gradient(180deg, rgba(30,40,20,.95), rgba(18,24,12,.95) 50%, rgba(15,20,10,.95)); border: 3px solid #5a8030; border-radius: 24px; padding: 34px 26px; text-align: center; box-shadow: 0 0 0 4px rgba(30,50,20,.5), 0 0 0 8px rgba(20,35,15,.3), 0 10px 50px rgba(0,0,0,.7), inset 0 2px 0 rgba(255,255,255,.03); position: relative; backdrop-filter: blur(8px); overflow: hidden; }
 .server-card::before { content: ''; position: absolute; top: 0; left: 20px; right: 20px; height: 2px; background: linear-gradient(90deg, transparent, rgba(180,220,120,.4), transparent); }
 .server-card::after { content: ''; position: absolute; bottom: 8px; left: 30px; right: 30px; height: 1px; background: linear-gradient(90deg, transparent, rgba(100,140,60,.3), transparent); }
 .server-card h1 { font-size: 1.6rem; color: #c8ff80; text-shadow: 3px 3px 0 #1a3a0a, 0 0 20px rgba(160,220,80,.3); margin-bottom: 10px; letter-spacing: 2px; }
 .server-card p { font-size: .58rem; color: #90b060; margin-bottom: 22px; }
-
-.ip-box {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  background: linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,.4));
-  border: 2px solid #4a6a30; border-radius: 16px; padding: 14px 18px; margin-bottom: 18px;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,.4);
-}
+.ip-box { display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,.4)); border: 2px solid #4a6a30; border-radius: 16px; padding: 14px 18px; margin-bottom: 18px; box-shadow: inset 0 2px 4px rgba(0,0,0,.4); }
 .ip-box code { font-family: 'Press Start 2P', cursive; font-size: .78rem; color: #e0ffa0; text-shadow: 0 0 10px rgba(200,255,100,.3); }
-
-#copy-ip {
-  font-family: 'Press Start 2P', cursive; font-size: .9rem;
-  background: linear-gradient(180deg, rgba(60,100,40,.6), rgba(40,70,25,.6));
-  border: 2px solid #5a8a3a; color: #c0e080; border-radius: 12px;
-  padding: 10px 14px; cursor: pointer; transition: all .25s; box-shadow: 0 2px 8px rgba(0,0,0,.3);
-}
+#copy-ip { font-family: 'Press Start 2P', cursive; font-size: .9rem; background: linear-gradient(180deg, rgba(60,100,40,.6), rgba(40,70,25,.6)); border: 2px solid #5a8a3a; color: #c0e080; border-radius: 12px; padding: 10px 14px; cursor: pointer; transition: all .25s; box-shadow: 0 2px 8px rgba(0,0,0,.3); }
 #copy-ip:hover { background: linear-gradient(180deg, rgba(80,120,50,.7), rgba(50,80,30,.7)); border-color: #80b040; color: #fff; transform: translateY(-1px); }
-
 .status-line { display: flex; justify-content: center; align-items: center; gap: 15px; }
 .status { font-size: .58rem; padding: 8px 16px; border-radius: 20px; font-weight: bold; }
 .status.checking { color: #888; }
@@ -401,12 +248,7 @@ body {
 #players-count { font-size: .52rem; color: #90b060; }
 
 /* ====== ПРОФИЛЬ ====== */
-.profile-card {
-  background: linear-gradient(180deg, rgba(30,40,20,.95), rgba(18,24,12,.95) 50%, rgba(15,20,10,.95));
-  border: 3px solid #5a8030; border-radius: 24px; overflow: hidden;
-  box-shadow: 0 0 0 4px rgba(30,50,20,.5), 0 0 0 8px rgba(20,35,15,.3), 0 10px 50px rgba(0,0,0,.7);
-  position: relative; backdrop-filter: blur(8px);
-}
+.profile-card { background: linear-gradient(180deg, rgba(30,40,20,.95), rgba(18,24,12,.95) 50%, rgba(15,20,10,.95)); border: 3px solid #5a8030; border-radius: 24px; overflow: hidden; box-shadow: 0 0 0 4px rgba(30,50,20,.5), 0 0 0 8px rgba(20,35,15,.3), 0 10px 50px rgba(0,0,0,.7); position: relative; backdrop-filter: blur(8px); }
 .profile-card::before { content: ''; position: absolute; top: 0; left: 20px; right: 20px; height: 2px; background: linear-gradient(90deg, transparent, rgba(180,220,120,.3), transparent); z-index: 1; pointer-events: none; }
 .profile-bar { display: flex; align-items: center; gap: 14px; padding: 18px 22px; cursor: pointer; transition: .3s; position: relative; z-index: 1; }
 .profile-bar:hover { background: rgba(255,255,255,.03); }
@@ -416,23 +258,24 @@ body {
 .profile-body { padding: 0 22px 22px; display: flex; flex-direction: column; gap: 16px; }
 .hidden { display: none !important; }
 
-.nick-input-row { display: flex; gap: 8px; }
-.nick-input-row input { font-family: 'Press Start 2P', cursive; font-size: .52rem; padding: 14px; background: rgba(0,0,0,.5); border: 2px solid #4a6a30; border-radius: 12px; color: #d0ff90; outline: none; flex: 1; box-shadow: inset 0 2px 4px rgba(0,0,0,.3); }
+.nick-input-row input { font-family: 'Press Start 2P', cursive; font-size: .52rem; padding: 14px; background: rgba(0,0,0,.5); border: 2px solid #4a6a30; border-radius: 12px; color: #d0ff90; outline: none; width: 100%; box-shadow: inset 0 2px 4px rgba(0,0,0,.3); }
 .nick-input-row input:focus { border-color: #80b040; }
-.nick-input-row button { font-family: 'Press Start 2P', cursive; font-size: .55rem; padding: 14px 20px; background: linear-gradient(180deg, #4a7a2e, #3a5e20); border: 2px solid #5a8a3a; color: #fff; border-radius: 12px; cursor: pointer; transition: .25s; }
-.nick-input-row button:hover { background: linear-gradient(180deg, #5a8e3a, #4a7228); border-color: #80b040; transform: translateY(-1px); }
+
+.auth-actions { display: flex; gap: 8px; }
+.auth-btn, .logout-btn { font-family: 'Press Start 2P', cursive; font-size: .48rem; padding: 14px; border-radius: 12px; cursor: pointer; transition: .25s; flex: 1; }
+.auth-btn { background: linear-gradient(180deg, #4a7a2e, #3a5e20); border: 2px solid #5a8a3a; color: #fff; }
+.auth-btn:hover { background: linear-gradient(180deg, #5a8e3a, #4a7228); border-color: #80b040; transform: translateY(-1px); }
+.logout-btn { background: linear-gradient(180deg, rgba(140,40,40,.6), rgba(100,30,30,.6)); border: 2px solid #904040; color: #faa; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.logout-btn:hover { background: linear-gradient(180deg, rgba(170,50,50,.7), rgba(120,35,35,.7)); border-color: #b05050; transform: translateY(-1px); }
 
 .server-details { background: rgba(0,0,0,.5); border: 2px solid #4a6a30; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
 .detail-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(60,80,30,.2); }
 .detail-item:last-child { border-bottom: none; }
 .detail-label { font-size: .5rem; color: #80a060; }
 .detail-value { font-size: .52rem; color: #d0ff90; }
-
-.logout-btn { font-family: 'Press Start 2P', cursive; font-size: .52rem; padding: 14px; background: linear-gradient(180deg, rgba(140,40,40,.6), rgba(100,30,30,.6)); border: 2px solid #904040; color: #faa; border-radius: 12px; cursor: pointer; transition: .25s; }
-.logout-btn:hover { background: linear-gradient(180deg, rgba(170,50,50,.7), rgba(120,35,35,.7)); border-color: #b05050; transform: translateY(-1px); }
 footer { text-align: center; font-size: .5rem; color: #507030; }
 
-/* ====== МОДАЛКА ====== */
+/* ====== МОДАЛКА ОБЩАЯ ====== */
 .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: flex; align-items: center; justify-content: center; }
 .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.75); }
 .modal-window { position: relative; background: linear-gradient(180deg, rgba(25,32,16,.98), rgba(18,24,12,.98)); border: 4px solid #4a6a30; border-radius: 20px; width: 94%; max-width: 680px; max-height: 84vh; overflow-y: auto; box-shadow: 0 0 0 3px rgba(30,50,20,.4), 0 12px 60px rgba(0,0,0,.9); }
@@ -444,7 +287,74 @@ footer { text-align: center; font-size: .5rem; color: #507030; }
 .modal-close:hover { background: #5a8030; color: #fff; }
 .modal-body { padding: 24px; }
 
-/* ====== ИНФО / ПРАВИЛА ====== */
+/* ====== АВТОРИЗАЦИЯ (МОДАЛКА) ====== */
+.auth-window {
+  position: relative;
+  background: linear-gradient(180deg, #1e2a14 0%, #162010 100%);
+  border: 4px solid #6a8a3a;
+  border-radius: 20px;
+  width: 400px;
+  max-width: 94%;
+  box-shadow: 0 0 0 3px rgba(40,60,20,.5), 0 15px 50px rgba(0,0,0,.8);
+  overflow: hidden;
+}
+.auth-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #4a6a30;
+}
+.auth-tabs {
+  display: flex;
+}
+.auth-tab {
+  font-family: 'Press Start 2P', cursive;
+  font-size: .55rem;
+  padding: 16px 24px;
+  background: transparent;
+  border: none;
+  color: #80a060;
+  cursor: pointer;
+  transition: .2s;
+  border-bottom: 3px solid transparent;
+}
+.auth-tab.active {
+  color: #c8ff80;
+  border-bottom-color: #80b040;
+  background: rgba(0,0,0,.2);
+}
+.auth-tab:hover { color: #d0ff90; }
+.auth-body { padding: 24px; }
+.auth-form { display: flex; flex-direction: column; gap: 18px; }
+.auth-field { display: flex; flex-direction: column; gap: 6px; }
+.auth-field label { font-size: .45rem; color: #a0c060; }
+.auth-field input {
+  font-family: 'Press Start 2P', cursive;
+  font-size: .48rem;
+  padding: 14px;
+  background: rgba(0,0,0,.5);
+  border: 2px solid #4a6a30;
+  border-radius: 12px;
+  color: #e0ffa0;
+  outline: none;
+}
+.auth-field input:focus { border-color: #80b040; }
+.auth-submit {
+  font-family: 'Press Start 2P', cursive;
+  font-size: .52rem;
+  padding: 14px;
+  background: linear-gradient(180deg, #5a8a3a, #4a7a2e);
+  border: 2px solid #6aaa40;
+  color: #fff;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: .25s;
+}
+.auth-submit:hover { background: linear-gradient(180deg, #6a9a4a, #5a8a3a); border-color: #80c050; transform: translateY(-1px); }
+.auth-msg { font-size: .4rem; min-height: 18px; text-align: center; color: #ff8080; }
+.auth-msg.success { color: #80ff80; }
+
+/* ====== ИНФО / ПРАВИЛА (как раньше) ====== */
 .info-step, .rule-item { background: rgba(0,0,0,.35); border: 2px solid #3a5020; border-radius: 14px; padding: 18px; margin-bottom: 16px; }
 .info-step-num, .rule-title { font-size: .52rem; color: #ffd700; margin-bottom: 10px; }
 .info-step p, .rule-text { font-size: .48rem; color: #c0d0a0; line-height: 2; }
@@ -452,7 +362,7 @@ footer { text-align: center; font-size: .5rem; color: #507030; }
 .rule-punish { font-size: .42rem; color: #ff8080; margin-top: 10px; padding-top: 10px; border-top: 1px solid #3a3020; }
 .info-step code { font-family: 'Press Start 2P', cursive; font-size: .46rem; color: #d4ff80; background: rgba(0,0,0,.5); padding: 4px 8px; border-radius: 6px; display: inline-block; margin: 4px 0; }
 
-/* ====== ФОРМА ПОДДЕРЖКИ ====== */
+/* ====== ФОРМА ПОДДЕРЖКИ (оставлена без изменений) ====== */
 .support-form { display: flex; flex-direction: column; gap: 16px; }
 .form-group { display: flex; flex-direction: column; gap: 6px; }
 .form-label { font-size: .48rem; color: #ffd700; display: flex; align-items: center; gap: 8px; }
@@ -462,8 +372,6 @@ footer { text-align: center; font-size: .5rem; color: #507030; }
 .form-select:focus, .form-input:focus, .form-textarea:focus { border-color: #70a040; }
 .form-textarea { font-family: 'Press Start 2P', cursive; font-size: .4rem; padding: 10px; background: rgba(0,0,0,.5); border: 2px solid #3a5020; border-radius: 8px; color: #d0ff90; outline: none; resize: vertical; min-height: 100px; line-height: 1.8; }
 .form-hint { font-size: .35rem; color: #668050; margin-top: 2px; }
-
-/* ====== ЗАГРУЗКА ФАЙЛОВ ====== */
 .file-upload-area { border: 2px dashed #3a5020; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: .2s; background: rgba(0,0,0,.3); }
 .file-upload-area:hover { border-color: #70a040; }
 .file-upload-area.dragover { border-color: #ffd700; background: rgba(40,30,0,.4); }
@@ -480,8 +388,6 @@ footer { text-align: center; font-size: .5rem; color: #507030; }
 .file-preview-name { position: absolute; bottom: 0; left: 0; right: 0; font-size: .25rem; background: rgba(0,0,0,.8); color: #ccc; padding: 2px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .file-preview-remove { position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; background: rgba(200,40,40,.8); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .remove-icon { display: inline-block; width: 8px; height: 2px; background: white; }
-
-/* ====== КНОПКИ ФОРМЫ ====== */
 .form-buttons { display: flex; gap: 10px; }
 .form-submit-btn { flex: 1; font-family: 'Press Start 2P', cursive; font-size: .48rem; padding: 14px; background: linear-gradient(180deg, #4a7a2e, #3a5e20); border: 2px solid #5a8a3a; color: white; border-radius: 10px; cursor: pointer; transition: .2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .form-submit-btn:hover { background: linear-gradient(180deg, #5a8e3a, #4a7228); }
@@ -489,15 +395,7 @@ footer { text-align: center; font-size: .5rem; color: #507030; }
 .btn-back-form { font-family: 'Press Start 2P', cursive; font-size: .42rem; padding: 14px; background: rgba(0,0,0,.4); border: 2px solid #3a5020; color: #80a060; border-radius: 10px; cursor: pointer; transition: .2s; }
 .btn-back-form:hover { border-color: #70a040; color: #c0e080; }
 
-/* ====== УСПЕХ ====== */
-.form-success { text-align: center; padding: 30px 20px; }
-.success-icon { width: 50px; height: 50px; margin: 0 auto 16px; border: 3px solid #80ff80; border-radius: 50%; position: relative; animation: pop .5s ease; }
-.success-icon::after { content: ''; position: absolute; top: 12px; left: 14px; width: 16px; height: 10px; border-left: 3px solid #80ff80; border-bottom: 3px solid #80ff80; transform: rotate(-45deg); }
-@keyframes pop { 0% { transform: scale(0); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
-.success-title { font-size: .6rem; color: #80ff80; margin-bottom: 8px; }
-.success-text { font-size: .4rem; color: #80a060; line-height: 1.8; }
-
-/* ====== ТИКЕТЫ ====== */
+/* ====== ТИКЕТЫ И ЧАТ (как раньше) ====== */
 .ticket-list-container { display: flex; flex-direction: column; gap: 14px; }
 .btn-new-ticket-top { font-family: 'Press Start 2P', cursive; font-size: .42rem; padding: 12px; background: linear-gradient(180deg, #5a8a3a, #4a7a2e); border: 2px solid #6aaa40; color: white; border-radius: 10px; cursor: pointer; transition: .2s; width: 100%; margin-bottom: 10px; }
 .btn-new-ticket-top:hover { background: linear-gradient(180deg, #6a9a4a, #5a8a3a); border-color: #80c050; }
@@ -511,8 +409,6 @@ footer { text-align: center; font-size: .5rem; color: #507030; }
 .ticket-open { background: rgba(40,120,40,.5); color: #80ff80; }
 .ticket-closed { background: rgba(80,40,40,.5); color: #faa; }
 .ticket-card-info { display: flex; justify-content: space-between; font-size: .35rem; color: #668050; }
-
-/* ====== ЧАТ ====== */
 .chat-container { display: flex; flex-direction: column; height: 55vh; min-height: 400px; }
 .chat-header-info { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #3a5020; margin-bottom: 14px; }
 .chat-ticket-id { font-size: .48rem; color: #c8ff80; }
