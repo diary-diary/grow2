@@ -11,15 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const profileBody = $('profile-body');
   const avatarEl = $('avatar');
   const nicknameEl = $('nickname');
-
   const nickInput = $('nick-input');
-  const saveNickBtn = $('save-nick');
-  const passInput = $('pass-input');
-  const loginBtn = $('login-btn');
-  const registerBtn = $('register-btn');
-  const authMsg = $('auth-msg');
+
+  const openAuthBtn = $('open-auth-btn');
   const logoutBtn = $('logout-btn');
 
+  // Модалки
   const modal = $('modal');
   const modalOverlay = $('modal-overlay');
   const modalTitle = $('modal-title');
@@ -29,14 +26,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const rulesBtn = $('rules-btn');
   const supportBtn = $('support-btn');
 
-  // ====== ДАННЫЕ ======
-  let currentUser = null; // { nick, password }
+  // Auth modal
+  const authModal = $('auth-modal');
+  const authOverlay = $('auth-overlay');
+  const authClose = $('auth-close');
+  const tabBtns = document.querySelectorAll('.auth-tab');
+  const loginForm = $('login-form');
+  const registerForm = $('register-form');
+  const loginNick = $('login-nick');
+  const loginPass = $('login-pass');
+  const regNick = $('reg-nick');
+  const regPass = $('reg-pass');
+  const regPass2 = $('reg-pass2');
+  const loginMsg = $('login-msg');
+  const regMsg = $('reg-msg');
+
+  // Данные
+  let currentUser = null;
   let tickets = JSON.parse(localStorage.getItem('mc_tickets') || '[]');
   const users = JSON.parse(localStorage.getItem('mc_users') || '{}');
 
-  function saveUsers() {
-    localStorage.setItem('mc_users', JSON.stringify(users));
-  }
+  function saveUsers() { localStorage.setItem('mc_users', JSON.stringify(users)); }
 
   const leafColors = [
     { bg: '#3a6020', border: '#5a8030', inner: '#4a8a20' },
@@ -47,10 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { bg: '#265020', border: '#467828', inner: '#368018' },
     { bg: '#345828', border: '#547838', inner: '#448028' },
   ];
-
-  function getLeafColor(name) {
-    return leafColors[name.length % leafColors.length];
-  }
+  function getLeafColor(name) { return leafColors[name.length % leafColors.length]; }
 
   function updateAvatar(nick) {
     const colors = getLeafColor(nick || 'Гость');
@@ -63,123 +70,129 @@ document.addEventListener('DOMContentLoaded', () => {
       nicknameEl.textContent = currentUser.nick;
       updateAvatar(currentUser.nick);
       nickInput.value = currentUser.nick;
-      // Показываем поле пароля, если ещё не вошёл
-      if (authRow) authRow.style.display = 'flex';
-      if (authMsg) authMsg.textContent = '';
+      nickInput.disabled = true;
+      openAuthBtn.style.display = 'none';
+      logoutBtn.style.display = 'flex';
     } else {
       nicknameEl.textContent = 'Гость';
       updateAvatar('Гость');
       nickInput.value = '';
-      if (authRow) authRow.style.display = 'flex';
+      nickInput.disabled = true;
+      openAuthBtn.style.display = 'block';
+      logoutBtn.style.display = 'none';
     }
   }
 
-  // ====== АВТОРИЗАЦИЯ ======
-  function showAuthMessage(text, isError = true) {
-    if (authMsg) {
-      authMsg.textContent = text;
-      authMsg.style.color = isError ? '#ff8080' : '#80ff80';
-    }
-  }
+  // Переключение вкладок
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+      } else {
+        registerForm.classList.remove('hidden');
+        loginForm.classList.add('hidden');
+      }
+    });
+  });
 
-  loginBtn.addEventListener('click', () => {
-    const nick = nickInput.value.trim();
-    const pass = passInput.value.trim();
-    if (!nick || !pass) return showAuthMessage('Введи ник и пароль');
+  // Открытие модалки авторизации
+  openAuthBtn.addEventListener('click', () => {
+    authModal.classList.remove('hidden');
+    // Сброс
+    loginMsg.textContent = '';
+    regMsg.textContent = '';
+    loginNick.value = '';
+    loginPass.value = '';
+    regNick.value = '';
+    regPass.value = '';
+    regPass2.value = '';
+    // По умолчанию вход
+    document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+    document.querySelector('.auth-tab[data-tab="register"]').classList.remove('active');
+    loginForm.classList.remove('hidden');
+    registerForm.classList.add('hidden');
+  });
+
+  function closeAuthModal() {
+    authModal.classList.add('hidden');
+  }
+  authClose.addEventListener('click', closeAuthModal);
+  authOverlay.addEventListener('click', closeAuthModal);
+
+  // Вход
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const nick = loginNick.value.trim();
+    const pass = loginPass.value.trim();
+    if (!nick || !pass) return loginMsg.textContent = 'Заполни все поля';
     if (users[nick] && users[nick] === pass) {
       currentUser = { nick, password: pass };
-      showAuthMessage('Вход выполнен!', false);
       renderProfile();
+      closeAuthModal();
     } else {
-      showAuthMessage('Неверный ник или пароль');
+      loginMsg.textContent = 'Неверный ник или пароль';
     }
   });
 
-  registerBtn.addEventListener('click', () => {
-    const nick = nickInput.value.trim();
-    const pass = passInput.value.trim();
-    if (!nick || !pass) return showAuthMessage('Введи ник и пароль');
-    if (users[nick]) return showAuthMessage('Такой ник уже занят');
+  // Регистрация
+  registerForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const nick = regNick.value.trim();
+    const pass = regPass.value.trim();
+    const pass2 = regPass2.value.trim();
+    if (!nick || !pass || !pass2) return regMsg.textContent = 'Заполни все поля';
+    if (pass !== pass2) return regMsg.textContent = 'Пароли не совпадают';
+    if (users[nick]) return regMsg.textContent = 'Ник уже занят';
     users[nick] = pass;
     saveUsers();
     currentUser = { nick, password: pass };
-    showAuthMessage('Регистрация успешна!', false);
     renderProfile();
+    closeAuthModal();
   });
 
+  // Выход
   logoutBtn.addEventListener('click', () => {
     currentUser = null;
     renderProfile();
     profileBody.classList.add('hidden');
     profileBar.classList.remove('open');
-    showAuthMessage('');
   });
 
-  saveNickBtn.addEventListener('click', () => {
-    const val = nickInput.value.trim();
-    if (!val || val.length < 2) return;
-    if (currentUser) {
-      // Меняем ник в системе
-      const oldNick = currentUser.nick;
-      if (users[val] && val !== oldNick) return showAuthMessage('Ник занят');
-      users[val] = users[oldNick];
-      delete users[oldNick];
-      saveUsers();
-      currentUser.nick = val;
-      // Обновляем тикеты
-      tickets = tickets.map(t => t.contact === oldNick ? { ...t, contact: val } : t);
-      localStorage.setItem('mc_tickets', JSON.stringify(tickets));
-    }
-    renderProfile();
-  });
-
+  // Раскрытие профиля
   profileBar.addEventListener('click', () => {
     profileBody.classList.toggle('hidden');
     profileBar.classList.toggle('open');
     if (!profileBody.classList.contains('hidden')) renderProfile();
   });
 
-  // ====== МОДАЛЬНОЕ ОКНО ======
+  // Модалка общая
   function openModal(title, content) {
     modalTitle.textContent = title;
     modalBody.innerHTML = content;
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
   }
-
   function closeModal() {
     modal.classList.add('hidden');
     document.body.style.overflow = '';
   }
-
   modalClose.addEventListener('click', closeModal);
   modalOverlay.addEventListener('click', closeModal);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
 
-  // ====== ИНФОРМАЦИЯ ======
+  // Инфо / Правила (сокращённо)
   infoBtn.addEventListener('click', () => {
-    openModal('Обучение', `
-      <div class="info-step"><div class="info-step-num">Шаг 1. IP сервера</div><p>Скопируй IP: <code>play.growagarden.ru</code><br>Открой Minecraft, зайди в «Сетевая игра», нажми «Добавить сервер» и вставь IP-адрес.</p></div>
-      <div class="info-step"><div class="info-step-num">Шаг 2. Регистрация</div><p>В чате введи команду:<br><code>/register твой_пароль</code><br>Запомни пароль для входа!</p></div>
-      <div class="info-step"><div class="info-step-num">Шаг 3. Выбери режим</div><p>• Выживание • Фермерство • Строительство</p></div>
-      <div class="info-step"><div class="info-step-num">Шаг 4. Подойди к пчеле</div><p>На спавне нажми ПКМ на пчелу — она проведёт обучение.</p></div>
-    `);
+    openModal('Обучение', `<div class="info-step"><div class="info-step-num">Шаг 1. IP сервера</div><p>Скопируй IP: <code>play.growagarden.ru</code><br>Открой Minecraft → Сетевая игра → Добавить сервер.</p></div><div class="info-step"><div class="info-step-num">Шаг 2. Регистрация</div><p>Введи <code>/register пароль</code></p></div><div class="info-step"><div class="info-step-num">Шаг 3. Режимы</div><p>Выживание, Фермерство, Строительство</p></div><div class="info-step"><div class="info-step-num">Шаг 4. Пчела</div><p>На спавне нажми ПКМ на пчелу.</p></div>`);
   });
-
-  // ====== ПРАВИЛА ======
   rulesBtn.addEventListener('click', () => {
-    openModal('Правила сервера', `
-      <div class="rule-item"><div class="rule-title">1. Взаимное уважение</div><div class="rule-text">Запрещены оскорбления и агрессивное поведение.</div><div class="rule-punish">Бан на 1 день</div></div>
-      <div class="rule-item"><div class="rule-title">2. Запрет на читы</div><div class="rule-text">Запрещено использование читов и стороннего ПО.</div><div class="rule-punish">Бан на 30 дней</div></div>
-      <div class="rule-item"><div class="rule-title">3. Запрет на взлом</div><div class="rule-text">Взлом аккаунтов и мошенничество запрещены.</div><div class="rule-punish">Бан навсегда</div></div>
-      <div class="rule-item"><div class="rule-title">4. Запрет на продажу аккаунтов</div><div class="rule-text">Продажа/покупка аккаунтов запрещена.</div><div class="rule-punish">Бан навсегда</div></div>
-      <div class="rule-item"><div class="rule-title">5. Правила поведения</div><div class="rule-text">Запрещён оскорбительный контент.</div><div class="rule-punish">Бан на 7 дней</div></div>
-      <div class="rule-item"><div class="rule-title">6. Запрет на спам</div><div class="rule-text">Спам и реклама запрещены.</div><div class="rule-punish">Мут на 7 дней</div></div>
-      <div class="rule-item"><div class="rule-title">7. Ответственность</div><div class="rule-text">Игрок несёт ответственность за свои действия.</div></div>
-    `);
+    openModal('Правила', `<div class="rule-item"><div class="rule-title">1. Уважение</div><div class="rule-text">Без оскорблений.</div><div class="rule-punish">Бан 1 день</div></div><div class="rule-item"><div class="rule-title">2. Читы</div><div class="rule-text">Запрещены.</div><div class="rule-punish">Бан 30 дней</div></div><div class="rule-item"><div class="rule-title">3. Взлом</div><div class="rule-text">Запрещён.</div><div class="rule-punish">Бан навсегда</div></div>`);
   });
 
-  // ====== ПОДДЕРЖКА ======
+  // Поддержка (упрощённо, требует авторизации)
   supportBtn.addEventListener('click', () => {
     if (!currentUser) return alert('Сначала войди в аккаунт!');
     const myTickets = tickets.filter(t => t.contact === currentUser.nick);
@@ -205,14 +218,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showNewTicketForm() {
-    openModal('Новое обращение', `
-      <form class="support-form" id="support-form">
-        <div class="form-group"><label class="form-label"><span class="form-label-icon">1</span> Тема</label><select class="form-select" id="topic"><option value="">Выбери...</option><option value="bug">Баг</option><option value="player">Жалоба</option><option value="other">Другое</option></select></div>
-        <div class="form-group"><label class="form-label"><span class="form-label-icon">2</span> Описание</label><textarea class="form-textarea" id="description" rows="5" placeholder="Опиши ситуацию..."></textarea></div>
-        <div class="form-group"><label class="form-label"><span class="form-label-icon">3</span> Контакты</label><input class="form-input" id="contact" value="${currentUser.nick}" readonly></div>
-        <div class="form-buttons"><button type="submit" class="form-submit-btn">Отправить</button></div>
-      </form>
-    `);
+    openModal('Новое обращение', `<form class="support-form" id="support-form">
+      <div class="form-group"><label class="form-label">Тема</label><select class="form-select" id="topic"><option value="">Выбери...</option><option value="bug">Баг</option><option value="player">Жалоба</option></select></div>
+      <div class="form-group"><label class="form-label">Описание</label><textarea class="form-textarea" id="description" rows="5"></textarea></div>
+      <div class="form-buttons"><button type="submit" class="form-submit-btn">Отправить</button></div>
+    </form>`);
     setTimeout(() => {
       const form = $('support-form'); if (!form) return;
       form.addEventListener('submit', e => {
@@ -221,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!topic || !desc) return alert('Заполни все поля');
         const ticket = { id: Date.now(), topic, topicText: $('topic').selectedOptions[0].text, description: desc, contact: currentUser.nick, date: new Date().toISOString(), status:'open', messages:[
           {from:'user', text:desc, date:new Date().toISOString()},
-          {from:'support', text:'Обращение получено. Ожидайте ответа.', date:new Date().toISOString()}
+          {from:'support', text:'Обращение получено.', date:new Date().toISOString()}
         ]};
         tickets.push(ticket);
         localStorage.setItem('mc_tickets', JSON.stringify(tickets));
@@ -255,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   }
 
-  // ====== СТАТУС СЕРВЕРА ======
+  // Статус сервера
   async function checkStatus() {
     try {
       const res = await fetch('https://api.mcsrvstat.us/2/play.growagarden.ru:25565');
@@ -265,8 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
       playersEl.textContent = data.players ? 'игроков ' + data.players.online + '/' + data.players.max : '';
     } catch { statusEl.className = 'status offline'; statusEl.innerHTML = '<span class="status-dot"></span> нет связи'; }
   }
-  checkStatus();
-  setInterval(checkStatus, 60000);
+  checkStatus(); setInterval(checkStatus, 60000);
 
   copyBtn.addEventListener('click', () => {
     navigator.clipboard.writeText(serverIp.textContent.trim()).then(() => {
@@ -274,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ====== СВЕТЛЯЧКИ ======
+  // Светлячки
   (function() {
     const canvas = $('fireflies'); if (!canvas) return;
     const ctx = canvas.getContext('2d');
