@@ -82,19 +82,15 @@
       <div class="profile-body hidden" id="profile-body">
         
         <div class="nick-input-row">
-          <input type="text" id="nick-input" placeholder="Твой никнейм..." maxlength="16">
-          <button id="save-nick">OK</button>
+          <input type="text" id="nick-input" placeholder="Твой никнейм..." maxlength="16" disabled>
         </div>
 
-        <!-- Блок авторизации -->
-        <div class="auth-row" id="auth-row">
-          <input type="password" id="pass-input" placeholder="Пароль..." maxlength="32">
-          <div class="auth-buttons">
-            <button id="login-btn" class="auth-btn">Войти</button>
-            <button id="register-btn" class="auth-btn">Рег.</button>
-          </div>
+        <div class="auth-actions" id="auth-actions">
+          <button id="open-auth-btn" class="auth-btn">Войти / Регистрация</button>
+          <button id="logout-btn" class="logout-btn" style="display:none;">
+            <span class="exit-icon"></span> Выйти
+          </button>
         </div>
-        <div id="auth-msg" class="auth-msg"></div>
 
         <div class="server-details">
           <div class="detail-item">
@@ -110,17 +106,13 @@
             <span class="detail-value">Средняя</span>
           </div>
         </div>
-
-        <button id="logout-btn" class="logout-btn">
-          <span class="exit-icon"></span> Выйти
-        </button>
       </div>
     </div>
 
     <footer>Выращивай • Строй • Дружи</footer>
   </div>
 
-  <!-- Модальное окно -->
+  <!-- Модальное окно (инфо/правила/поддержка) -->
   <div class="modal hidden" id="modal">
     <div class="modal-overlay" id="modal-overlay"></div>
     <div class="modal-window" id="modal-window">
@@ -131,6 +123,54 @@
         </button>
       </div>
       <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Модальное окно авторизации -->
+  <div class="modal hidden" id="auth-modal">
+    <div class="modal-overlay" id="auth-overlay"></div>
+    <div class="auth-window">
+      <div class="auth-header">
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Вход</button>
+          <button class="auth-tab" data-tab="register">Регистрация</button>
+        </div>
+        <button class="modal-close" id="auth-close">
+          <span class="close-cross"></span>
+        </button>
+      </div>
+      <div class="auth-body">
+        <!-- Форма входа -->
+        <form class="auth-form" id="login-form">
+          <div class="auth-field">
+            <label>Никнейм</label>
+            <input type="text" id="login-nick" placeholder="Введи ник..." maxlength="16" required>
+          </div>
+          <div class="auth-field">
+            <label>Пароль</label>
+            <input type="password" id="login-pass" placeholder="Введи пароль..." maxlength="32" required>
+          </div>
+          <button type="submit" class="auth-submit">Войти</button>
+          <p class="auth-msg" id="login-msg"></p>
+        </form>
+        <!-- Форма регистрации -->
+        <form class="auth-form hidden" id="register-form">
+          <div class="auth-field">
+            <label>Никнейм</label>
+            <input type="text" id="reg-nick" placeholder="Придумай ник..." maxlength="16" required>
+          </div>
+          <div class="auth-field">
+            <label>Пароль</label>
+            <input type="password" id="reg-pass" placeholder="Придумай пароль..." maxlength="32" required>
+          </div>
+          <div class="auth-field">
+            <label>Повтори пароль</label>
+            <input type="password" id="reg-pass2" placeholder="Повтори пароль..." maxlength="32" required>
+          </div>
+          <button type="submit" class="auth-submit">Зарегистрироваться</button>
+          <p class="auth-msg" id="reg-msg"></p>
+        </form>
+      </div>
     </div>
   </div>
 
