@@ -9,16 +9,16 @@
   <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="icons/site.webmanifest">
-  <meta name="theme-color" content="#153a30">
+  <meta name="theme-color" content="#2d4a1e">
   
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div class="sky-bg" id="sky-bg">
+  <!-- Фон -->
+  <div class="sky-bg">
     <div class="stars"></div>
-    <div id="shooting-stars-container"></div>
     <div class="moon"></div>
     <div class="clouds-layer">
       <div class="cloud cloud-1"></div>
@@ -28,12 +28,11 @@
     </div>
     <canvas id="fireflies"></canvas>
   </div>
-  
   <div class="ground">
-    <div class="mist"></div>
     <div class="dirt-layers"></div>
   </div>
 
+  <!-- Контент -->
   <div class="content">
     
     <div class="top-buttons">
@@ -54,7 +53,7 @@
       
       <div class="ip-box">
         <code id="server-ip">play.growagarden.ru</code>
-        <button id="copy-ip" title="Скопировать IP">
+        <button id="copy-ip">
           <span class="copy-icon"></span>
         </button>
       </div>
@@ -87,6 +86,16 @@
           <button id="save-nick">OK</button>
         </div>
 
+        <!-- Блок авторизации -->
+        <div class="auth-row" id="auth-row">
+          <input type="password" id="pass-input" placeholder="Пароль..." maxlength="32">
+          <div class="auth-buttons">
+            <button id="login-btn" class="auth-btn">Войти</button>
+            <button id="register-btn" class="auth-btn">Рег.</button>
+          </div>
+        </div>
+        <div id="auth-msg" class="auth-msg"></div>
+
         <div class="server-details">
           <div class="detail-item">
             <span class="detail-label">Версия</span>
@@ -111,6 +120,7 @@
     <footer>Выращивай • Строй • Дружи</footer>
   </div>
 
+  <!-- Модальное окно -->
   <div class="modal hidden" id="modal">
     <div class="modal-overlay" id="modal-overlay"></div>
     <div class="modal-window" id="modal-window">
